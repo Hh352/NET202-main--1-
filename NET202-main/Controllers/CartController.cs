@@ -61,46 +61,70 @@ namespace ASM.Controllers
 
         // 2. THÊM VÀO GIỎ
         [HttpPost]
-        public IActionResult AddToCart(int id)
+        public IActionResult AddToCart(int id, int qty = 1)
         {
             int uId = GetUserId();
             if (uId == 0) return Json(new { success = false, message = "Vui lòng đăng nhập" });
 
+            if (qty <= 0) qty = 1;
+
             var item = _context.Carts.FirstOrDefault(x => x.ProductId == id && x.UserId == uId);
             if (item != null)
             {
-                item.Quantity++;
+                item.Quantity += qty;
             }
             else
             {
-                _context.Carts.Add(new Cart { ProductId = id, UserId = uId, Quantity = 1 });
+                _context.Carts.Add(new Cart { ProductId = id, UserId = uId, Quantity = qty });
             }
 
+            var product = _context.Products.Find(id);
             _context.SaveChanges();
-            return Json(new { success = true });
+            
+            return Json(new { 
+                success = true, 
+                productName = product?.ProductName ?? "Sản phẩm", 
+                productImage = product?.Image ?? "default.png",
+                quantity = (item != null ? item.Quantity : 1)
+            });
         }
 
-        // 2b. MUA NGAY (Gộp Thêm giỏ + Redirect đến trang đơn hàng)
+        // 2b. MUA NGAY (Chỉ thanh toán sản phẩm này, không gộp cả giỏ hàng)
         public async Task<IActionResult> BuyNow(int productId)
         {
             int uId = GetUserId();
             if (uId == 0) return RedirectToAction("Login", "Account");
 
-            var cartItem = await _context.Carts.FirstOrDefaultAsync(c => c.ProductId == productId && c.UserId == uId);
-            if (cartItem == null)
-            {
-                _context.Carts.Add(new Cart { ProductId = productId, UserId = uId, Quantity = 1 });
-                await _context.SaveChangesAsync();
-            }
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) return RedirectToAction("Index", "Home");
 
-            // Gọi hàm Checkout nội bộ để tạo đơn hàng nháp và chuyển hướng sang trang chi tiết đơn hàng đó
-            var result = (dynamic)((JsonResult)await Checkout()).Value;
-            if (result.success == true)
+            // Tạo đơn hàng mới cho RIÊNG sản phẩm này
+            var order = new Order
             {
-                return RedirectToAction("Detail", "Order", new { id = result.orderId, isConfirm = true });
-            }
+                UserId = uId,
+                CreatedAt = DateTime.Now,
+                TotalAmount = product.Price,
+                DiscountAmount = 0,
+                FinalAmount = product.Price,
+                PaymentMethod = 1, 
+                PaymentStatus = 0, 
+                OrderStatus = 1 
+            };
 
-            return RedirectToAction("Index", "Home");
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            var detail = new OrderDetail
+            {
+                OrderId = order.OrderId,
+                ProductId = productId,
+                Quantity = 1,
+                Price = product.Price
+            };
+            _context.OrderDetails.Add(detail);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Detail", "Order", new { id = order.OrderId, isConfirm = true });
         }
 
         // 3. TĂNG SỐ LƯỢNG
@@ -255,6 +279,7 @@ namespace ASM.Controllers
             if (userId == 0) return RedirectToAction("Login", "Account");
 
             var orders = _context.Orders
+                .AsNoTracking()
                 .Where(o => o.UserId == userId)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
@@ -271,6 +296,8 @@ namespace ASM.Controllers
             if (userId == 0) return RedirectToAction("Login", "Account");
 
             var order = _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.Voucher)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
                 .FirstOrDefault(o => o.OrderId == id && o.UserId == userId);

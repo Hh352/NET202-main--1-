@@ -5,6 +5,7 @@
 <style>
     /* Thêm font chữ serif cao cấp cho tiêu đề */
     @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
 
     body {
         background-color: #fcf9f6; /* Nền vàng kem cực kỳ nhạt, siêu sang */
@@ -197,20 +198,19 @@
     }
 
     .stat-number {
-        font-family: 'Playfair Display', serif;
-        font-size: 3.8rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 4.5rem;
         font-weight: 900;
         margin-bottom: 5px;
         line-height: 1;
-        /* Áp dụng kỹ thuật chữ viền siêu nghệ thuật */
-        color: transparent;
-        -webkit-text-stroke: 1.5px #23150D;
-        transition: 0.4s;
+        color: #23150D; 
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        letter-spacing: -3px;
     }
     
     .stat-item:hover .stat-number {
         color: #EA580C;
-        -webkit-text-stroke: 0px transparent;
+        transform: scale(1.08);
     }
     
     .stat-text {
@@ -225,8 +225,7 @@
         display: flex; 
         align-items: baseline; 
         justify-content: flex-start;
-        font-family: 'Playfair Display', serif;
-        gap: 2px;
+        gap: 0;
     }
     .odometer-container { 
         display: inline-flex; 
@@ -250,7 +249,7 @@
     }
     .stat-sign { font-size: 2.5rem; color: #23150D; align-self: center; margin-left: 5px; }
     
-    .digit-col.is-rolling { color: #EA580C; -webkit-text-stroke: 0px transparent !important; }
+    .digit-col.is-rolling { color: #EA580C; }
 
     @@media (max-width: 991px) {
         .about-grid {

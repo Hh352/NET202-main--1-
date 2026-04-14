@@ -14,7 +14,7 @@ function toggleCart() {
 // ====================================================
 // 2. THÊM SẢN PHẨM VÀO GIỎ HÀNG
 // ====================================================
-function addToCart(productId) {
+function addToCart(productId, qty = 1) {
     // isMainUserLoggedIn nên được khai báo biến global ở _Layout hoặc check từ token/cookie
     if (typeof isMainUserLoggedIn !== 'undefined' && !isMainUserLoggedIn) {
         Swal.fire({
@@ -32,32 +32,45 @@ function addToCart(productId) {
         return;
     }
 
-    fetch(`/Cart/AddToCart?id=${productId}`, { method: 'POST' })
+    fetch(`/Cart/AddToCart?id=${productId}&qty=${qty}`, { method: 'POST' })
     .then(res => {
         if (!res.ok) throw new Error("Lỗi kết nối server"); 
         return res.json();
     })
     .then(data => {
         if (data.success) {
+            // Hiển thị thông báo Toast ở góc trên bên phải thay vì mở Sidebar
+            let imgSrc = (data.productImage && data.productImage.startsWith("http")) 
+                ? data.productImage 
+                : `/Images/${data.productImage || 'default.png'}`;
+
             Swal.fire({
-                title: 'Đã thêm vào giỏ!',
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
-                position: 'top-end', 
                 toast: true,
-                background: '#fdf6f0',
-                color: '#d97706'
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                background: '#ffffff',
+                color: '#4b2e2e',
+                icon: 'success',
+                iconColor: '#d97706',
+                title: 'Thêm thành công!',
+                html: `
+                    <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <img src="${imgSrc}" onerror="this.src='/Images/default.png'" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                        <div>
+                            <div style="font-weight: 800; font-size: 0.9rem;">${data.productName}</div>
+                            <div style="font-size: 0.8rem; color: #d97706; font-weight: 700;">Số lượng: 1 món mới đã được thêm</div>
+                        </div>
+                    </div>
+                `,
+                customClass: {
+                    timerProgressBar: 'bg-warning'
+                }
             });
 
             // Load lại dữ liệu Sidebar và chấm đỏ Header
             loadCartSidebar(); 
-
-            // Tự động mở Sidebar cho khách thấy nếu đang đóng
-            const sidebar = document.getElementById("cartSidebar");
-            if (sidebar && !sidebar.classList.contains("active")) {
-                toggleCart();
-            }
         }
     })
     .catch(err => {

@@ -107,14 +107,14 @@ namespace ASM.Controllers
             var relatedProducts = await _context.Products
                 .Where(p => p.ProductId != id && p.Status == "Active")
                 .OrderByDescending(p => p.CategoryId == product.CategoryId)
-                .Take(4)
+                .Take(6)
                 .ToListAsync();
 
-            if (relatedProducts.Count > 0 && relatedProducts.Count < 4)
+            if (relatedProducts.Count > 0 && relatedProducts.Count < 6)
             {
                 var originalCount = relatedProducts.Count;
                 int j = 0;
-                while (relatedProducts.Count < 4)
+                while (relatedProducts.Count < 6)
                 {
                     relatedProducts.Add(relatedProducts[j % originalCount]);
                     j++;

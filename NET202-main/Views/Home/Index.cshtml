@@ -65,14 +65,19 @@
     /* =========================================
        3. 3D FLIPBOOK
        ========================================= */
-    .book-container-3d { perspective: 4000px; display: flex; justify-content: center; align-items: center; min-height: 800px; width: 100%; cursor: pointer; position: relative; }
+    .book-container-3d { 
+        display: flex; justify-content: center; align-items: center; 
+        min-height: 800px; width: 100%; cursor: pointer; position: relative;
+        background: transparent;
+    }
     
     .book-origin { 
         position: relative; width: 650px; height: 500px; 
-        transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: default;
+        transform: translateX(0); /* Closed: centered */
     }
-    .book-origin.is-open { transform: translateX(325px); }
+    /* States are handled by JS updateState for precision */
 
     .book-spine-v3 {
         position: absolute; width: 20px; height: 100%; left: -10px; top: 0;
@@ -96,14 +101,40 @@
     .page-img-v3 { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
     
     /* Shadows for depth */
-    .side-front-v3::after { content: ''; position: absolute; left: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent); }
-    .side-back-v3::after { content: ''; position: absolute; right: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to left, rgba(0,0,0,0.1), transparent); }
+    .side-front-v3::after { content: ''; position: absolute; left: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.15), transparent); z-index: 5; }
+    .side-back-v3::after { content: ''; position: absolute; right: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to left, rgba(0,0,0,0.15), transparent); z-index: 5; }
+    
+    /* Ensure only the top page receives clicks */
+    .page-3d { pointer-events: none; }
+    .page-3d.active-right, .page-3d.active-left { pointer-events: auto; }
+    
+    .book-spine-v3 { cursor: pointer; transition: 0.3s; }
+    .book-spine-v3:hover { background: #3d2b1f; }
 
     /* Categories filter styling for the menu page */
     .filter-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
     .filter-link { text-decoration: none; background: #fff; color: var(--bb-dark); padding: 10px 25px; border-radius: 25px; font-weight: 700; transition: 0.3s; border: 2px solid transparent; }
     .filter-link.active { background: var(--bb-amber); color: #fff; }
     .filter-link:hover { border-color: var(--bb-amber); }
+
+    /* =========================================
+       4. STORY SECTION (GIỚI THIỆU)
+       ========================================= */
+    .story-grid {
+        display: grid; grid-template-columns: 1fr; gap: 0;
+        max-width: 1100px; margin: 0 auto; border-radius: 30px; overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.3); background: var(--bb-dark);
+    }
+    @@media(min-width: 768px) { .story-grid { grid-template-columns: 1fr 1fr; } }
+    
+    .story-img { width: 100%; height: 100%; min-height: 450px; object-fit: cover; }
+    .story-text {
+        padding: 60px; display: flex; flex-direction: column; justify-content: center;
+        background: linear-gradient(135deg, var(--bb-dark) 0%, #2c1a0e 100%);
+    }
+    .story-text h4 { color: var(--bb-amber); font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 3px; }
+    .story-text h2 { color: #FFF; font-weight: 900; font-size: 2.8rem; margin-bottom: 25px; text-transform: uppercase; line-height: 1.1; }
+    .story-text p { line-height: 1.8; margin-bottom: 30px; font-size: 1.05rem; color: #D1D5DB; }
 </style>
 
 @if (!isFiltering)
@@ -147,28 +178,64 @@
         </div>
     </section>
 
-    <section class="section-wrap bg-light-section">
-        <h2 class="section-title fade-up-init reveal" style="color: var(--bb-dark);">MENU & THÔNG TIN</h2>
-        <div class="book-container-3d" onclick="doResetSash()">
-            <div class="book-origin" id="v3Book" onclick="event.stopPropagation()">
-                <div class="book-spine-v3"></div>
-                @for (int i = 5; i >= 1; i--)
-                {
-                    <div class="page-3d" style="z-index: @(10 - i);" id="pg3d-@i">
-                        <div class="page-side-v3 side-front-v3" onclick="doNextSash(@i)">
-                            @if (i == 1) { <img src="/Images/book_cover.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
-                            else if (i == 2) { <img src="/Images/book_toc.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
-                            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;"><img src="/Images/logo1.png" style="width:50%" /></div>
-                        </div>
-                        <div class="page-side-v3 side-back-v3" onclick="doPrevSash(@i)">
-                            @if (i == 2) { <img src="/Images/book_intro.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
-                            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;"><img src="/Images/logo1.png" style="width:60%" /></div>
-                        </div>
-                    </div>
-                }
+    @if (!User.Identity.IsAuthenticated)
+    {
+        @* --- HIỂN THỊ CÂU CHUYỆN NHÀ KHI CHƯA ĐĂNG NHẬP --- *@
+        <section class="section-wrap" style="background-color: var(--bb-tan);">
+            <div class="story-grid">
+                <div class="fade-up-init reveal">
+                    <img src="/Images/Cauchuyennha.png" alt="Bread & Brew" class="story-img" onerror="this.src='https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1000'">
+                </div>
+                <div class="story-text fade-up-init reveal">
+                    <h4>CÂU CHUYỆN NHÀ</h4>
+                    <h2>BREAD & BREW</h2>
+                    <p>Hành trình của chúng tôi bắt đầu từ niềm đam mê mãnh liệt với hương vị cà phê nguyên bản và những mẻ bánh nướng thơm lừng mỗi sáng. Tại Bread & Brew, mỗi cốc cà phê không chỉ là thức uống, mà là một tác phẩm nghệ thuật mang đậm dấu ấn cá nhân.</p>
+                    <a href="/Account/Login" class="hero-btn" style="width: max-content; margin-top: 10px;">
+                        ĐĂNG NHẬP TRẢI NGHIỆM <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    }
+    else
+    {
+        @* --- HIỂN THỊ CUỐN SÁCH KHI ĐÃ ĐĂNG NHẬP --- *@
+        <section class="section-wrap bg-light-section" onclick="doResetSash()" style="cursor: default; padding: 40px 0;">
+            <h2 class="section-title fade-up-init reveal" style="color: var(--bb-dark); margin-bottom: 30px;">MENU & THÔNG TIN</h2>
+            <div class="book-container-3d" style="min-height: 600px;">
+                <div class="book-origin" id="v3Book" onclick="event.stopPropagation()">
+                    <div class="book-spine-v3" onclick="doPrevSash()"></div>
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <div class="page-3d @(i == 1 ? "active-right" : "")" style="z-index: @(10 - i);" id="pg3d-@i">
+                            <div class="page-side-v3 side-front-v3" onclick="doNextSash()">
+                                @if (i == 1) { <img src="/Images/book_cover.png" class="page-img-v3" /> }
+                                else if (i == 2) { <img src="/Images/book_toc.png" class="page-img-v3" /> }
+                                else { <img src="/Images/book_intro.png" class="page-img-v3" style="opacity: 0.3;" /> }
+                                <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.15; pointer-events:none;">
+                                    <img src="/Images/logo1.png" style="width:50%" />
+                                </div>
+                            </div>
+                            <div class="page-side-v3 side-back-v3" onclick="doPrevSash()">
+                                @if (i == 1) { 
+                                    <div style="background:#fdf6f0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px; text-align:center;">
+                                        <img src="/Images/logo1.png" style="width:150px; margin-bottom:20px; opacity:0.8;" />
+                                        <h3 style="font-weight:900; color:#3d2b1f;">CHÀO MỪNG ĐẾN VỚI BREAD & BREW</h3>
+                                        <p style="font-size:0.9rem; color:#6b4f3a;">Hương vị cà phê đích thực & Bánh ngọt thủ công</p>
+                                    </div>
+                                }
+                                else if (i == 2) { <img src="/Images/book_intro.png" class="page-img-v3" /> }
+                                else { <img src="/Images/book_toc.png" class="page-img-v3" style="opacity: 0.3;" /> }
+                                <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;">
+                                    <img src="/Images/logo1.png" style="width:60%" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
 }
 else
 {
@@ -235,36 +302,80 @@ else
         });
 
         let currentSash = 0;
+        const totalPages = 5;
         const bV3 = document.getElementById('v3Book');
 
-        function doNextSash(idx) {
-            if (idx === currentSash + 1) {
-                document.getElementById('pg3d-' + idx).classList.add('flipped');
-                currentSash = idx;
-                if (currentSash === 1) bV3.classList.add('is-open');
+        function updateState() {
+            for (let i = 1; i <= totalPages; i++) {
+                const page = document.getElementById('pg3d-' + i);
+                if (!page) continue;
+                
+                page.classList.remove('active-right', 'active-left');
+
+                if (i <= currentSash) {
+                    page.style.zIndex = 10 + i;
+                    if (i === currentSash) page.classList.add('active-left');
+                } else {
+                    page.style.zIndex = 10 - i;
+                    if (i === currentSash + 1) page.classList.add('active-right');
+                }
+            }
+            
+            // CENTERING LOGIC
+            if (currentSash === 0) {
+                // Book closed on right: Center the 650px book
+                bV3.style.transform = "translateX(0)";
+            } else if (currentSash === totalPages) {
+                // Book closed on left: Center the 650px flipped book
+                // Spine needs to be moved to +325px (current spine is at -325px)
+                bV3.style.transform = "translateX(650px)";
+            } else {
+                // Book open: Center the spine
+                bV3.style.transform = "translateX(325px)";
             }
         }
 
-        function doPrevSash(idx) {
-            if (idx === currentSash) {
-                document.getElementById('pg3d-' + idx).classList.remove('flipped');
-                currentSash = idx - 1;
-                if (currentSash === 0) bV3.classList.remove('is-open');
+        function doNextSash() {
+            if (currentSash < totalPages) {
+                currentSash++;
+                const page = document.getElementById('pg3d-' + currentSash);
+                if (page) {
+                    page.classList.add('flipped');
+                }
+                updateState();
+            }
+        }
+
+        function doPrevSash() {
+            if (currentSash > 0) {
+                const page = document.getElementById('pg3d-' + currentSash);
+                if (page) {
+                    page.classList.remove('flipped');
+                    currentSash--;
+                }
+                updateState();
             }
         }
 
         function doResetSash() {
             if (currentSash > 0) {
-                for (let i = currentSash; i >= 1; i--) {
-                    (function(pIdx) {
-                        setTimeout(() => {
-                            document.getElementById('pg3d-' + pIdx).classList.remove('flipped');
-                            if (pIdx === 1) bV3.classList.remove('is-open');
-                        }, (currentSash - pIdx) * 100);
-                    })(i);
-                }
-                currentSash = 0;
+                let s = currentSash;
+                const interval = setInterval(() => {
+                    if (s <= 0) {
+                        clearInterval(interval);
+                        currentSash = 0;
+                        updateState();
+                        return;
+                    }
+                    const page = document.getElementById('pg3d-' + s);
+                    if (page) page.classList.remove('flipped');
+                    s--;
+                    currentSash = s;
+                    updateState();
+                }, 80); // Slightly faster reset
             }
         }
+        
+        updateState();
     </script>
 }

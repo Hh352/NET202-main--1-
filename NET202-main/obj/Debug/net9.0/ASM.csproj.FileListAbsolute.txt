@@ -907,5 +907,6 @@ C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\refint\ASM
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ASM.pdb
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ASM.genruntimeconfig.cache
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ref\ASM.dll
-C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\bmqkxar7aa-5af75vnk4e.gz
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\9frrok3hs2-u2wg8nfg8m.gz
+C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ASM.sourcelink.json
+C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\bmqkxar7aa-e6utgy0aqd.gz

@@ -594,24 +594,6 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\book_toc.png'))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\c479691e-3704-45bd-b3ef-1fc44fb25158_Screenshot 2026-03-14 085622.png'))">
-      <SourceType>Package</SourceType>
-      <SourceId>ASM</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/ASM</BasePath>
-      <RelativePath>Images/c479691e-3704-45bd-b3ef-1fc44fb25158_Screenshot 2026-03-14 085622.png</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>0y4l364n8d</Fingerprint>
-      <Integrity>uDgkV7uBaD6tM62zLn7oP7aKwi7QWbYtmn5HUJWgiBE=</Integrity>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\c479691e-3704-45bd-b3ef-1fc44fb25158_Screenshot 2026-03-14 085622.png'))</OriginalItemSpec>
-    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\Cauchuyennha.png'))">
       <SourceType>Package</SourceType>
       <SourceId>ASM</SourceId>
@@ -1020,8 +1002,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>5af75vnk4e</Fingerprint>
-      <Integrity>Hboy9VtW2Uhw+zKuv+dOTjmgzuCpPsg9tthMQbiCkPo=</Integrity>
+      <Fingerprint>e6utgy0aqd</Fingerprint>
+      <Integrity>Bpb1FFVbH6cjQasWgHI6dRgSqtosr8hPHwbA0qjTtvY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>

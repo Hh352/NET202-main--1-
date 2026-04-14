@@ -45,7 +45,7 @@
 
     /* --- PRODUCT MAIN --- */
     .p-detail-wrapper { padding: 140px 20px 80px; max-width: 1200px; margin: 0 auto; }
-    .p-main-grid { display: grid; grid-template-columns: 100px 1fr 1.2fr; gap: 60px; margin-bottom: 80px; }
+    .p-main-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; margin-bottom: 80px; }
 
     .p-thumb-col { display: flex; flex-direction: column; gap: 15px; }
     .p-thumb-item { width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: 0.3s; background: #fff; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
@@ -116,32 +116,53 @@
     .rev-submit-btn:hover { background: #000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
     /* --- RELATED SLIDER --- */
-    .p-related-header { display: flex; justify-content: space-between; align-items: flex-end; margin: 80px 0 30px; }
-    .p-related-title { font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin: 0; }
-    .rel-nav { display: flex; gap: 10px; }
-    .rel-nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--bb-dark); }
-    .rel-nav-btn:hover { background: var(--bb-amber); color: #fff; border-color: var(--bb-amber); }
+    .p-related-section { margin-top: 100px; padding: 60px 0; border-top: 1px solid rgba(0,0,0,0.05); }
+    .p-related-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .p-related-title { font-size: 1.8rem; font-weight: 800; color: var(--bb-dark); margin: 0; letter-spacing: -0.5px; }
     
-    .rel-slider-track { display: flex; gap: 30px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; scroll-behavior: smooth; }
+    .rel-nav { display: flex; gap: 12px; }
+    .rel-nav-btn { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--bb-dark); }
+    .rel-nav-btn:hover { background: var(--bb-amber); color: #fff; border-color: var(--bb-amber); transform: scale(1.1); }
+    
+    .rel-slider-container { position: relative; overflow: hidden; padding: 10px 0; }
+    .rel-slider-track { display: flex; gap: 30px; overflow-x: auto; padding: 20px 5px; scrollbar-width: none; scroll-behavior: smooth; }
     .rel-slider-track::-webkit-scrollbar { display: none; }
-    .rel-card { min-width: calc(50% - 15px); background: #fff; border-radius: 28px; padding: 30px; text-align: center; border: 1px solid rgba(0,0,0,0.02); transition: 0.4s; flex-shrink: 0; }
-    .rel-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
-    .rel-img-box { height: 280px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-    .rel-img-box img { width: 100%; height: 100%; object-fit: contain; }
-    .rel-title-link { font-weight: 800; color: var(--bb-dark); text-decoration: none; margin-bottom: 10px; display: block; font-size: 1.3rem; }
-    .rel-price-tag { color: var(--bb-amber); font-weight: 900; font-size: 1.25rem; }
+    
+    .rel-card { 
+        min-width: calc(33.333% - 20px); 
+        background: #fff; 
+        border-radius: 24px; 
+        padding: 25px; 
+        text-align: center; 
+        border: 1px solid rgba(0,0,0,0.04); 
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        flex-shrink: 0; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        position: relative;
+        overflow: hidden;
+    }
+    .rel-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: rgba(234, 88, 12, 0.2); }
+    
+    .rel-img-box { height: 180px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border-radius: 16px; background: #fafafa; transition: 0.3s; }
+    .rel-img-box img { width: 85%; height: 85%; object-fit: contain; transition: 0.5s; }
+    .rel-card:hover .rel-img-box img { transform: scale(1.1) rotate(3deg); }
+    
+    .rel-title-link { font-weight: 800; color: var(--bb-dark); text-decoration: none; margin-bottom: 8px; display: block; font-size: 1.05rem; transition: 0.3s; }
+    .rel-price-tag { color: var(--bb-amber); font-weight: 900; font-size: 1.15rem; margin-bottom: 15px; display: block; }
+    
+    .rel-add-btn { 
+        background: var(--bb-dark); color: #fff; border: none; padding: 10px 20px; border-radius: 30px; 
+        font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.3s; 
+        opacity: 0; transform: translateY(10px); width: 100%;
+    }
+    .rel-card:hover .rel-actions { opacity: 1 !important; transform: translateY(0) !important; }
+    .rel-add-btn:hover { background: var(--bb-amber); color:#fff; }
     @@media(max-width: 768px) { .rel-card { min-width: 100%; } }
 </style>
 
 <div class="p-detail-wrapper">
     <div class="p-main-grid">
-        <div class="p-thumb-col">
-            @for (int i = 0; i < 4; i++) {
-                <div class="p-thumb-item @(i == 0 ? "active" : "")" onclick="setDispImg(this, '@GetDetailImagePath(Model.Image)')">
-                    <img src="@GetDetailImagePath(Model.Image)" />
-                </div>
-            }
-        </div>
+
         <div class="p-main-display">
             <img src="@GetDetailImagePath(Model.Image)" id="dispImg" />
         </div>
@@ -158,7 +179,7 @@
 
             <div class="p-desc">@customDesc</div>
 
-            <!-- FEATURE LIST FROM IMAGE 1 -->
+            <!-- FEATURE LIST -->
             <ul class="p-feature-list">
                 <li class="p-feature-item"><i class="fa-solid fa-check"></i> Nguyên liệu sạch 100% tự nhiên</li>
                 <li class="p-feature-item"><i class="fa-solid fa-check"></i> Công thức pha chế độc quyền Bread & Brew</li>
@@ -171,7 +192,8 @@
                     <input type="number" id="qInp" value="1" class="p-qty-inp" readonly />
                     <button class="p-qty-btn" onclick="uQty(1)">+</button>
                 </div>
-                <button class="p-add-btn" onclick="a2c()">Thêm vào giỏ hàng</button>
+                <button class="p-add-btn" onclick="addToCart(@Model.ProductId, document.getElementById('qInp').value)" style="background:#23150D; box-shadow:none;">Thêm vào giỏ</button>
+                <a href="/Cart/BuyNow?productId=@Model.ProductId&quantity=1" id="buyNowBtn" class="p-add-btn" style="text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">MUA NGAY</a>
             </div>
 
             <div class="p-meta">
@@ -180,9 +202,9 @@
         </div>
     </div>
 
-    <!-- REVIEWS SECTION -->
+    <!-- REVIEWS SECTION (Form removed, only display remains) -->
     <div class="p-tabs">
-        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin-bottom: 40px; text-transform: uppercase;">Đánh giá của khách hàng (@reviews.Count)</h2>
+        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin-bottom: 40px; text-transform: uppercase;">Đánh giá từ khách hàng (@reviews.Count)</h2>
 
         <div>
             @if(reviews.Any()) {
@@ -197,45 +219,50 @@
                     </div>
                 }
             } else {
-                <div style="text-align: center; padding: 40px; color: #94a3b8;">Chưa có đánh giá nào cho món này. Hãy trở thành người đầu tiên!</div>
+                <div style="text-align: center; padding: 40px; color: #94a3b8;">Chưa có đánh giá nào cho món này.</div>
             }
+        </div>
+    </div>
 
-            <!-- REVIEW FORM -->
-            <div class="rev-form-container">
-                <h2 style="font-weight:900; margin-bottom:10px; color: var(--bb-dark)">Chia sẻ cảm nhận</h2>
-                <p style="color: #94a3b8; margin-bottom: 30px;">Hương vị hôm nay thế nào? Hãy cho Bread & Brew biết nhé!</p>
-                <div class="stars-selector" id="rSelector">
-                    @for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star active" data-val="@i" onmouseover="hStars(@i)" onclick="cStars(@i)"></i> }
-                </div>
-                <span class="rating-label" id="rLabel">Tuyệt vời!</span>
-                <input type="hidden" id="rVal" value="5" />
-                <textarea class="rev-textarea" id="rText" placeholder="Hương vị món này khiến bạn cảm thấy thế nào..."></textarea>
-                <button class="rev-submit-btn" onclick="submitRev()">Gửi đánh giá ngay</button>
+
+    </div>
+
+    <div class="p-related-section">
+        <div class="p-related-header">
+            <h2 class="p-related-title">Sản phẩm <b>tương tự</b></h2>
+            <div class="rel-nav">
+                <button class="rel-nav-btn" onclick="relScroll(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="rel-nav-btn" onclick="relScroll(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="rel-slider-container">
+            <div class="rel-slider-track" id="relTrack">
+                @if (ViewBag.RelatedProducts != null) {
+                    foreach (var item in (IEnumerable<ASM.Models.Product>)ViewBag.RelatedProducts) {
+                        <div class="rel-card">
+                            <a href="/Home/Detail/@item.ProductId" style="text-decoration:none; color:inherit;">
+                                <div class="rel-img-box">
+                                    <img src="@GetDetailImagePath(item.Image)" onerror="this.src='/Images/default.png'" />
+                                </div>
+                                <div class="rel-title-link">@item.ProductName</div>
+                                <div class="rel-price-tag">@item.Price.ToString("N0")đ</div>
+                            </a>
+                            <div style="display:flex; gap:10px; opacity: 0; transform: translateY(10px); transition: 0.3s;" class="rel-actions">
+                                <button class="rel-add-btn" onclick="addToCart(@item.ProductId)" style="flex:1; transform:none; opacity:1; padding:10px 0; background:#f1f5f9; color:#23150D;">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </button>
+                                <a href="/Cart/BuyNow?productId=@item.ProductId" class="rel-add-btn" style="flex:2; transform:none; opacity:1; padding:10px 0; text-align:center; text-decoration:none;">
+                                    MUA NGAY
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>
-
-    <div class="p-related-header">
-        <h2 class="p-related-title">Bạn có thể <b>Quan tâm</b></h2>
-        <div class="rel-nav">
-            <button class="rel-nav-btn" onclick="relScroll(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="rel-nav-btn" onclick="relScroll(1)"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-    </div>
-    <div class="rel-slider-track" id="relTrack">
-        @if (ViewBag.RelatedProducts != null) {
-            foreach (var item in (IEnumerable<ASM.Models.Product>)ViewBag.RelatedProducts) {
-                <a href="/Home/Detail/@item.ProductId" class="rel-card" style="text-decoration:none; display: block; color: inherit; cursor: pointer;">
-                    <div class="rel-img-box">
-                        <img src="@GetDetailImagePath(item.Image)" onerror="this.src='/Images/default.png'" />
-                    </div>
-                    <div class="rel-title-link">@item.ProductName</div>
-                    <div class="rel-price-tag">@item.Price.ToString("N0")đ</div>
-                </a>
-            }
-        }
-    </div>
 </div>
+
 
 <script>
     function setDispImg(el, src) {
@@ -246,7 +273,12 @@
     function uQty(d) {
         let i = document.getElementById('qInp');
         let v = parseInt(i.value) + d;
-        if (v >= 1 && v <= 50) i.value = v;
+        if (v >= 1 && v <= 50) {
+            i.value = v;
+            // Cập nhật số lượng vào link Mua Ngay
+            let buyBtn = document.getElementById('buyNowBtn');
+            if(buyBtn) buyBtn.href = '/Cart/BuyNow?productId=@Model.ProductId&quantity=' + v;
+        }
     }
     function sTab(el, id) {
         document.querySelectorAll('.p-tab-trigger').forEach(t => t.classList.remove('active'));
@@ -255,55 +287,13 @@
         document.getElementById(id).classList.add('active');
     }
 
-    /* Star Logic */
-    const labels = ["Tệ", "Tạm được", "Bình thường", "Rất tốt", "Tuyệt vời!"];
-    function hStars(v) {
-        let stars = document.querySelectorAll('#rSelector i');
-        stars.forEach((s, idx) => {
-            if (idx < v) s.classList.add('active');
-            else s.classList.remove('active');
-        });
-        document.getElementById('rLabel').innerText = labels[v-1];
-    }
-    function cStars(v) {
-        document.getElementById('rVal').value = v;
-        hStars(v);
-    }
-    document.getElementById('rSelector').onmouseleave = () => {
-        hStars(document.getElementById('rVal').value);
-    }
-
-    /* AJAX Submit */
-    function submitRev() {
-        let pid = @Model.ProductId;
-        let star = document.getElementById('rVal').value;
-        let txt = document.getElementById('rText').value;
-
-        if(!txt.trim()) { alert('Vui lòng nhập nội dung đánh giá!'); return; }
-
-        fetch('/Home/SubmitReview', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `productId=${pid}&rating=${star}&comment=${encodeURIComponent(txt)}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert('Có lỗi xảy ra, vui lòng thử lại!');
-            }
-        });
-    }
-    
-    function a2c() { alert('Đã thêm sản phẩm vào giỏ hàng!'); }
-
     /* Slider logic */
     function relScroll(dir) {
         let track = document.getElementById('relTrack');
         if (!track) return;
-        let amount = track.clientWidth;
+        let card = track.querySelector('.rel-card');
+        if (!card) return;
+        let amount = card.offsetWidth + 30; // Chiều rộng 1 card + gap 30px
         try { track.scrollBy({ left: dir * amount, behavior: 'smooth' }); }
         catch (e) { track.scrollLeft += dir * amount; }
     }

@@ -14,7 +14,7 @@
             font-family: 'Nunito', sans-serif;
             background-color: #fdf6f0;
             color: #4b2e2e;
-            padding-top: 140px; /* Chừa khoảng trống cho thanh gỗ treo lơ lửng */
+            padding-top: 80px; /* Reduced space for fixed header */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -28,46 +28,19 @@
                 repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px),
                 linear-gradient(to bottom, rgba(255,255,255,0.1), transparent 50%, rgba(0,0,0,0.2)),
                 url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
-            border: 1px solid #23150d;
-            border-bottom: 4px solid #1a0f0a;
-            border-radius: 6px;
-            padding: 8px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-bottom: 3px solid #1a0f0a;
+            padding: 0 40px;
+            height: 75px;
             position: fixed;
-            top: 35px; /* Floating slightly from top */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 96%;
-            max-width: 1500px;
+            top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1030;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
-        /* 2 Sợi dây thừng mảnh mai thực tế */
-        .bb-navbar::before, .bb-navbar::after {
-            content: "";
-            position: absolute; top: -36px; 
-            width: 6px; height: 40px;
-            background-color: #bc9b6a;
-            background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 4px, transparent 4px, transparent 8px);
-            box-shadow: 1px 0 3px rgba(0,0,0,0.3);
-            z-index: -1;
-        }
-        .bb-navbar::before { left: 5%; }
-        .bb-navbar::after { right: 5%; }
-
-        /* Khoen tròn treo dây tinh tế */
-        .hanging-hook {
-            position: absolute; top: -10px;
-            width: 14px; height: 14px;
-            background: #1a0f0a;
-            border-radius: 50%;
-            border: 2px solid #5d4037;
-        }
-        .hook-left { left: calc(5% - 4px); }
-        .hook-right { right: calc(5% - 4px); }
         
         .bb-brand {
             font-size: 1.35rem; font-weight: 800;
@@ -85,12 +58,36 @@
             transition: 0.3s;
             text-transform: none;
             border-radius: 6px;
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+        }
+
+        .bb-nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #FBBF24;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            opacity: 0;
         }
 
         .bb-nav-link:hover {
             color: #FBBF24 !important;
             background: rgba(255,255,255,0.05);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+        }
+
+        .bb-nav-link:hover::after {
+            width: 30px;
+            opacity: 1;
         }
 
         /* ===== THỰC ĐƠN DROPDOWN ===== */
@@ -131,32 +128,52 @@
         .m-d-item i { font-size: 1.15rem; width: 22px; text-align: center; color: #d97706; }
         .m-d-item:hover { background-color: #fef3c7; color: #d97706; padding-left: 20px; }
 
-        /* ===== LIVE SEARCH BAR ===== */
+        /* ===== LIVE SEARCH BAR (Expandable) ===== */
         .search-container {
             position: relative;
-            width: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
 
         .search-input {
-            width: 100%;
-            padding: 8px 15px 8px 40px;
+            width: 0;
+            padding: 8px 0;
+            opacity: 0;
             border-radius: 20px;
-            border: 1px solid #dcd3c1;
-            background-color: #faf7f0; /* Cream/Milk color */
+            border: none;
+            background-color: transparent;
             color: #3d2b1f;
             font-weight: 700; font-size: 0.85rem;
-            outline: none; transition: 0.3s;
+            outline: none; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
         }
 
-        .search-input:focus {
-            border-color: #B45309;
-            box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
+        .search-container.active .search-input {
+            width: 240px;
+            padding: 8px 15px 8px 40px;
+            opacity: 1;
+            background-color: #faf7f0;
+            border: 1px solid #dcd3c1;
+            pointer-events: auto;
         }
 
         .search-icon {
-            position: absolute; left: 14px; top: 50%;
+            position: absolute; 
+            right: 0; top: 50%;
             transform: translateY(-50%);
-            color: #8a6d5a; font-size: 0.9rem;
+            color: #FEF3C7; font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 11;
+        }
+
+        .search-container.active .search-icon {
+            left: 14px;
+            right: auto;
+            color: #8a6d5a;
+            font-size: 0.9rem;
         }
 
         /* Khung kết quả tìm kiếm */
@@ -387,23 +404,18 @@
     <div id="overlay" onclick="toggleCart()"></div>
 
     <nav class="bb-navbar">
-        <div class="hanging-hook hook-left"></div>
-        <div class="hanging-hook hook-right"></div>
         
         <!-- TRÁI: LOGO -->
         <a class="bb-brand" href="/Home/Index">
-            <i class="fa-solid fa-mug-hot" style="font-size: 1.2rem; color: #FBBF24;"></i>
-            <span>BREAD & BREW</span>
+            <img src="~/Images/logo1.png" alt="Bread & Brew Logo" style="height: 50px; width: auto; object-fit: contain;">
         </a>
 
         <!-- GIỮA: MENU -->
-        <div class="bb-nav-center d-none d-xl-flex">
+        <div class="bb-nav-center d-none d-xl-flex" style="gap: 30px;">
             <a class="bb-nav-link" href="/Home/Index">Trang chủ</a>
             
             <div class="menu-dropdown">
-                <a class="bb-nav-link" href="/Home/Index?categoryId=0">
-                    Thực đơn <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
-                </a>
+                <a class="bb-nav-link" href="/Home/Index?categoryId=0">Thực đơn<i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-top: 2px;"></i></a>
                 <div class="menu-dropdown-content">
                     <a href="/Home/Index?categoryId=1" class="m-d-item"><i class="fa-solid fa-mug-hot"></i> Cà phê</a>
                     <a href="/Home/Index?categoryId=2" class="m-d-item"><i class="fa-solid fa-glass-water"></i> Trà sữa</a>
@@ -412,14 +424,12 @@
             </div>
 
             <a class="bb-nav-link" href="/Home/AboutUs">Về chúng tôi</a>
-            <a class="bb-nav-link" href="javascript:void(0)" onclick="showPromo()">Khuyến mãi</a>
-            <a class="bb-nav-link" href="/Home/Contact">Liên hệ</a>
         </div>
 
         <!-- PHẢI: ACTIONS -->
         <div class="d-flex align-items-center gap-3">
-            <div class="search-container d-none d-lg-block">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <div class="search-container d-none d-lg-block" id="searchContainer">
+                <i class="fa-solid fa-magnifying-glass search-icon" id="toggleSearch"></i>
                 <input type="text" id="liveSearchInput" class="search-input" placeholder="Tìm món ăn...">
                 <div id="searchResults" class="search-results"></div>
             </div>
@@ -535,6 +545,26 @@
                 confirmButtonColor: '#d97706'
             });
         }
+
+        // Search Bar Toggle Logic
+        document.getElementById('toggleSearch')?.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const container = document.getElementById('searchContainer');
+            const input = document.getElementById('liveSearchInput');
+            
+            container.classList.toggle('active');
+            if (container.classList.contains('active')) {
+                input.focus();
+            }
+        });
+
+        // Close search when clicking outside
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('searchContainer');
+            if (container && !container.contains(e.target)) {
+                container.classList.remove('active');
+            }
+        });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

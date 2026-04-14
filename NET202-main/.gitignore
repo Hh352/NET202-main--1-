@@ -1,0 +1,22 @@
+# .gitignore for ASP.NET Core
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+out/
+
+# Environment files
+.env
+.env.local
+
+# User-specific files
+.idea/
+*.swp
+*.bak
+
+# Logs
+*.log
