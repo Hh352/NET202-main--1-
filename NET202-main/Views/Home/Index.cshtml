@@ -1,0 +1,270 @@
+@model IEnumerable<ASM.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ - Bread & Brew";
+    bool isFiltering = Context.Request.Query.ContainsKey("categoryId");
+}
+
+<style>
+    :root {
+        --bb-dark: #23150D; 
+        --bb-card-bg: #2C1A0E;
+        --bb-amber: #EA580C; 
+        --bb-tan: #D6A87C; 
+        --bb-text-light: #F8FAFC; 
+    }
+
+    body { background-color: var(--bb-tan); overflow-x: hidden; }
+
+    /* =========================================
+       1. HERO & COMMON
+       ========================================= */
+    .hero-banner { 
+        width: 100vw; position: relative; left: 50%; transform: translateX(-50%); 
+        margin-top: -30px; height: 500px; display: flex; align-items: center; justify-content: center; 
+        text-align: center; color: var(--bb-text-light); overflow: hidden; 
+    }
+    .hero-banner::before { 
+        content: ''; position: absolute; inset: 0; z-index: -1; 
+        background: linear-gradient(to bottom, rgba(35, 21, 13, 0.4), rgba(35, 21, 13, 0.9)), url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1920') center/cover no-repeat; 
+    }
+    .hero-title { font-weight: 900; font-size: 4.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.5); margin: 0; }
+    .hero-btn { background: var(--bb-amber); color: white; border: none; padding: 14px 40px; border-radius: 30px; font-weight: 800; cursor: pointer; margin-top: 20px; transition: 0.3s; text-decoration: none; display: inline-block; }
+    .hero-btn:hover { background: #b45309; transform: translateY(-3px); }
+
+    /* Hiệu ứng hiển thị mượt mà */
+    .reveal { opacity: 1; transform: translateY(0); transition: 0.8s; }
+    .fade-up-init { opacity: 0; transform: translateY(40px); }
+
+    /* =========================================
+       2. PRODUCT GRIDS
+       ========================================= */
+    .section-wrap { padding: 80px 0; width: 100vw; position: relative; left: 50%; transform: translateX(-50%); }
+    .bg-dark-section { background-color: var(--bb-dark); }
+    .bg-light-section { background-color: #f8fafc; }
+
+    .section-title { text-align: center; font-weight: 900; color: var(--bb-text-light); margin-bottom: 50px; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; }
+    .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--bb-amber); margin: 15px auto 0; }
+    
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    
+    .bb-card { background-color: var(--bb-card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: 0.4s; border: 1px solid rgba(255,255,255,0.05); }
+    .bb-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+    
+    .bb-card-img-wrapper { height: 280px; overflow: hidden; background: #fff; cursor: pointer; }
+    .bb-card-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .bb-card-body { padding: 25px; flex: 1; display: flex; flex-direction: column; }
+    .bb-card-title { color: #fff; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; margin-bottom: 5px; }
+    .bb-card-price { color: var(--bb-amber); font-weight: 900; font-size: 1.3rem; margin-bottom: 25px; }
+    
+    .bb-card-actions { display: flex; gap: 15px; margin-top: auto; }
+    .btn-buy { flex: 1; border: 2px solid var(--bb-amber); color: var(--bb-amber) !important; border-radius: 12px; text-decoration: none; text-align: center; font-weight: 800; padding: 12px; transition: 0.3s; }
+    .btn-buy:hover { background: var(--bb-amber); color: #fff !important; }
+    .btn-cart { background: var(--bb-amber); color: #fff; border: none; width: 48px; height: 48px; border-radius: 12px; cursor: pointer; font-size: 18px; transition: 0.3s; }
+
+    /* =========================================
+       3. 3D FLIPBOOK
+       ========================================= */
+    .book-container-3d { perspective: 4000px; display: flex; justify-content: center; align-items: center; min-height: 800px; width: 100%; cursor: pointer; position: relative; }
+    
+    .book-origin { 
+        position: relative; width: 650px; height: 500px; 
+        transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        cursor: default;
+    }
+    .book-origin.is-open { transform: translateX(325px); }
+
+    .book-spine-v3 {
+        position: absolute; width: 20px; height: 100%; left: -10px; top: 0;
+        background: #23150D; border-radius: 5px 0 0 5px; z-index: 100;
+        box-shadow: -10px 0 20px rgba(0,0,0,0.3);
+    }
+
+    .page-3d {
+        width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+        transform-origin: left center; transform-style: preserve-3d;
+        transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    .page-3d.flipped { transform: rotateY(-180deg); }
+
+    .page-side-v3 {
+        width: 100%; height: 100%; position: absolute; backface-visibility: hidden;
+        background: linear-gradient(135deg, #fff 0%, #f7f3f0 100%);
+        border: 1px solid rgba(0,0,0,0.1); border-radius: 4px 25px 25px 4px; overflow: hidden; cursor: pointer;
+    }
+    .side-back-v3 { transform: rotateY(180deg); border-radius: 25px 4px 4px 25px; }
+    .page-img-v3 { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    
+    /* Shadows for depth */
+    .side-front-v3::after { content: ''; position: absolute; left: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent); }
+    .side-back-v3::after { content: ''; position: absolute; right: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to left, rgba(0,0,0,0.1), transparent); }
+
+    /* Categories filter styling for the menu page */
+    .filter-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+    .filter-link { text-decoration: none; background: #fff; color: var(--bb-dark); padding: 10px 25px; border-radius: 25px; font-weight: 700; transition: 0.3s; border: 2px solid transparent; }
+    .filter-link.active { background: var(--bb-amber); color: #fff; }
+    .filter-link:hover { border-color: var(--bb-amber); }
+</style>
+
+@if (!isFiltering)
+{
+    @* --- TRANG CHỦ --- *@
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title fade-up-init reveal">BREAD & BREW</h1>
+            <p style="font-size: 1.2rem; color: #FDE68A; margin-top: 10px;" class="fade-up-init reveal">HƯƠNG VỊ CAO CẤP - TRẢI NGHIỆM ĐẲNG CẤP</p>
+            <a href="/Home/Index?categoryId=0" class="hero-btn fade-up-init reveal">XEM MENU NGAY</a>
+        </div>
+    </section>
+
+    <section class="section-wrap bg-dark-section">
+        <h2 class="section-title fade-up-init reveal">MÓN BEST - SELLER</h2>
+        <div class="grid-container">
+            @if (ViewBag.BestSellers != null)
+            {
+                foreach (var item in (IEnumerable<ASM.Models.Product>)ViewBag.BestSellers)
+                {
+                    <div class="bb-card fade-up-init reveal">
+                        @{
+                            var imgPath = string.IsNullOrEmpty(item.Image) ? "/Images/default.png" : 
+                                         (item.Image.Contains("http") ? item.Image : 
+                                         "/Images/" + item.Image.Replace("/Images/", "").Replace("Images/", "").TrimStart('/'));
+                        }
+                        <div class="bb-card-img-wrapper" onclick="location.href='/Home/Detail/@item.ProductId'">
+                            <img src="@imgPath" class="bb-card-img" onerror="this.src='/Images/default.png'" />
+                        </div>
+                        <div class="bb-card-body">
+                            <h3 class="bb-card-title">@item.ProductName</h3>
+                            <p class="bb-card-price">@item.Price.ToString("N0")đ</p>
+                            <div class="bb-card-actions">
+                                <a href="/Cart/BuyNow?productId=@item.ProductId" class="btn-buy">MUA NGAY</a>
+                                <button class="btn-cart" onclick="addToCart(@item.ProductId)"><i class="fa-solid fa-cart-shopping"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="section-wrap bg-light-section">
+        <h2 class="section-title fade-up-init reveal" style="color: var(--bb-dark);">MENU & THÔNG TIN</h2>
+        <div class="book-container-3d" onclick="doResetSash()">
+            <div class="book-origin" id="v3Book" onclick="event.stopPropagation()">
+                <div class="book-spine-v3"></div>
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <div class="page-3d" style="z-index: @(10 - i);" id="pg3d-@i">
+                        <div class="page-side-v3 side-front-v3" onclick="doNextSash(@i)">
+                            @if (i == 1) { <img src="/Images/book_cover.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
+                            else if (i == 2) { <img src="/Images/book_toc.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
+                            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;"><img src="/Images/logo1.png" style="width:50%" /></div>
+                        </div>
+                        <div class="page-side-v3 side-back-v3" onclick="doPrevSash(@i)">
+                            @if (i == 2) { <img src="/Images/book_intro.png" class="page-img-v3" onerror="this.style.opacity='0'" /> }
+                            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;"><img src="/Images/logo1.png" style="width:60%" /></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    @* --- TRANG THỰC ĐƠN --- *@
+    <section class="section-wrap" style="background: var(--bb-tan); min-height: 80vh;">
+        <h2 class="section-title" style="color: var(--bb-dark);">THỰC ĐƠN BREAD & BREW</h2>
+        
+        <div class="filter-bar">
+            @{
+                var curCat = Context.Request.Query["categoryId"].ToString();
+            }
+            <a href="/Home/Index?categoryId=0" class="filter-link @(curCat == "0" ? "active" : "")">Tất cả</a>
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var cat in (IEnumerable<ASM.Models.Category>)ViewBag.Categories)
+                {
+                    <a href="/Home/Index?categoryId=@cat.CategoryId" class="filter-link @(curCat == cat.CategoryId.ToString() ? "active" : "")">@cat.CategoryName</a>
+                }
+            }
+        </div>
+
+        <div class="grid-container">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="bb-card">
+                        @{
+                            var imgP = string.IsNullOrEmpty(item.Image) ? "/Images/default.png" : 
+                                      (item.Image.Contains("http") ? item.Image : 
+                                      "/Images/" + item.Image.Replace("/Images/", "").Replace("Images/", "").TrimStart('/'));
+                        }
+                        <div class="bb-card-img-wrapper" onclick="location.href='/Home/Detail/@item.ProductId'">
+                            <img src="@imgP" class="bb-card-img" onerror="this.src='/Images/default.png'" />
+                        </div>
+                        <div class="bb-card-body">
+                            <h3 class="bb-card-title">@item.ProductName</h3>
+                            <p class="bb-card-price">@item.Price.ToString("N0")đ</p>
+                            <div class="bb-card-actions">
+                                <a href="/Cart/BuyNow?productId=@item.ProductId" class="btn-buy">MUA NGAY</a>
+                                <button class="btn-cart" onclick="addToCart(@item.ProductId)"><i class="fa-solid fa-cart-shopping"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="grid-column: 1/-1; text-align: center; color: var(--bb-dark); padding: 50px;">
+                    <h4>Không tìm thấy sản phẩm nào trong danh mục này.</h4>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        // Reveal elements on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                el.classList.remove('fade-up-init');
+            });
+        });
+
+        let currentSash = 0;
+        const bV3 = document.getElementById('v3Book');
+
+        function doNextSash(idx) {
+            if (idx === currentSash + 1) {
+                document.getElementById('pg3d-' + idx).classList.add('flipped');
+                currentSash = idx;
+                if (currentSash === 1) bV3.classList.add('is-open');
+            }
+        }
+
+        function doPrevSash(idx) {
+            if (idx === currentSash) {
+                document.getElementById('pg3d-' + idx).classList.remove('flipped');
+                currentSash = idx - 1;
+                if (currentSash === 0) bV3.classList.remove('is-open');
+            }
+        }
+
+        function doResetSash() {
+            if (currentSash > 0) {
+                for (let i = currentSash; i >= 1; i--) {
+                    (function(pIdx) {
+                        setTimeout(() => {
+                            document.getElementById('pg3d-' + pIdx).classList.remove('flipped');
+                            if (pIdx === 1) bV3.classList.remove('is-open');
+                        }, (currentSash - pIdx) * 100);
+                    })(i);
+                }
+                currentSash = 0;
+            }
+        }
+    </script>
+}

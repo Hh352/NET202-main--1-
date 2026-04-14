@@ -1,0 +1,235 @@
+@using System.Security.Claims
+@model IEnumerable<ASM.Models.User>
+@{
+    ViewData["Title"] = "Quản lý Người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var currentLoggedInId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<style>
+    .user-container { background: #FFF; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .page-header-v2 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .title-group { display: flex; align-items: center; gap: 14px; }
+    .title-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #FDE8D5, #F5D0AE); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #A0522D; font-size: 18px; }
+    .title-info h2 { font-size: 22px; font-weight: 800; color: #2A1C14; margin: 0 0 2px; }
+    .title-info span { font-size: 13px; color: #A0AEC0; font-weight: 500; }
+    .btn-add { background: linear-gradient(135deg, #8B5A2B, #6B3E1A); color: #FFF; padding: 10px 20px; border-radius: 30px; font-weight: 600; border: none; box-shadow: 0 3px 10px rgba(139,90,43,0.25); transition: 0.2s; }
+    .btn-add:hover { background: #6B3E1A; transform: translateY(-1px); color: #fff;}
+
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
+    .filter-group select { border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px; font-size: 13px; outline: none; margin-left: 8px; cursor: pointer; }
+    .search-box { position: relative; width: 260px; }
+    .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #A0AEC0; }
+    .search-box input { width: 100%; padding: 8px 16px 8px 36px; border: 1px solid #E2E8F0; border-radius: 30px; font-size: 13px; outline: none; }
+    .search-box input:focus { border-color: #8B5A2B; }
+
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { padding: 12px 10px; color: #718096; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #EDF2F7; text-align: left; }
+    .admin-table td { padding: 12px 10px; border-bottom: 1px solid #F7FAFC; font-size: 13.5px; vertical-align: middle; }
+    .admin-table tr:hover { background: #FEFAF6; }
+    .avatar-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #F1E8DF; }
+    .user-name { font-weight: 700; color: #2A1C14; }
+    .user-id { font-weight: 700; color: #D97706; background: #FFF7ED; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+    .email-col { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #4A5568; }
+
+    .badge-role { padding: 5px 12px; border-radius: 20px; font-size: 10.5px; font-weight: 800; text-transform: uppercase; }
+    .role-admin { background: #F3E8FF; color: #7C3AED; } 
+    .role-staff { background: #DBEAFE; color: #2563EB; } 
+    .role-user { background: #F1F5F9; color: #64748B; }  
+
+    .status { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; }
+    .st-active { color: #10B981; } .st-active::before { background: #10B981; }
+    .st-locked { color: #EF4444; } .st-locked::before { background: #EF4444; }
+    
+    .actions { display: flex; gap: 8px; }
+    .btn-action { width: 32px; height: 32px; border-radius: 8px; background: transparent; display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; border: 1.5px solid; }
+    .btn-edit { border-color: #F59E0B; color: #F59E0B; } .btn-edit:hover { background: #F59E0B; color: #FFF; }
+    .btn-lock { border-color: #EF4444; color: #EF4444; } .btn-lock:hover { background: #EF4444; color: #FFF; }
+    .btn-unlock { border-color: #10B981; color: #10B981; } .btn-unlock:hover { background: #10B981; color: #FFF; }
+
+    .modal-content { border-radius: 14px; border: none; }
+    .form-label { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+    .form-control, .form-select { border-radius: 8px; font-size: 13px; padding: 8px 12px; }
+</style>
+
+<div class="user-container">
+    @if (TempData["Success"] != null) { <div class="alert alert-success alert-dismissible fade show"><b>Thành công:</b> @TempData["Success"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @if (TempData["Error"] != null)   { <div class="alert alert-danger alert-dismissible fade show"><b>Lỗi:</b> @TempData["Error"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+
+    <div class="page-header-v2">
+        <div class="title-group">
+            <div class="title-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="title-info"><h2>Quản lý Người dùng</h2><span>@Model.Count() tài khoản</span></div>
+        </div>
+        <button class="btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+    </div>
+
+    <div class="toolbar">
+        <div class="filter-group">
+            <span class="form-label">Vai trò:</span>
+            <select id="roleFilter" onchange="filterTable()">
+                <option value="">Tất cả</option><option value="Admin">Admin</option><option value="Staff">Staff</option><option value="User">Khách</option>
+            </select>
+            <span class="form-label" style="margin-left:15px;">Trạng thái:</span>
+            <select id="statusFilter" onchange="filterTable()">
+                <option value="">Tất cả</option><option value="Active">Hoạt động</option><option value="Locked">Bị khóa</option>
+            </select>
+        </div>
+        <div class="search-box">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchUser" placeholder="Tìm tên hoặc email..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <table class="admin-table" id="userTable">
+        <thead>
+            <tr><th>STT</th><th>ID</th><th>Avatar</th><th>Họ và Tên</th><th>Điện thoại</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr>
+        </thead>
+        <tbody>
+            @{ int stt = 1; }
+            @foreach (var user in Model)
+            {
+                bool isSelf = (user.UserId.ToString() == currentLoggedInId);
+                string roleName = user.Role == 2 ? "Admin" : (user.Role == 1 ? "Staff" : "User");
+                
+                <tr data-role="@roleName" data-status="@user.Status">
+                    <td style="color:#A0AEC0; font-weight:600;">@stt</td>
+                    <td><span class="user-id">@user.UserId</span></td>
+                    <td><img src="@(!string.IsNullOrEmpty(user.Avatar) ? "/Images/" + user.Avatar : "/Images/default.png")" class="avatar-img"></td>
+                    <td class="user-name">@user.FullName</td>
+                    <td style="color:#4A5568;">@(user.Phone ?? "—")</td>
+                    <td class="email-col" title="@user.Email">@user.Email</td>
+                    
+                    <td>
+                        @if (user.Role == 2)      { <span class="badge-role role-admin">ADMIN</span> } 
+                        else if (user.Role == 1) { <span class="badge-role role-staff">STAFF</span> } 
+                        else                     { <span class="badge-role role-user">KHÁCH</span> }
+                    </td>
+
+                    <td>
+                        @if (user.Status == "Locked") { <div class="status st-locked">Bị khoá</div> } 
+                        else                          { <div class="status st-active">Hoạt động</div> }
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <button type="button" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal_@user.UserId" title="Sửa">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            
+                            @if (!isSelf)
+                            {
+                                <form asp-action="ToggleUserStatus" asp-controller="Admin" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    @if (user.Status == "Active") { 
+                                        <button type="submit" class="btn-action btn-unlock" title="Khóa tài khoản này"><i class="fa-solid fa-lock-open"></i></button> 
+                                    } else { 
+                                        <button type="submit" class="btn-action btn-lock" title="Mở khóa tài khoản này"><i class="fa-solid fa-lock"></i></button> 
+                                    }
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+
+                <div class="modal fade" id="editUserModal_@user.UserId" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form asp-action="EditUser" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <div class="modal-header" style="background:#FAF7F4; border-bottom:1px solid #E2E8F0;"><h5 class="modal-title font-weight-bold">Sửa Người Dùng</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 col-12 mb-2">
+                                            <label class="form-label">Họ tên *</label>
+                                            <input type="text" class="form-control" name="fullName" value="@user.FullName" required pattern="^[\p{L}\s]+$" title="Chỉ chứa chữ cái và khoảng trắng" @(isSelf ? "" : "readonly")>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Email *</label><input type="email" class="form-control" name="email" value="@user.Email" required></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Điện thoại</label><input type="text" class="form-control" name="phone" value="@user.Phone" pattern="^[0-9]{8,11}$" title="8-11 số"></div>
+                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Vai trò</label>
+                                            <select class="form-select" name="role">
+                                                <option value="0" selected="@(user.Role == 0)">Khách hàng</option>
+                                                <option value="1" selected="@(user.Role == 1)">Staff</option>
+                                                <option value="2" selected="@(user.Role == 2)">Admin</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3"><label class="form-label">Địa chỉ</label><input type="text" class="form-control" name="address" value="@user.Address"></div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Đổi Mật khẩu (để trống nếu giữ nguyên)</label>
+                                        <input type="password" class="form-control" name="password" pattern="(?=.*[A-Za-z])(?=.*\d).{8,}" title="Ít nhất 8 ký tự, gồm chữ và số" @(isSelf ? "" : "readonly placeholder=''")>
+                                    </div>
+                                    <div class="mb-2"><label class="form-label">Ảnh đại diện mới</label><input type="file" class="form-control" name="newAvatar" accept="image/*"></div>
+                                </div>
+                                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Lưu</button></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                stt++;
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="CreateUser" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                <div class="modal-header" style="background:#FAF7F4; border-bottom:1px solid #E2E8F0;"><h5 class="modal-title font-weight-bold">Thêm Người Dùng</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên *</label>
+                        <input type="text" class="form-control" name="fullName" required pattern="^[\p{L}\s]+$" title="Chỉ chứa chữ cái và khoảng trắng" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Email *</label><input type="email" class="form-control" name="email" required placeholder="Nhập Email..."></div>
+                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Mật khẩu *</label><input type="password" class="form-control" name="password" required pattern="(?=.*[A-Za-z])(?=.*\d).{8,}" title="Ít nhất 8 ký tự, gồm chữ và số"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Điện thoại</label><input type="text" class="form-control" name="phone" pattern="^[0-9]{8,11}$" title="8-11 số"></div>
+                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Vai trò</label>
+                            <select class="form-select" name="role"><option value="0">Khách hàng</option><option value="1">Staff</option><option value="2">Admin</option></select>
+                        </div>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Địa chỉ</label><input type="text" class="form-control" name="address"></div>
+                    <div class="mb-2"><label class="form-label">Ảnh đại diện</label><input type="file" class="form-control" name="avatar" accept="image/*"></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Thêm</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            var input = document.getElementById("searchUser").value.toLowerCase();
+            var roleFilter = document.getElementById("roleFilter").value;
+            var statusFilter = document.getElementById("statusFilter").value;
+            
+            document.querySelectorAll("#userTable tbody tr[data-role]").forEach(row => {
+                var textMatch = row.innerText.toLowerCase().includes(input);
+                var roleMatch = !roleFilter || row.dataset.role === roleFilter;
+                var statusMatch = !statusFilter || row.dataset.status === statusFilter;
+                row.style.display = (textMatch && roleMatch && statusMatch) ? "" : "none";
+            });
+        }
+    </script>
+
+    @if (TempData["ScrollDown"] != null && (bool)TempData["ScrollDown"] == true)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var contentBody = document.querySelector('.content-body');
+                if (contentBody) {
+                    contentBody.scrollTo({ top: contentBody.scrollHeight, behavior: 'smooth' });
+                }
+            });
+        </script>
+    }
+}

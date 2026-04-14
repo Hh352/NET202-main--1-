@@ -1,0 +1,381 @@
+@{
+    ViewData["Title"] = "Báo cáo & Thống kê";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    // Lấy dữ liệu từ Controller
+    decimal totalRevenue = ViewBag.TotalRevenue ?? 0;
+    int totalOrders = ViewBag.TotalOrders ?? 0;
+    int successOrders = ViewBag.SuccessOrders ?? 0;
+    int cancelledOrders = ViewBag.CancelledOrders ?? 0;
+
+    // Tính phần trăm
+    double successRate = totalOrders > 0 ? Math.Round((double)successOrders / totalOrders * 100, 1) : 0;
+    double cancelRate = totalOrders > 0 ? Math.Round((double)cancelledOrders / totalOrders * 100, 1) : 0;
+
+    // CẬP NHẬT: Xử lý tiêu đề biểu đồ động dựa trên URL
+    string filterStr = Context.Request.Query["filter"].ToString();
+    string chartTitle = "Doanh thu Tháng này"; // Mặc định
+    if (filterStr == "week") chartTitle = "Doanh thu Tuần này";
+    else if (filterStr == "year") chartTitle = "Doanh thu Năm nay";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    :root {
+        --cf-brown-dark: rgb(44, 26, 14);
+        --cf-brown-primary: rgb(139, 69, 19);
+        --cf-brown-light: rgb(200, 168, 128);
+        --cf-gold: rgb(200, 130, 26);
+    }
+
+    body { background-color: #F8FAFC; }
+
+    .report-container { display: flex; flex-direction: column; gap: 24px; padding-bottom: 30px; }
+
+    /* WIDGET CHÀO MỪNG (HEADER) */
+    .welcome-widget {
+        background: linear-gradient(135deg, rgb(44, 26, 14) 0%, rgb(92, 51, 23) 60%, rgb(139, 69, 19) 100%);
+        border-radius: 16px; padding: 24px; display: flex; align-items: center; justify-content: space-between;
+        position: relative; overflow: hidden; color: white; box-shadow: 0 10px 25px -5px rgba(139, 69, 19, 0.4);
+    }
+    .welcome-content { position: relative; z-index: 10; }
+    .welcome-subtitle { font-size: 13px; color: var(--cf-brown-light); margin-bottom: 4px; letter-spacing: 0.05em; font-weight: 600; text-transform: uppercase; }
+    .welcome-title { font-size: 24px; font-weight: 800; color: #FFF; margin: 0; }
+    .welcome-desc { font-size: 14px; color: var(--cf-brown-light); margin-top: 6px; margin-bottom: 0; }
+    
+    .welcome-icon-box {
+        width: 64px; height: 64px; border-radius: 16px; background: rgba(255, 255, 255, 0.12);
+        display: flex; align-items: center; justify-content: center; font-size: 28px; color: rgb(245, 230, 200); position: relative; z-index: 10;
+        backdrop-filter: blur(4px);
+    }
+    
+    /* Vòng tròn trang trí */
+    .welcome-circle-1 { position: absolute; right: -32px; top: -32px; width: 144px; height: 144px; border-radius: 50%; background: rgba(255, 255, 255, 0.04); }
+    .welcome-circle-2 { position: absolute; right: 64px; bottom: -40px; width: 96px; height: 96px; border-radius: 50%; background: rgba(255, 255, 255, 0.04); }
+
+    /* WIDGET KPI (4 CỘT) */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .kpi-card { border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px; transition: 0.3s; }
+    .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+    
+    .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; }
+    .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    
+    .kpi-val { font-size: 24px; font-weight: 800; line-height: 1; margin: 0; }
+    .kpi-label { font-size: 13px; color: rgb(107, 76, 42); margin: 6px 0 0 0; font-weight: 500; }
+
+    .kpi-revenue { background: rgb(254, 243, 226); border: 1px solid rgba(200, 130, 26, 0.15); }
+    .kpi-revenue .kpi-icon { background: rgb(253, 230, 138); color: rgb(200, 130, 26); }
+    .kpi-revenue .kpi-val { color: rgb(200, 130, 26); }
+
+    .kpi-orders { background: rgb(240, 253, 244); border: 1px solid rgba(22, 163, 74, 0.15); }
+    .kpi-orders .kpi-icon { background: rgb(187, 247, 208); color: rgb(22, 163, 74); }
+    .kpi-orders .kpi-val { color: rgb(22, 163, 74); }
+
+    .kpi-cancel { background: rgb(254, 242, 242); border: 1px solid rgba(220, 38, 38, 0.15); }
+    .kpi-cancel .kpi-icon { background: rgb(254, 202, 202); color: rgb(220, 38, 38); }
+    .kpi-cancel .kpi-val { color: rgb(220, 38, 38); }
+
+    .kpi-success { background: rgb(236, 254, 255); border: 1px solid rgba(8, 145, 178, 0.15); }
+    .kpi-success .kpi-icon { background: rgb(165, 243, 252); color: rgb(8, 145, 178); }
+    .kpi-success .kpi-val { color: rgb(8, 145, 178); }
+
+    /* BOX TRẮNG CHUNG */
+    .white-box {
+        background: #FFF; border: 1px solid rgb(232, 221, 208);
+        border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
+    .box-title { font-size: 17px; font-weight: 800; color: rgb(26, 15, 0); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+    /* BẢNG TOP SẢN PHẨM */
+    .top-table { width: 100%; border-collapse: collapse; }
+    .top-table th { font-size: 12px; color: rgb(154, 122, 90); font-weight: 700; text-transform: uppercase; text-align: left; padding-bottom: 12px; border-bottom: 2px solid rgb(240, 232, 222); }
+    .top-table td { padding: 14px 0; border-bottom: 1px solid rgb(250, 245, 240); vertical-align: middle; }
+    .top-table tr:last-child td { border-bottom: none; }
+    
+    .rank-number { font-size: 15px; color: var(--cf-gold); font-weight: 800; width: 30px; }
+    .prod-name { font-size: 14px; font-weight: 600; color: rgb(26, 15, 0); }
+    .prod-qty { font-size: 14px; color: rgb(107, 76, 42); font-weight: 500;}
+    .prod-rev { font-size: 14.5px; color: var(--cf-brown-primary); font-weight: 800; text-align: right; }
+
+    /* CHART WRAPPER */
+    .chart-container { position: relative; height: 320px; width: 100%; }
+    .doughnut-container { position: relative; height: 180px; width: 180px; margin: 0 auto; }
+
+    /* CUSTOM PROGRESS BAR */
+    .ratio-group { margin-top: 15px; }
+    .ratio-item { margin-bottom: 16px; }
+    .ratio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .r-label { font-size: 13px; color: rgb(74, 48, 32); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .r-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .r-dot.success { background: var(--cf-brown-primary); }
+    .r-dot.cancel { background: rgb(239, 68, 68); }
+    .r-percent { font-size: 14px; font-weight: 800; color: rgb(26, 15, 0); }
+    
+    .progress-track { height: 8px; background: rgb(240, 232, 222); border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 10px; }
+    
+    .total-orders-info { border-top: 1px solid rgb(240, 232, 222); padding-top: 16px; margin-top: 24px; }
+    .total-orders-info p.lbl { font-size: 12px; color: rgb(154, 122, 90); margin-bottom: 2px; }
+    .total-orders-info p.val { font-size: 20px; font-weight: 900; color: var(--cf-brown-primary); margin: 0; }
+</style>
+
+<div class="report-container">
+
+    <div class="welcome-widget">
+        <div class="welcome-content">
+            <p class="welcome-subtitle">Tổng quan</p>
+            <h1 class="welcome-title">Chào mừng trở lại, Admin! ☕</h1>
+            <p class="welcome-desc">Hôm nay là một ngày tuyệt vời để phát triển kinh doanh.</p>
+        </div>
+        <div class="welcome-icon-box">
+            <i class="fa-solid fa-mug-hot"></i>
+        </div>
+        <div class="welcome-circle-1"></div>
+        <div class="welcome-circle-2"></div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card kpi-revenue">
+            <div class="kpi-header">
+                <div class="kpi-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <i class="fa-solid fa-arrow-up-right-dots" style="color: rgba(200, 130, 26, 0.5);"></i>
+            </div>
+            <div>
+                <p class="kpi-val">@String.Format("{0:N0}", totalRevenue)đ</p>
+                <p class="kpi-label">Doanh thu kì này</p>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-orders">
+            <div class="kpi-header">
+                <div class="kpi-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                <i class="fa-solid fa-arrow-up-right-dots" style="color: rgba(22, 163, 74, 0.5);"></i>
+            </div>
+            <div>
+                <p class="kpi-val">@String.Format("{0:N0}", totalOrders)</p>
+                <p class="kpi-label">Tổng đơn hàng</p>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-cancel">
+            <div class="kpi-header">
+                <div class="kpi-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                <i class="fa-solid fa-arrow-down-right-dots" style="color: rgba(220, 38, 38, 0.5);"></i>
+            </div>
+            <div>
+                <p class="kpi-val">@cancelledOrders</p>
+                <p class="kpi-label">Đơn đã huỷ</p>
+            </div>
+        </div>
+
+        <div class="kpi-card kpi-success">
+            <div class="kpi-header">
+                <div class="kpi-icon"><i class="fa-solid fa-check-circle"></i></div>
+                <i class="fa-solid fa-arrow-up-right-dots" style="color: rgba(8, 145, 178, 0.5);"></i>
+            </div>
+            <div>
+                <p class="kpi-val">@successOrders</p>
+                <p class="kpi-label">Đơn thành công</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="white-box">
+        <div class="box-title" style="justify-content: space-between;">
+            <span>@chartTitle</span>
+            <form action="" method="get" class="d-flex gap-2">
+                <select name="filter" class="form-select form-select-sm" style="width: 130px; border-radius: 8px; font-weight: 600; color: #6b4c2a;" onchange="this.form.submit()">
+                    <option value="week" selected="@(Context.Request.Query["filter"] == "week")">Tuần này</option>
+                    <option value="month" selected="@(string.IsNullOrEmpty(Context.Request.Query["filter"]) || Context.Request.Query["filter"] == "month")">Tháng này</option>
+                    <option value="year" selected="@(Context.Request.Query["filter"] == "year")">Năm nay</option>
+                </select>
+            </form>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="white-box h-100">
+                <h2 class="box-title">🏆 Top 5 Món Bán Chạy Nhất</h2>
+                <table class="top-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên món</th>
+                            <th style="text-align: center;">Đã bán</th>
+                            <th style="text-align: right;">Doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.TopProducts != null)
+                        {
+                            int stt = 1;
+                            foreach (var item in ViewBag.TopProducts)
+                            {
+                                <tr>
+                                    <td class="rank-number">@stt</td>
+                                    <td class="prod-name">@item.ProductName</td>
+                                    <td class="prod-qty" style="text-align: center;">@item.QuantitySold</td>
+                                    <td class="prod-rev">@String.Format("{0:N0}", item.Revenue)đ</td>
+                                </tr>
+                                stt++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="white-box h-100">
+                <h2 class="box-title">📊 Tỉ lệ xử lý đơn hàng</h2>
+                
+                <div class="d-flex align-items-center gap-4 mt-4">
+                    <div class="doughnut-container">
+                        <canvas id="orderRatioChart"></canvas>
+                    </div>
+
+                    <div class="flex-grow-1 ratio-group">
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <span class="r-label"><div class="r-dot success"></div> Thành công</span>
+                                <span class="r-percent">@successRate%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: @successRate%; background: var(--cf-brown-primary);"></div>
+                            </div>
+                        </div>
+
+                        <div class="ratio-item">
+                            <div class="ratio-header">
+                                <span class="r-label"><div class="r-dot cancel"></div> Đơn huỷ</span>
+                                <span class="r-percent">@cancelRate%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: @cancelRate%; background: rgb(239, 68, 68);"></div>
+                            </div>
+                        </div>
+
+                        <div class="total-orders-info">
+                            <p class="lbl">Tổng đơn kì này</p>
+                            <p class="val">@String.Format("{0:N0}", totalOrders) đơn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // --- 1. DỮ LIỆU TỪ SERVER ---
+        const labels = @Html.Raw(Json.Serialize(ViewBag.ChartLabels));
+        const data = @Html.Raw(Json.Serialize(ViewBag.DailyRevenue));
+
+        // --- 2. VẼ BIỂU ĐỒ DOANH THU ---
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        let gradientBrown = ctxRev.createLinearGradient(0, 0, 0, 300);
+        gradientBrown.addColorStop(0, 'rgba(139, 69, 19, 0.25)'); 
+        gradientBrown.addColorStop(1, 'rgba(139, 69, 19, 0.01)'); 
+
+        new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: data,
+                    borderColor: '#8B4513',
+                    backgroundColor: gradientBrown,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#8B4513',
+                    pointBorderColor: '#FFF',
+                    pointHoverBackgroundColor: '#FFF',
+                    pointHoverBorderColor: '#8B4513',
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2C1A0E',
+                        titleFont: { size: 13, family: 'sans-serif' },
+                        bodyFont: { size: 14, weight: 'bold', family: 'sans-serif' },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw;
+                                return new Intl.NumberFormat('vi-VN').format(value) + ' VNĐ';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#F0E8DE', drawBorder: false, borderDash: [4, 4] },
+                        ticks: { 
+                            color: '#9A7A5A', font: { size: 11, weight: '600' },
+                            callback: function(value) {
+                                if (value >= 1000000) return (value / 1000000) + ' Tr';
+                                if (value >= 1000) return (value / 1000) + 'K';
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { color: '#9A7A5A', font: { size: 11, weight: '600' }, maxTicksLimit: 10 }
+                    }
+                }
+            }
+        });
+
+        // --- 3. VẼ BIỂU ĐỒ TRÒN ---
+        const successRate = @successRate;
+        const cancelRate = @cancelRate;
+        const pendingRate = Math.max(0, 100 - successRate - cancelRate).toFixed(1); 
+
+        const ctxRatio = document.getElementById('orderRatioChart').getContext('2d');
+        new Chart(ctxRatio, {
+            type: 'doughnut',
+            data: {
+                labels: ['Thành công', 'Đơn huỷ', 'Đang xử lý'],
+                datasets: [{
+                    data: [successRate, cancelRate, pendingRate],
+                    backgroundColor: ['#8B4513', '#EF4444', '#FCD34D'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%', 
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) { return ' ' + context.label + ': ' + context.raw + '%'; }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

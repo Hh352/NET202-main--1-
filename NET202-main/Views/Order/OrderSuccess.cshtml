@@ -1,0 +1,191 @@
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 60px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-top: 6px solid #16a34a; /* Viền xanh báo thành công */
+    }
+
+    /* Hiệu ứng nảy lên cho icon check */
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #dcfce7;
+        color: #16a34a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 20px;
+        box-shadow: 0 0 0 10px #f0fdf4;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @@keyframes popIn {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+        color: #3e2723;
+        font-weight: 800;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .order-id {
+        color: #fb8c00;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    /* Bảng thông tin giao hàng */
+    .info-box {
+        text-align: left;
+        background: #fffdfa;
+        padding: 25px;
+        border-radius: 16px;
+        border: 1px solid #fde68a;
+        margin-bottom: 25px;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 16px;
+        align-items: flex-start;
+    }
+    .info-row:last-child { margin-bottom: 0; }
+
+    .info-icon {
+        width: 30px;
+        color: #fb8c00;
+        font-size: 18px;
+        margin-top: 2px;
+    }
+
+    .info-content strong {
+        display: block;
+        color: #8b4513;
+        font-size: 13px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+
+    .info-content span {
+        color: #334155;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    /* Nhóm nút bấm */
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn-success-action {
+        padding: 14px 28px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-home {
+        background: #fb8c00;
+        color: #fff;
+        box-shadow: 0 6px 15px rgba(251, 140, 0, 0.25);
+    }
+    .btn-home:hover {
+        background: #e67e22;
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(251, 140, 0, 0.35);
+    }
+
+    .btn-order {
+        background: #fff;
+        color: #3e2723;
+        border: 2px solid #e2e8f0;
+    }
+    .btn-order:hover {
+        border-color: #3e2723;
+        color: #3e2723;
+        transform: translateY(-3px);
+    }
+
+    @@media (max-width: 600px) {
+        .btn-group { flex-direction: column; }
+        .success-container { padding: 30px 20px; margin: 30px 15px; }
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-icon">
+        <i class="fa-solid fa-check"></i>
+    </div>
+    
+    <h1 class="success-title">ĐẶT HÀNG THÀNH CÔNG!</h1>
+    <div class="order-id">Mã đơn hàng: #@(TempData["OrderId"] ?? "N/A")</div>
+    
+    <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6;">
+        Cảm ơn bạn đã tin tưởng và lựa chọn <strong>Bread & Brew</strong>.<br>
+        Đơn hàng của bạn đang được xử lý và sẽ sớm được giao!
+    </p>
+
+    <div class="info-box">
+        <div class="info-row">
+            <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="info-content">
+                <strong>Số điện thoại nhận hàng</strong>
+                <span>@(TempData["Phone"] ?? "Chưa cập nhật")</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div class="info-content">
+                <strong>Địa chỉ giao hàng</strong>
+                <span>@(TempData["Address"] ?? "Chưa cập nhật")</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-icon"><i class="fa-solid fa-wallet"></i></div>
+            <div class="info-content">
+                <strong>Phương thức thanh toán</strong>
+                <span style="color: #16a34a;">@(TempData["Method"] ?? "Tiền mặt (COD)")</span>
+            </div>
+        </div>
+    </div>
+
+    <p style="font-size: 13px; color: #94a3b8; font-style: italic;">
+        * Thông tin giao hàng chỉ được lưu tạm cho đơn này.
+    </p>
+
+    <div class="btn-group">
+        <a asp-controller="Order" asp-action="Index" class="btn-success-action btn-order">
+            <i class="fa-solid fa-receipt"></i> XEM LỊCH SỬ ĐƠN
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn-success-action btn-home">
+            <i class="fa-solid fa-house"></i> VỀ TRANG CHỦ
+        </a>
+    </div>
+</div>

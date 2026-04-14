@@ -1,0 +1,189 @@
+@model IEnumerable<ASM.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn - Đơn tại quán";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+    
+    // Đơn đang phục vụ (Mới, Đang chuẩn bị)
+    var servingOrders = Model.Where(o => o.OrderStatus == 1 || o.OrderStatus == 2 || o.OrderStatus == 0).ToList();
+    
+    // Đơn sẵn sàng (Đã làm xong, chờ khách lấy hoặc thanh toán)
+    var readyOrders = Model.Where(o => o.OrderStatus == 3).ToList();
+    
+    var allOrders = servingOrders.Concat(readyOrders).OrderBy(x => x.OrderStatus).ThenByDescending(x => x.CreatedAt).ToList();
+}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: { fontFamily: { sans: ['Inter', 'sans-serif'], } }
+        }
+    }
+</script>
+
+<style>
+    /* Xóa khoảng trắng để background tối ăn khớp */
+    .content-body { padding: 0 !important; background-color: #171717; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
+    
+    /* Layout Thẻ Đơn */
+    .order-card { transition: all 0.3s ease; }
+    .order-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
+    
+    .status-badge-ready { background-color: #064e3b; border-color: #059669; }
+    .status-badge-serving { background-color: #1e1e1e; border-color: #3f3f46; }
+</style>
+
+<div class="min-h-[calc(100vh-65px)] bg-[#121212] p-8 font-sans text-neutral-200">
+    
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <h1 class="text-2xl font-black text-amber-500 tracking-wider mb-1">BREAD & BREW</h1>
+            <p class="text-neutral-400 font-medium">Quản lý đơn - Đơn tại quán</p>
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex flex-col items-center justify-center w-28 py-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500">
+                <span class="text-3xl font-black mb-1 leading-none">@servingOrders.Count</span>
+                <span class="text-xs font-bold uppercase tracking-wide">Đang phục vụ</span>
+            </div>
+            <div class="flex flex-col items-center justify-center w-28 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500">
+                <span class="text-3xl font-black mb-1 leading-none">@readyOrders.Count</span>
+                <span class="text-xs font-bold uppercase tracking-wide">Sẵn sàng</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+        
+        @if (!allOrders.Any())
+        {
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-neutral-500">
+                <i class="fa-solid fa-mug-hot text-6xl mb-4 opacity-30"></i>
+                <p class="text-lg font-medium">Hiện không có đơn hàng nào tại quán.</p>
+            </div>
+        }
+
+        @foreach (var o in allOrders)
+        {
+            var isReady = o.OrderStatus == 3;
+            var cardStyle = isReady ? "bg-[#0A2F1D] border-emerald-800/50" : "bg-[#1E1E1E] border-neutral-800";
+            
+            var timeStr = "";
+            var minDiff = (int)(DateTime.Now - o.CreatedAt).TotalMinutes;
+            if(minDiff < 1) timeStr = "Vừa xong";
+            else if(minDiff < 60) timeStr = minDiff + " phút trước";
+            else timeStr = o.CreatedAt.ToString("HH:mm");
+
+            <div class="order-card flex flex-col rounded-2xl border p-5 @cardStyle">
+                
+                <div class="flex justify-between items-center border-b border-neutral-700/50 pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="px-4 py-1.5 bg-amber-600 text-white font-black text-sm rounded-full tracking-wider shadow-md shadow-amber-900/20">
+                            ĐƠN #@o.OrderId.ToString("D4")
+                        </div>
+                        
+                        @if (isReady)
+                        {
+                            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white font-bold text-[11px] rounded-full uppercase tracking-wider shadow-md shadow-emerald-900/20">
+                                <i class="fa-solid fa-check"></i> Sẵn sàng
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <div class="text-[11px] text-neutral-400 font-semibold uppercase tracking-wider mb-1">Khách hàng</div>
+                    <div class="text-lg font-bold text-white mb-1 truncate">@(o.User?.FullName ?? "Khách Mua Mang Đi")</div>
+                    <div class="text-xs text-neutral-500 flex items-center gap-1.5 font-medium">
+                        <i class="fa-regular fa-clock"></i> @timeStr
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col gap-3 mb-5">
+                    @if(o.OrderDetails != null)
+                    {
+                        foreach(var item in o.OrderDetails)
+                        {
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-amber-600/20 text-amber-500 border border-amber-500/30 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                                    @item.Quantity
+                                </div>
+                                <div class="text-sm font-medium text-neutral-200 leading-snug">
+                                    @(item.Product?.ProductName ?? "Món không xác định")
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                @if(!string.IsNullOrEmpty(o.Note))
+                {
+                    <div class="bg-black/20 border border-amber-500/20 rounded-xl p-3 mb-5">
+                        <div class="text-[10px] text-amber-500/80 font-bold uppercase tracking-wider mb-1">Ghi chú:</div>
+                        <div class="text-xs text-neutral-300 font-medium italic">@o.Note</div>
+                    </div>
+                }
+
+                <div class="flex gap-3 mt-auto pt-4 border-t border-neutral-700/50">
+                    <button onclick="alert('Đã rung thẻ / phát loa gọi đơn #@o.OrderId.ToString("D4") ra lấy món!');" 
+                            class="flex-1 py-2.5 rounded-xl border border-amber-500 text-amber-500 font-bold text-sm hover:bg-amber-500/10 transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-regular fa-bell"></i> Gọi khách
+                    </button>
+                    
+                    @if (isReady)
+                    {
+                        <button onclick="updateOrderStatus(event, @o.OrderId, 4)" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/50">
+                            <i class="fa-solid fa-check-double"></i> Hoàn thành
+                        </button>
+                    }
+                    else
+                    {
+                        <button onclick="updateOrderStatus(event, @o.OrderId, 3)" class="flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-900/50">
+                            <i class="fa-solid fa-bell-concierge"></i> Xong món
+                        </button>
+                    }
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Hàm xử lý cập nhật trạng thái đơn hàng ngầm (AJAX)
+        function updateOrderStatus(event, orderId, status) {
+            // Ngăn chặn các hành vi mặc định
+            event.preventDefault();
+            
+            // Đổi giao diện nút thành đang xoay
+            let btn = event.currentTarget;
+            let originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+            btn.disabled = true;
+
+            // Đóng gói dữ liệu gửi lên
+            let formData = new FormData();
+            formData.append('orderId', orderId);
+            formData.append('orderStatus', status);
+
+            // Gửi dữ liệu về Controller
+            fetch('/Staff/UpdateOrderStatus', {
+                method: 'POST',
+                body: formData
+            }).then(() => {
+                // CHÌA KHÓA Ở ĐÂY: Mặc kệ Controller có redirect đi đâu, 
+                // chúng ta ép trình duyệt phải load lại ĐÚNG TRANG HIỆN TẠI
+                window.location.reload();
+            }).catch(err => {
+                alert('Lỗi kết nối đến máy chủ!');
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+        }
+    </script>
+}

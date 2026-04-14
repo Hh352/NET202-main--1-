@@ -1,0 +1,226 @@
+@model ASM.Models.Order
+@{
+    ViewData["Title"] = "Thanh toán VietQR";
+    var bankId = "VCB"; 
+    var accountNo = "1064790556";
+    var accountName = "TRAN NGUYEN HUY HOANG";
+    var description = $"Thanh toan don hang {Model.OrderId}";
+    var vietQrUrl = $"https://img.vietqr.io/image/{bankId}-{accountNo}-compact2.png?amount={Model.FinalAmount}&addInfo={Uri.EscapeDataString(description)}&accountName={Uri.EscapeDataString(accountName)}";
+}
+
+<style>
+    :root {
+        --bb-brown: #4b2e2e;
+        --bb-amber: #d97706;
+        --bb-cream: #fdf6f0;
+        --bb-gold: #fde68a;
+        --bb-gray: #f8fafc;
+    }
+
+    body { background-color: #f3f4f6; font-family: 'Outfit', sans-serif; }
+
+    .payment-container { 
+        max-width: 1100px; 
+        margin: 40px auto; 
+        display: flex; 
+        gap: 20px; 
+        align-items: stretch;
+    }
+    
+    .left-panel {
+        flex: 1;
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .right-panel {
+        flex: 2;
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        color: var(--bb-brown);
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .gold-line {
+        height: 2px;
+        background: var(--bb-amber);
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .info-group {
+        margin-bottom: 25px;
+    }
+
+    .info-label {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .info-content {
+        color: #334155;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .amount-box {
+        margin-top: auto;
+        border: 1px solid #fde68a;
+        background: #fffbeb;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .amount-label {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+
+    .amount-value {
+        color: #10b981;
+        font-weight: 900;
+        font-size: 1.6rem;
+    }
+
+    .qr-frame {
+        border: 2px solid var(--bb-amber);
+        border-style: dashed;
+        padding: 10px;
+        border-radius: 15px;
+        position: relative;
+        margin: 20px 0;
+    }
+
+    .bank-details-box {
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 20px;
+        width: 80%;
+        text-align: left;
+        margin-bottom: 30px;
+    }
+
+    .bank-line {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        color: #4b5563;
+    }
+
+    .bank-line strong {
+        color: #1f2937;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-action {
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: 0.3s;
+        display: flex; align-items: center; gap: 8px;
+    }
+
+    .btn-confirm {
+        background: #f97316;
+        color: white;
+        border: none;
+    }
+    .btn-confirm:hover { background: #ea580c; }
+
+    .btn-back {
+        background: #e2e8f0;
+        color: #475569;
+    }
+    .btn-back:hover { background: #cbd5e1; }
+
+    .subtitle {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="payment-container">
+    <!-- TRÁI -->
+    <div class="left-panel">
+        <div class="section-title">
+            <i class="fa-solid fa-mug-hot" style="color: var(--bb-amber);"></i>
+            CỔNG THANH TOÁN
+        </div>
+        <div class="gold-line"></div>
+
+        <div class="info-group">
+            <span class="info-label">Nhà cung cấp</span>
+            <div class="info-content">Bread & Brew</div>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">Mã giao dịch (Order ID)</span>
+            <div class="info-content" style="color: var(--bb-amber);">#@Model.OrderId</div>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">Nội dung thanh toán</span>
+            <div class="info-content">@description</div>
+        </div>
+
+        <div class="amount-box">
+            <div class="amount-label">Số tiền thanh toán</div>
+            <div class="amount-value">@Model.FinalAmount.ToString("N0") VNĐ</div>
+        </div>
+    </div>
+
+    <!-- PHẢI -->
+    <div class="right-panel">
+        <h2 style="font-weight: 900; color: #1f2937; margin: 0;">Quét QR để thanh toán</h2>
+        <div class="subtitle">Sử dụng ứng dụng Ngân hàng hoặc MoMo hỗ trợ VietQR</div>
+
+        <div class="qr-frame">
+            <img src="@vietQrUrl" style="width: 350px; height: 350px; display: block;" />
+        </div>
+
+        <div class="bank-details-box">
+            <div class="bank-line">Ngân hàng: <strong>Vietcombank (VCB)</strong></div>
+            <div class="bank-line">Chủ tài khoản: <strong>@accountName</strong></div>
+            <div class="bank-line">Số tài khoản: <strong>@accountNo</strong></div>
+            <div class="bank-line">Số tiền: <strong style="color: var(--bb-amber);">@Model.FinalAmount.ToString("N0") VNĐ</strong></div>
+        </div>
+
+        <div class="btn-group">
+            <a href="/Order/Index" class="btn-action btn-confirm">
+                <i class="fa-solid fa-circle-check"></i> ĐÃ CHUYỂN KHOẢN XONG
+            </a>
+            <a href="javascript:history.back()" class="btn-action btn-back">
+                QUAY VỀ
+            </a>
+        </div>
+    </div>
+</div>

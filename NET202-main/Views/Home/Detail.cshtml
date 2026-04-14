@@ -1,0 +1,310 @@
+@model ASM.Models.Product
+@{
+    ViewData["Title"] = Model.ProductName + " - Bread & Brew";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    string GetDetailImagePath(string? img) {
+        if (string.IsNullOrEmpty(img)) return "/Images/default.png";
+        if (img.Contains("http")) return img;
+        var clean = img.Replace("/Images/", "").Replace("Images/", "").TrimStart('/');
+        return "/Images/" + clean;
+    }
+
+    var reviews = Model.Reviews?.OrderByDescending(r => r.ReviewId).ToList() ?? new List<ASM.Models.Review>();
+    var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 5;
+
+    // CUSTOM DESCRIPTION GENERATOR (Base on User Request Image 4)
+    string GetCustomDescription(string name) {
+        name = name.ToLower();
+        if (name.Contains("muối")) 
+            return "Khám phá sự kết hợp độc đáo giữa vị cà phê đậm đà và chút mặn nhẹ của kem muối lớp trên cùng. Đây là bước đột phá trong hương vị, tạo nên sự cân bằng hoàn hảo giữa đắng, ngọt và mặn, đánh thức mọi giác quan của bạn ngay từ ngụm đầu tiên.\n\nChúng tôi thấu hiểu từng nhu cầu và luôn cố gắng đáp ứng bằng sự tận tâm. Sản phẩm này là một trong những món được khách hàng yêu thích nhất tại hệ thống vì chất lượng nhất quán, tạo nên điểm nhấn tinh tế giữa nhịp sống bận rộn.";
+        
+        if (name.Contains("matcha"))
+            return "Sự kết hợp tinh tế giữa bột trà xanh Matcha chuẩn Nhật Bản và sữa tươi thanh trùng béo ngậy. Matcha Latte không chỉ mang lại màu xanh dịu mát mắt mà còn là nguồn năng lượng sạch, giàu chất chống oxy hóa giúp bạn tỉnh táo và thư giãn tối đa.\n\nBread & Brew cam kết mang đến chất lượng tốt nhất trong mọi công đoạn từ lúc chọn nguyên liệu trà cho đến khi thành phẩm thơm ngon đến tay bạn.";
+
+        if (name.Contains("tiramisu"))
+            return "Một sự biến tấu đầy kiêu hãnh của món tráng miệng Ý cổ điển vào ly cà phê hiện đại. Lớp kem trứng sánh mịn hòa quyện cùng cốt cà phê espresso đậm đặc và bột cacao cao cấp, mang đến một hành trình hương vị đầy mê hoặc.\n\nSản phẩm này là minh chứng cho sự tỉ mỉ của các Barista chúng tôi, đảm bảo mỗi ly đều là một tác phẩm nghệ thuật chuẩn vị.";
+
+        // Default high-quality description
+        return $"Khám phá hương vị đặc biệt của {Model.ProductName}. Sự kết hợp hoàn hảo của các thành phần tự nhiên tạo nên một trải nghiệm tuyệt vời, không chỉ đánh thức vị giác mà còn khơi gợi nguồn cảm hứng bất tận dành cho bạn mỗi ngày.\n\nBread & Brew cam kết mang đến chất lượng tốt nhất trong mọi công đoạn từ lúc chọn nguyên liệu cho đến khi thành phẩm đến tay bạn. Chúng tôi thấu hiểu từng nhu cầu và luôn cố gắng đáp ứng bằng sự tận tâm.";
+    }
+
+    string customDesc = GetCustomDescription(Model.ProductName);
+}
+
+<style>
+    :root {
+        --bb-dark: #23150D;
+        --bb-amber: #EA580C;
+        --bb-tan: #D6A87C;
+        --bb-bg: #fdf6f0;
+        --bb-text: #23150D;
+    }
+
+    body { background-color: var(--bb-bg); font-family: 'Outfit', sans-serif; color: var(--bb-text); margin: 0; }
+
+    /* --- PRODUCT MAIN --- */
+    .p-detail-wrapper { padding: 140px 20px 80px; max-width: 1200px; margin: 0 auto; }
+    .p-main-grid { display: grid; grid-template-columns: 100px 1fr 1.2fr; gap: 60px; margin-bottom: 80px; }
+
+    .p-thumb-col { display: flex; flex-direction: column; gap: 15px; }
+    .p-thumb-item { width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: 0.3s; background: #fff; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .p-thumb-item.active { border-color: var(--bb-amber); }
+    .p-thumb-item img { width: 100%; height: 100%; object-fit: contain; }
+
+    .p-main-display { background: #fff; border-radius: 32px; padding: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 60px rgba(0,0,0,0.05); height: 550px; }
+    .p-main-display img { max-width: 100%; max-height: 100%; object-fit: contain; transition: 0.5s ease; }
+    .p-main-display:hover img { transform: scale(1.05); }
+
+    .p-info-col { padding-top: 10px; }
+    .p-title { font-size: 3.5rem; font-weight: 900; color: var(--bb-dark); line-height: 1.1; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+    .p-stars-row { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; color: #fbbf24; font-size: 1.1rem; }
+    .p-stars-row span { color: #94a3b8; font-weight: 500; }
+
+    .p-price-big { font-size: 3.2rem; font-weight: 900; color: var(--bb-amber); margin-bottom: 30px; letter-spacing: -1px; }
+    .p-desc { line-height: 1.8; color: #475569; font-size: 1.05rem; margin-bottom: 30px; white-space: pre-wrap; }
+
+    /* Feature List from Image 1 */
+    .p-feature-list { list-style: none; padding: 0; margin: 0 0 35px 0; border-top: 1px solid #eee; padding-top: 25px; }
+    .p-feature-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-weight: 600; font-size: 1.05rem; color: var(--bb-dark); }
+    .p-feature-item i { color: var(--bb-amber); font-size: 0.9rem; }
+
+    .p-actions { display: flex; align-items: center; gap: 25px; margin-bottom: 45px; }
+    .p-qty-box { display: flex; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 40px; padding: 8px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .p-qty-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; font-weight: 700; width: 35px; height: 45px; color: var(--bb-dark); }
+    .p-qty-inp { width: 50px; border: none; text-align: center; font-weight: 900; font-size: 1.25rem; outline: none; background: transparent; color: var(--bb-dark); }
+    .p-add-btn { flex: 1; background: var(--bb-amber); color: #fff; border: none; padding: 20px 40px; border-radius: 40px; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.3); }
+    .p-add-btn:hover { background: #b45309; transform: translateY(-3px); box-shadow: 0 15px 30px rgba(234, 88, 12, 0.4); }
+
+    .p-meta { font-size: 0.95rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .p-meta b { color: var(--bb-dark); margin-left: 5px; }
+
+    /* --- TABS --- */
+    .p-tabs { margin-top: 80px; }
+    .p-tabs-header { display: flex; gap: 60px; border-bottom: 2px solid #f1f5f9; position: relative; }
+    .p-tab-trigger { padding: 20px 0; cursor: pointer; font-weight: 800; color: #94a3b8; transition: 0.3s; font-size: 1.1rem; text-transform: uppercase; border-bottom: 4px solid transparent; margin-bottom: -2px; }
+    .p-tab-trigger.active { color: var(--bb-amber); border-bottom-color: var(--bb-amber); }
+    .p-tab-content { padding: 60px 0; display: none; }
+    .p-tab-content.active { display: block; animation: fadeInTab 0.5s ease forwards; }
+    @@keyframes fadeInTab { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .custom-desc-text { 
+        line-height: 2; 
+        color: #475569; 
+        font-size: 1.2rem; 
+        white-space: pre-wrap; 
+        max-width: 900px;
+    }
+
+    /* --- REVIEWS --- */
+    .rev-card { display: flex; gap: 25px; padding: 35px; background: #fff; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    .rev-avatar { width: 60px; height: 60px; background: linear-gradient(135deg, var(--bb-tan), var(--bb-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.4rem; }
+    .rev-name { font-weight: 800; color: var(--bb-dark); margin-right: 15px; font-size: 1.1rem; }
+    .rev-date { color: #94a3b8; font-size: 0.9rem; }
+    .rev-stars { color: #fbbf24; font-size: 0.9rem; margin: 10px 0; }
+    .rev-text { color: #64748b; line-height: 1.8; font-size: 1.05rem; }
+
+    /* REAR FORM */
+    .rev-form-container { background: #fff; padding: 50px; border-radius: 32px; margin-top: 50px; border: 1px solid #f1f5f9; box-shadow: 0 20px 50px rgba(0,0,0,0.04); }
+    .stars-selector { display: flex; gap: 8px; color: #cbd5e1; font-size: 2.2rem; cursor: pointer; margin-bottom: 10px; }
+    .stars-selector i.active { color: #fbbf24; }
+    .rating-label { font-weight: 800; color: var(--bb-amber); font-size: 1.3rem; margin-bottom: 25px; display: block; }
+
+    .rev-textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px; min-height: 160px; font-family: inherit; margin-bottom: 30px; outline: none; transition: 0.3s; font-size: 1.1rem; background: #f8fafc; }
+    .rev-textarea:focus { border-color: var(--bb-amber); background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .rev-submit-btn { background: var(--bb-dark); color: #fff; border: none; padding: 18px 50px; border-radius: 40px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+    .rev-submit-btn:hover { background: #000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+    /* --- RELATED SLIDER --- */
+    .p-related-header { display: flex; justify-content: space-between; align-items: flex-end; margin: 80px 0 30px; }
+    .p-related-title { font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin: 0; }
+    .rel-nav { display: flex; gap: 10px; }
+    .rel-nav-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--bb-dark); }
+    .rel-nav-btn:hover { background: var(--bb-amber); color: #fff; border-color: var(--bb-amber); }
+    
+    .rel-slider-track { display: flex; gap: 30px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; scroll-behavior: smooth; }
+    .rel-slider-track::-webkit-scrollbar { display: none; }
+    .rel-card { min-width: calc(50% - 15px); background: #fff; border-radius: 28px; padding: 30px; text-align: center; border: 1px solid rgba(0,0,0,0.02); transition: 0.4s; flex-shrink: 0; }
+    .rel-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+    .rel-img-box { height: 280px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .rel-img-box img { width: 100%; height: 100%; object-fit: contain; }
+    .rel-title-link { font-weight: 800; color: var(--bb-dark); text-decoration: none; margin-bottom: 10px; display: block; font-size: 1.3rem; }
+    .rel-price-tag { color: var(--bb-amber); font-weight: 900; font-size: 1.25rem; }
+    @@media(max-width: 768px) { .rel-card { min-width: 100%; } }
+</style>
+
+<div class="p-detail-wrapper">
+    <div class="p-main-grid">
+        <div class="p-thumb-col">
+            @for (int i = 0; i < 4; i++) {
+                <div class="p-thumb-item @(i == 0 ? "active" : "")" onclick="setDispImg(this, '@GetDetailImagePath(Model.Image)')">
+                    <img src="@GetDetailImagePath(Model.Image)" />
+                </div>
+            }
+        </div>
+        <div class="p-main-display">
+            <img src="@GetDetailImagePath(Model.Image)" id="dispImg" />
+        </div>
+        <div class="p-info-col">
+            <h1 class="p-title">@Model.ProductName</h1>
+            <div class="p-stars-row">
+                <div>
+                     @for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star @(i <= Math.Round(avgRating) ? "" : "fa-regular")"></i> }
+                </div>
+                <span>(@reviews.Count nhận xét)</span>
+            </div>
+            
+            <div class="p-price-big">@Model.Price.ToString("N0")đ</div>
+
+            <div class="p-desc">@customDesc</div>
+
+            <!-- FEATURE LIST FROM IMAGE 1 -->
+            <ul class="p-feature-list">
+                <li class="p-feature-item"><i class="fa-solid fa-check"></i> Nguyên liệu sạch 100% tự nhiên</li>
+                <li class="p-feature-item"><i class="fa-solid fa-check"></i> Công thức pha chế độc quyền Bread & Brew</li>
+                <li class="p-feature-item"><i class="fa-solid fa-check"></i> Hương vị hoàn hảo chuẩn gu hiện đại</li>
+            </ul>
+
+            <div class="p-actions">
+                <div class="p-qty-box">
+                    <button class="p-qty-btn" onclick="uQty(-1)">-</button>
+                    <input type="number" id="qInp" value="1" class="p-qty-inp" readonly />
+                    <button class="p-qty-btn" onclick="uQty(1)">+</button>
+                </div>
+                <button class="p-add-btn" onclick="a2c()">Thêm vào giỏ hàng</button>
+            </div>
+
+            <div class="p-meta">
+                SKU:<b>BB-@Model.ProductId.ToString("D3")</b> &nbsp; | &nbsp; Category:<b>@(Model.Category?.CategoryName ?? "Menu")</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div class="p-tabs">
+        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin-bottom: 40px; text-transform: uppercase;">Đánh giá của khách hàng (@reviews.Count)</h2>
+
+        <div>
+            @if(reviews.Any()) {
+                foreach (var r in reviews) {
+                    <div class="rev-card">
+                        <div class="rev-avatar">@(r.User?.FullName?[0] ?? 'K')</div>
+                        <div class="rev-main">
+                            <div><span class="rev-name">@r.User?.FullName</span> <span class="rev-date">@r.CreatedAt.ToString("dd/MM/yyyy")</span></div>
+                            <div class="rev-stars">@for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star @(i <= r.Rating ? "" : "fa-regular")"></i> }</div>
+                            <p class="rev-text">@r.Comment</p>
+                        </div>
+                    </div>
+                }
+            } else {
+                <div style="text-align: center; padding: 40px; color: #94a3b8;">Chưa có đánh giá nào cho món này. Hãy trở thành người đầu tiên!</div>
+            }
+
+            <!-- REVIEW FORM -->
+            <div class="rev-form-container">
+                <h2 style="font-weight:900; margin-bottom:10px; color: var(--bb-dark)">Chia sẻ cảm nhận</h2>
+                <p style="color: #94a3b8; margin-bottom: 30px;">Hương vị hôm nay thế nào? Hãy cho Bread & Brew biết nhé!</p>
+                <div class="stars-selector" id="rSelector">
+                    @for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star active" data-val="@i" onmouseover="hStars(@i)" onclick="cStars(@i)"></i> }
+                </div>
+                <span class="rating-label" id="rLabel">Tuyệt vời!</span>
+                <input type="hidden" id="rVal" value="5" />
+                <textarea class="rev-textarea" id="rText" placeholder="Hương vị món này khiến bạn cảm thấy thế nào..."></textarea>
+                <button class="rev-submit-btn" onclick="submitRev()">Gửi đánh giá ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-related-header">
+        <h2 class="p-related-title">Bạn có thể <b>Quan tâm</b></h2>
+        <div class="rel-nav">
+            <button class="rel-nav-btn" onclick="relScroll(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="rel-nav-btn" onclick="relScroll(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+    <div class="rel-slider-track" id="relTrack">
+        @if (ViewBag.RelatedProducts != null) {
+            foreach (var item in (IEnumerable<ASM.Models.Product>)ViewBag.RelatedProducts) {
+                <a href="/Home/Detail/@item.ProductId" class="rel-card" style="text-decoration:none; display: block; color: inherit; cursor: pointer;">
+                    <div class="rel-img-box">
+                        <img src="@GetDetailImagePath(item.Image)" onerror="this.src='/Images/default.png'" />
+                    </div>
+                    <div class="rel-title-link">@item.ProductName</div>
+                    <div class="rel-price-tag">@item.Price.ToString("N0")đ</div>
+                </a>
+            }
+        }
+    </div>
+</div>
+
+<script>
+    function setDispImg(el, src) {
+        document.querySelectorAll('.p-thumb-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('dispImg').src = src;
+    }
+    function uQty(d) {
+        let i = document.getElementById('qInp');
+        let v = parseInt(i.value) + d;
+        if (v >= 1 && v <= 50) i.value = v;
+    }
+    function sTab(el, id) {
+        document.querySelectorAll('.p-tab-trigger').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.p-tab-content').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById(id).classList.add('active');
+    }
+
+    /* Star Logic */
+    const labels = ["Tệ", "Tạm được", "Bình thường", "Rất tốt", "Tuyệt vời!"];
+    function hStars(v) {
+        let stars = document.querySelectorAll('#rSelector i');
+        stars.forEach((s, idx) => {
+            if (idx < v) s.classList.add('active');
+            else s.classList.remove('active');
+        });
+        document.getElementById('rLabel').innerText = labels[v-1];
+    }
+    function cStars(v) {
+        document.getElementById('rVal').value = v;
+        hStars(v);
+    }
+    document.getElementById('rSelector').onmouseleave = () => {
+        hStars(document.getElementById('rVal').value);
+    }
+
+    /* AJAX Submit */
+    function submitRev() {
+        let pid = @Model.ProductId;
+        let star = document.getElementById('rVal').value;
+        let txt = document.getElementById('rText').value;
+
+        if(!txt.trim()) { alert('Vui lòng nhập nội dung đánh giá!'); return; }
+
+        fetch('/Home/SubmitReview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `productId=${pid}&rating=${star}&comment=${encodeURIComponent(txt)}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra, vui lòng thử lại!');
+            }
+        });
+    }
+    
+    function a2c() { alert('Đã thêm sản phẩm vào giỏ hàng!'); }
+
+    /* Slider logic */
+    function relScroll(dir) {
+        let track = document.getElementById('relTrack');
+        if (!track) return;
+        let amount = track.clientWidth;
+        try { track.scrollBy({ left: dir * amount, behavior: 'smooth' }); }
+        catch (e) { track.scrollLeft += dir * amount; }
+    }
+</script>

@@ -1,0 +1,630 @@
+@model IEnumerable<ASM.Models.Product>
+@{
+    ViewData["Title"] = "POS Terminal - Bán Hàng Tại Quầy";
+    Layout = "~/Views/Shared/_StaffLayout.cshtml"; 
+
+    var groupedProducts = Model
+        .Where(p => p.Status == "Active" || p.Status == "Hidden")
+        .GroupBy(p => p.Category?.CategoryName ?? "Sản phẩm khác")
+        .OrderBy(g => g.Key)
+        .ToList();
+        
+    var categories = ViewBag.Categories as List<ASM.Models.Category> ?? new List<ASM.Models.Category>();
+}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: { fontFamily: { sans: ['Inter', 'sans-serif'], } }
+        }
+    }
+</script>
+
+<style>
+    .content-body { padding: 0 !important; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
+    .card-hover:hover { transform: scale(1.03); border-color: #d97706; box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.2); }
+    .img-zoom:hover img { transform: scale(1.1); }
+</style>
+
+<div class="flex h-full w-full bg-[url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2000')] bg-cover bg-center relative">
+    <div class="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm z-0"></div>
+
+    <div class="relative z-10 flex-1 flex flex-col bg-neutral-900/50 backdrop-blur">
+        
+        <div class="border-b border-amber-900/20 bg-gradient-to-r from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl p-6 shadow-lg flex-shrink-0">
+            <div class="flex gap-4 mb-4 overflow-x-auto pb-2 scrollbar-hide items-center">
+                <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-amber-500 bg-gradient-to-br from-amber-600/20 to-amber-800/20 shadow-lg shadow-amber-900/30 scale-105 text-white">
+                    <i class="fa-solid fa-border-all text-amber-500 text-xl"></i>
+                    <span class="text-lg font-medium">TẤT CẢ</span>
+                </button>
+
+                @foreach (var cat in categories)
+                {
+                    <button onclick="setCategory('cat-@cat.CategoryId')" id="btn-cat-@cat.CategoryId" class="cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-neutral-700 hover:border-amber-700 hover:bg-neutral-800/50 text-neutral-400">
+                        @if(cat.CategoryName.ToLower().Contains("cà phê") || cat.CategoryName.ToLower().Contains("cafe")) { 
+                            <i class="fa-solid fa-mug-hot text-amber-500 text-xl"></i> 
+                        } else if(cat.CategoryName.ToLower().Contains("bánh") || cat.CategoryName.ToLower().Contains("cake")) { 
+                            <i class="fa-solid fa-cake-candles text-amber-500 text-xl"></i> 
+                        } else { 
+                            <i class="fa-solid fa-leaf text-amber-500 text-xl"></i> 
+                        }
+                        <span class="text-lg font-medium uppercase">@cat.CategoryName</span>
+                    </button>
+                }
+            </div>
+
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 text-lg"></i>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." onkeyup="applyFilters()"
+                       class="w-full pl-12 pr-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 transition-all text-white placeholder-neutral-500 text-base" />
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 scrollbar-hide pb-32">
+            @if (groupedProducts.Any())
+            {
+                @foreach (var group in groupedProducts)
+                {
+                    var catId = group.FirstOrDefault()?.CategoryId ?? 0;
+
+                    <div class="category-section mb-10" data-catid="cat-@catId">
+                        <h2 class="text-xl font-bold mb-5 text-amber-200 uppercase tracking-wider flex items-center gap-3">
+                            <span class="w-2 h-6 bg-amber-500 rounded-full inline-block"></span>
+                            @group.Key
+                        </h2>
+                        
+                        <div class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+                            @foreach (var item in group)
+                            {
+                                var isOutOfStock = item.Status == "Hidden";
+                                var cardOpacity = isOutOfStock ? "opacity-50 grayscale" : "";
+
+                                <div class="product-item card-hover group bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-md border border-neutral-700/80 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col h-full @cardOpacity" 
+                                     data-name="@item.ProductName.ToLower()" 
+                                     onclick="addToCart(this, @item.ProductId, '@item.ProductName', @item.Price, '@item.Image')">
+                                    
+                                    <div class="img-zoom aspect-[4/3] overflow-hidden relative bg-neutral-800">
+                                        <img src="@(item.Image != null && item.Image.StartsWith("http") ? item.Image : "/Images/" + (item.Image ?? "default.png"))" class="w-full h-full object-cover transition-transform duration-500" onerror="this.onerror=null; this.src='/Images/default.png';">
+                                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
+                                        
+                                        <div class="stock-badge absolute top-2 left-2 bg-red-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg @(isOutOfStock ? "" : "hidden")">
+                                            <i class="fa-solid fa-ban"></i> NGỪNG BÁN
+                                        </div>
+
+                                        <button onclick="showRecipe(event, this)" 
+                                                data-id="@item.ProductId"
+                                                data-name="@item.ProductName"
+                                                data-desc="@(item.Description ?? "Chưa có dữ liệu công thức cho món này.")"
+                                                data-status="@item.Status"
+                                                class="absolute top-2 right-2 w-8 h-8 bg-black/50 hover:bg-amber-500 text-white rounded-lg flex items-center justify-center backdrop-blur transition-colors z-10"
+                                                title="Xem/Sửa công thức pha chế">
+                                            <i class="fa-solid fa-book-open text-sm"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 flex flex-col flex-1 justify-between relative">
+                                        <div class="text-sm font-medium mb-3 text-neutral-100 line-clamp-2 leading-snug">@item.ProductName</div>
+                                        
+                                        <div class="flex items-center justify-between mt-auto">
+                                            <div class="text-amber-400 font-bold tracking-tight">@item.Price.ToString("N0")đ</div>
+                                            <button class="w-8 h-8 bg-amber-600/20 text-amber-500 group-hover:bg-amber-500 group-hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                                                <i class="fa-solid fa-plus text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="flex flex-col items-center justify-center h-full text-neutral-600 pt-20">
+                    <i class="fa-solid fa-box-open text-6xl mb-4 opacity-50 text-neutral-500"></i>
+                    <p class="font-medium text-lg">Chưa có sản phẩm nào trong hệ thống</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="relative z-20 w-[420px] bg-gradient-to-b from-neutral-900 to-neutral-950 border-l border-amber-900/30 flex flex-col shadow-2xl">
+        
+        <div class="p-6 border-b border-amber-900/20">
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="text-xl font-bold text-amber-200 tracking-wide">Đơn hàng mới</h3>
+                <button onclick="clearCart()" class="text-sm text-red-400 hover:text-red-300 font-medium transition-colors hidden" id="btnClearCart">
+                    Xóa tất cả
+                </button>
+            </div>
+            <div class="text-sm text-neutral-400 font-medium"><span id="txtItemCount">0</span> sản phẩm</div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll" id="cartContainer">
+            <div class="flex flex-col items-center justify-center h-full text-neutral-600 pt-20">
+                <i class="fa-solid fa-basket-shopping text-6xl mb-4 opacity-50"></i>
+                <p class="font-medium">Giỏ hàng đang trống</p>
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-amber-900/20 space-y-5 bg-neutral-900/90 backdrop-blur-xl">
+            
+            <div class="space-y-3 mb-2">
+                <div class="relative">
+                    <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"></i>
+                    <input type="text" id="customerName" placeholder="Tên khách / Số thẻ rung..." class="w-full pl-10 pr-4 py-3 bg-neutral-800/80 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all text-white text-sm placeholder-neutral-500" />
+                </div>
+                <div class="relative">
+                    <i class="fa-regular fa-comment-dots absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"></i>
+                    <input type="text" id="orderNote" placeholder="Ghi chú (ít đá, nhiều ngọt...)" class="w-full pl-10 pr-4 py-3 bg-neutral-800/80 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all text-white text-sm placeholder-neutral-500" />
+                </div>
+            </div>
+
+            <div class="flex justify-between items-end border-t border-neutral-800 pt-4">
+                <span class="text-neutral-400 font-medium">Tổng thanh toán:</span>
+                <span class="text-3xl font-bold text-amber-400 tracking-tight" id="txtTotal">0đ</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btnCash" onclick="setPaymentMethod('cash')" class="flex items-center justify-center gap-2 py-4 border-2 border-neutral-700 rounded-xl text-neutral-300 font-semibold hover:border-amber-600 transition-all">
+                    <i class="fa-solid fa-money-bill-wave"></i> Tiền mặt
+                </button>
+                <button id="btnQR" onclick="setPaymentMethod('qr')" class="flex items-center justify-center gap-2 py-4 border-2 border-amber-500 bg-amber-500/10 rounded-xl text-amber-400 font-semibold transition-all">
+                    <i class="fa-solid fa-qrcode"></i> Thẻ / QR
+                </button>
+            </div>
+
+            <button id="btnPay" disabled onclick="submitOrder()" 
+                    class="w-full py-5 bg-amber-600 hover:bg-amber-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:border-neutral-700 border border-amber-500 rounded-xl font-bold text-[17px] text-white transition-all shadow-[0_0_20px_rgba(217,119,6,0.3)] disabled:shadow-none uppercase tracking-wider flex items-center justify-center gap-2">
+                THANH TOÁN <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="qrModal" class="fixed inset-0 z-[10000] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeQrModal()"></div>
+    <div class="relative bg-neutral-900 border border-neutral-700 rounded-3xl w-[400px] overflow-hidden shadow-2xl transform scale-95 transition-all" id="qrModalContent">
+        <div class="p-6 text-center border-b border-neutral-800">
+            <h3 class="text-xl font-bold text-white mb-1">Thanh toán chuyển khoản</h3>
+            <p class="text-amber-500 text-sm font-medium">Vui lòng quét mã để hoàn tất</p>
+        </div>
+        <div class="p-8 flex flex-col items-center bg-white">
+            <div class="w-56 h-56 bg-white p-2 rounded-2xl border-4 border-dashed border-amber-200 mb-4 flex items-center justify-center">
+                <img id="qrImage" src="" class="w-full h-full object-contain hidden">
+                <i id="qrLoader" class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i>
+            </div>
+            <div class="text-2xl font-bold text-neutral-900" id="qrTotalAmount">0đ</div>
+            <div class="text-sm font-medium text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full mt-4 flex items-center gap-2" id="qrStatus">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Đang chờ nhận tiền...
+            </div>
+        </div>
+        <div class="p-4 bg-neutral-900">
+            <button onclick="closeQrModal()" class="w-full py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-neutral-300 font-semibold transition-colors">
+                Hủy giao dịch
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="recipeModal" class="fixed inset-0 z-[10000] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeRecipeModal()"></div>
+    
+    <div class="relative bg-neutral-900 border border-neutral-700 rounded-2xl w-[500px] h-[550px] overflow-hidden shadow-2xl flex flex-col transform transition-all">
+        
+        <div class="p-5 border-b border-neutral-800 flex justify-between items-center bg-neutral-800/50 flex-shrink-0">
+            <h3 class="text-xl font-bold text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i> <span id="recipeTitle">Tên món</span>
+            </h3>
+            <button onclick="closeRecipeModal()" class="w-8 h-8 rounded-full bg-neutral-800 hover:bg-red-500/20 text-neutral-400 hover:text-red-400 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="p-6 bg-neutral-900 flex-1 flex flex-col">
+            <div class="flex justify-between items-center mb-3">
+                <label class="text-xs font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-mug-hot text-amber-600/50"></i> Ghi chú / Công thức pha chế
+                </label>
+                
+                <button id="btnToggleStock" onclick="toggleStock()" class="flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 text-emerald-500 border border-emerald-500/50 rounded-lg text-xs font-bold uppercase transition-colors hover:bg-emerald-600/40">
+                    <i class="fa-solid fa-toggle-on text-lg"></i> ĐANG BÁN
+                </button>
+            </div>
+            
+            <textarea id="recipeInput" oninput="handleAutoSave()" class="w-full flex-1 bg-neutral-800 p-4 rounded-xl border border-neutral-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-amber-100 text-[15px] leading-relaxed transition-all resize-none outline-none mb-2" placeholder="Hệ thống sẽ TỰ ĐỘNG LƯU khi bạn gõ văn bản..."></textarea>
+            
+            <div class="flex justify-end items-center h-6">
+                <span id="autoSaveStatus" class="text-sm font-medium text-neutral-500"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentRecipeBtn = null;
+        let currentRecipeId = 0;
+        let typingTimer; 
+        let autoSaveDelay = 1000; 
+
+        function showRecipe(event, btnElement) {
+            event.stopPropagation(); 
+            
+            currentRecipeBtn = btnElement; 
+            currentRecipeId = parseInt(btnElement.getAttribute('data-id'));
+            let name = btnElement.getAttribute('data-name');
+            let desc = btnElement.getAttribute('data-desc');
+            let status = btnElement.getAttribute('data-status');
+
+            document.getElementById('recipeTitle').innerText = name;
+            
+            let inputField = document.getElementById('recipeInput');
+            if(desc === "Chưa có dữ liệu công thức cho món này.") {
+                inputField.value = "";
+            } else {
+                inputField.value = desc;
+            }
+            
+            let btnStock = document.getElementById('btnToggleStock');
+            if(status === 'Active') {
+                btnStock.innerHTML = '<i class="fa-solid fa-toggle-on text-lg"></i> ĐANG BÁN';
+                btnStock.className = "flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 text-emerald-500 border border-emerald-500/50 rounded-lg text-xs font-bold uppercase transition-colors hover:bg-emerald-600/40";
+            } else {
+                btnStock.innerHTML = '<i class="fa-solid fa-toggle-off text-lg"></i> NGỪNG BÁN';
+                btnStock.className = "flex items-center gap-2 px-3 py-1.5 bg-red-600/20 text-red-500 border border-red-500/50 rounded-lg text-xs font-bold uppercase transition-colors hover:bg-red-600/40";
+            }
+            
+            document.getElementById('autoSaveStatus').innerText = "";
+
+            let modal = document.getElementById('recipeModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => inputField.focus(), 100);
+        }
+
+        function handleAutoSave() {
+            clearTimeout(typingTimer);
+            let statusEl = document.getElementById('autoSaveStatus');
+            statusEl.innerHTML = '<i class="fa-solid fa-pen"></i> Đang gõ...';
+            statusEl.className = 'text-amber-500 text-sm font-medium italic';
+            typingTimer = setTimeout(triggerSave, autoSaveDelay);
+        }
+
+        async function triggerSave() {
+            let newDesc = document.getElementById('recipeInput').value.trim();
+            let statusEl = document.getElementById('autoSaveStatus');
+            
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+            statusEl.className = 'text-blue-400 text-sm font-medium';
+
+            try {
+                const response = await fetch('@Url.Action("UpdateRecipe", "Staff")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ProductId: currentRecipeId,
+                        Description: newDesc
+                    })
+                });
+
+                if (!response.ok) throw new Error("Lỗi Server");
+                const result = await response.json();
+
+                if(result.success) {
+                    if(newDesc === "") newDesc = "Chưa có dữ liệu công thức cho món này.";
+                    currentRecipeBtn.setAttribute('data-desc', newDesc);
+                    
+                    statusEl.innerHTML = '<i class="fa-solid fa-check"></i> Đã lưu tự động';
+                    statusEl.className = 'text-emerald-500 text-sm font-bold';
+                    
+                    setTimeout(() => { if(statusEl.innerText.includes('Đã lưu')) statusEl.innerText = ''; }, 2000);
+                } else {
+                    statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Lỗi: ' + result.message;
+                    statusEl.className = 'text-red-500 text-sm font-bold';
+                }
+            } catch(e) {
+                statusEl.innerHTML = '<i class="fa-solid fa-wifi"></i> Lỗi mạng!';
+                statusEl.className = 'text-red-500 text-sm font-bold';
+            }
+        }
+
+        async function toggleStock() {
+            let btnStock = document.getElementById('btnToggleStock');
+            let currentStatus = currentRecipeBtn.getAttribute('data-status') || "Active";
+            // ĐÃ SỬA: Đổi trạng thái thành Hidden
+            let newStatus = currentStatus === "Active" ? "Hidden" : "Active";
+            
+            btnStock.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+
+            try {
+                const response = await fetch('@Url.Action("ToggleProductStatusAjax", "Staff")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ProductId: currentRecipeId, Status: newStatus })
+                });
+                
+                if (!response.ok) throw new Error("Lỗi Server");
+                const result = await response.json();
+                
+                if(result.success) {
+                    currentRecipeBtn.setAttribute('data-status', newStatus);
+                    let card = currentRecipeBtn.closest('.product-item');
+                    let badge = card.querySelector('.stock-badge');
+                    
+                    if(newStatus === 'Hidden') {
+                        btnStock.innerHTML = '<i class="fa-solid fa-toggle-off text-lg"></i> NGỪNG BÁN';
+                        btnStock.className = "flex items-center gap-2 px-3 py-1.5 bg-red-600/20 text-red-500 border border-red-500/50 rounded-lg text-xs font-bold uppercase transition-colors hover:bg-red-600/40";
+                        card.classList.add('opacity-50', 'grayscale');
+                        badge.classList.remove('hidden');
+                    } else {
+                        btnStock.innerHTML = '<i class="fa-solid fa-toggle-on text-lg"></i> ĐANG BÁN';
+                        btnStock.className = "flex items-center gap-2 px-3 py-1.5 bg-emerald-600/20 text-emerald-500 border border-emerald-500/50 rounded-lg text-xs font-bold uppercase transition-colors hover:bg-emerald-600/40";
+                        card.classList.remove('opacity-50', 'grayscale');
+                        badge.classList.add('hidden');
+                    }
+                } else {
+                    alert("Lỗi: " + result.message);
+                }
+            } catch(e) {
+                alert("Lỗi kết nối mạng!");
+            }
+        }
+
+        function closeRecipeModal() {
+            let modal = document.getElementById('recipeModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function addToCart(cardEl, id, name, price, img) {
+            let btn = cardEl.querySelector('button[data-status]');
+            if (btn && btn.getAttribute('data-status') === 'Hidden') {
+                alert('Món này hiện đang ngừng bán, không thể thêm vào giỏ!');
+                return;
+            }
+
+            let item = cart.find(x => x.id === id);
+            if (item) item.qty++;
+            else cart.push({ id, name, price, img, qty: 1 });
+            renderCartUI();
+        }
+
+        let currentCat = 'all';
+
+        function setCategory(catId) {
+            currentCat = catId;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-neutral-700 hover:border-amber-700 hover:bg-neutral-800/50 text-neutral-400";
+            });
+            let activeBtn = catId === 'all' ? document.getElementById('btn-cat-all') : document.getElementById('btn-cat-' + catId.replace('cat-', ''));
+            if (activeBtn) {
+                activeBtn.className = "cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-amber-500 bg-gradient-to-br from-amber-600/20 to-amber-800/20 shadow-lg shadow-amber-900/30 scale-105 text-white";
+            }
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let sections = document.querySelectorAll('.category-section');
+            sections.forEach(section => {
+                let catMatch = (currentCat === 'all' || section.getAttribute('data-catid') === currentCat);
+                if (!catMatch) {
+                    section.style.display = 'none';
+                    return;
+                }
+                let products = section.querySelectorAll('.product-item');
+                let hasVisibleProduct = false;
+                products.forEach(prod => {
+                    let name = prod.getAttribute('data-name');
+                    if(name.includes(input)) {
+                        prod.style.display = 'flex';
+                        hasVisibleProduct = true;
+                    } else {
+                        prod.style.display = 'none';
+                    }
+                });
+                section.style.display = hasVisibleProduct ? 'block' : 'none';
+            });
+        }
+
+        let cart = [];
+        let totalAmount = 0;
+        let totalQty = 0;
+        let paymentMethod = 'qr';
+
+        function setPaymentMethod(method) {
+            paymentMethod = method;
+            let btnCash = document.getElementById('btnCash');
+            let btnQR = document.getElementById('btnQR');
+
+            if(method === 'cash') {
+                btnCash.className = "flex items-center justify-center gap-2 py-4 border-2 border-amber-500 bg-amber-500/10 rounded-xl text-amber-400 font-semibold transition-all";
+                btnQR.className = "flex items-center justify-center gap-2 py-4 border-2 border-neutral-700 rounded-xl text-neutral-300 font-semibold hover:border-amber-600 transition-all";
+            } else {
+                btnQR.className = "flex items-center justify-center gap-2 py-4 border-2 border-amber-500 bg-amber-500/10 rounded-xl text-amber-400 font-semibold transition-all";
+                btnCash.className = "flex items-center justify-center gap-2 py-4 border-2 border-neutral-700 rounded-xl text-neutral-300 font-semibold hover:border-amber-600 transition-all";
+            }
+        }
+
+        function updateQty(id, delta) {
+            let item = cart.find(x => x.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+            }
+            renderCartUI();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(x => x.id !== id);
+            renderCartUI();
+        }
+
+        function clearCart() {
+            cart = [];
+            document.getElementById('customerName').value = "";
+            document.getElementById('orderNote').value = "";
+            renderCartUI();
+        }
+
+        function renderCartUI() {
+            let container = document.getElementById('cartContainer');
+            let btnPay = document.getElementById('btnPay');
+            let btnClear = document.getElementById('btnClearCart');
+            
+            totalAmount = 0;
+            totalQty = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-neutral-600 pt-20">
+                        <i class="fa-solid fa-basket-shopping text-6xl mb-4 opacity-50"></i>
+                        <p class="font-medium">Giỏ hàng đang trống</p>
+                    </div>`;
+                document.getElementById('txtTotal').innerText = '0đ';
+                document.getElementById('txtItemCount').innerText = '0';
+                btnPay.disabled = true;
+                btnClear.classList.add('hidden');
+                return;
+            }
+
+            btnPay.disabled = false;
+            btnClear.classList.remove('hidden');
+            let html = '';
+            
+            cart.forEach(item => {
+                let lineTotal = item.price * item.qty;
+                totalAmount += lineTotal;
+                totalQty += item.qty;
+                let imgSrc = item.img && item.img.startsWith("http") ? item.img : `/Images/${item.img || 'default.png'}`;
+
+                html += `
+                <div class="bg-neutral-800/40 backdrop-blur border border-neutral-700/50 rounded-xl p-3 hover:border-amber-700/50 transition-all flex gap-3">
+                    <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-neutral-800">
+                        <img src="${imgSrc}" class="w-full h-full object-cover" onerror="this.src='/Images/default.png'">
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="text-[13px] font-semibold text-neutral-100 truncate pr-2">${item.name}</div>
+                            <button onclick="removeFromCart(${item.id})" class="text-neutral-500 hover:text-red-400 transition-colors">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5 bg-neutral-900 rounded-lg p-1 border border-neutral-700">
+                                <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 bg-neutral-800 hover:bg-neutral-700 rounded flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-solid fa-minus text-[10px]"></i>
+                                </button>
+                                <span class="w-6 text-center text-sm font-bold text-white">${item.qty}</span>
+                                <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 bg-amber-600 hover:bg-amber-500 rounded flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                            <div class="text-[14px] font-bold text-amber-400">${lineTotal.toLocaleString('vi-VN')}đ</div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+
+            document.getElementById('txtTotal').innerText = totalAmount.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('txtItemCount').innerText = totalQty;
+        }
+
+        async function submitOrder() {
+            if(cart.length === 0) return;
+
+            let btnPay = document.getElementById('btnPay');
+            btnPay.disabled = true;
+            btnPay.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+
+            let cusName = document.getElementById('customerName').value.trim();
+            let rawNote = document.getElementById('orderNote').value.trim();
+            let finalNote = "";
+            if (cusName) finalNote += "[Khách: " + cusName + "] ";
+            if (rawNote) finalNote += rawNote;
+
+            const payload = {
+                ProductIds: cart.map(x => x.id),
+                Quantities: cart.map(x => x.qty),
+                TotalAmount: totalAmount,
+                PaymentMethod: paymentMethod === 'cash' ? 1 : 2,
+                Note: finalNote
+            };
+
+            try {
+                const response = await fetch('/Staff/SubmitPosOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if(result.success) {
+                    if(result.isQr) {
+                        document.getElementById('qrModal').classList.remove('hidden');
+                        document.getElementById('qrModal').classList.add('flex');
+                        document.getElementById('qrTotalAmount').innerText = totalAmount.toLocaleString('vi-VN') + 'đ';
+                        
+                        let img = document.getElementById('qrImage');
+                        img.src = result.qrUrl;
+                        img.onload = () => {
+                            img.classList.remove('hidden');
+                            document.getElementById('qrLoader').classList.add('hidden');
+                        };
+
+                        let status = document.getElementById('qrStatus');
+                        status.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Đang chờ nhận tiền...';
+                        status.className = "text-sm font-medium text-amber-600 bg-amber-50 px-4 py-2 rounded-full mt-4 flex items-center gap-2";
+                        
+                        setTimeout(async () => {
+                            status.innerHTML = '<i class="fa-solid fa-check-circle"></i> Giao dịch thành công!';
+                            status.className = "text-sm font-bold text-emerald-600 bg-emerald-50 px-5 py-3 rounded-full mt-4 flex items-center gap-2 border border-emerald-200";
+                            
+                            await fetch('/Staff/ConfirmQrPayment?orderId=' + result.orderId, { method: 'POST' });
+                            
+                            setTimeout(() => {
+                                closeQrModal();
+                                alert("Đã tạo hóa đơn #ORD-" + result.orderId);
+                                window.location.reload();
+                            }, 1500);
+                        }, 5000);
+                        
+                    } else {
+                        alert("Thanh toán TIỀN MẶT thành công! Mã đơn: #ORD-" + result.orderId);
+                        window.location.reload();
+                    }
+                } else {
+                    alert(result.message);
+                    resetPayBtn();
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Lỗi hệ thống!');
+                resetPayBtn();
+            }
+        }
+
+        function resetPayBtn() {
+            let btn = document.getElementById('btnPay');
+            btn.disabled = false;
+            btn.innerHTML = 'THANH TOÁN <i class="fa-solid fa-arrow-right"></i>';
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+            document.getElementById('qrModal').classList.remove('flex');
+            resetPayBtn();
+        }
+    </script>
+}

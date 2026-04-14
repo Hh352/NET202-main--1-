@@ -1,0 +1,264 @@
+@model IEnumerable<ASM.Models.Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    // Tự động dùng _Layout.cshtml của luồng User
+}
+
+<style>
+    .order-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .order-title {
+        color: #3e2723;
+        border-bottom: 3px solid #fb8c00;
+        display: inline-block;
+        padding-bottom: 10px;
+        margin-bottom: 30px;
+        font-weight: 800;
+    }
+
+    .order-section {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        margin-bottom: 40px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .section-subtitle {
+        color: #5d4037;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Định dạng Bảng */
+    .table-responsive { overflow-x: auto; }
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .order-table th {
+        background-color: #fdfaf7;
+        color: #8b4513;
+        text-align: left;
+        padding: 16px;
+        border-bottom: 2px solid #fde68a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .order-table td {
+        padding: 16px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+    
+    .order-table tbody tr { transition: 0.2s; }
+    .order-table tbody tr:hover { background-color: #f8fafc; }
+
+    .order-price {
+        font-weight: 800;
+        color: #fb8c00; /* Đổi sang màu cam thương hiệu */
+        font-size: 15px;
+    }
+
+    .product-summary {
+        font-weight: 600;
+        color: #1e293b;
+        display: block;
+    }
+
+    /* Huy hiệu trạng thái */
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .st-1 { background: #fef3c7; color: #d97706; } /* Chờ xác nhận */
+    .st-2 { background: #e0f2fe; color: #0284c7; } /* Đang giao */
+    .st-3 { background: #dcfce7; color: #16a34a; } /* Hoàn thành */
+    .st-4 { background: #fee2e2; color: #dc2626; } /* Đã huỷ */
+
+    /* Nút xem chi tiết */
+    .btn-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff;
+        color: #fb8c00;
+        border: 1.5px solid #fb8c00;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+    .btn-detail:hover {
+        background: #fb8c00;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(251, 140, 0, 0.2);
+    }
+
+    /* Giao diện khi không có đơn hàng */
+    .empty-orders {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+    .empty-orders i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; }
+    .empty-orders h4 { color: #475569; font-weight: 700; margin-bottom: 8px; }
+    .empty-orders p { font-size: 14px; margin-bottom: 20px; }
+    .btn-shopping {
+        display: inline-block;
+        background: #3e2723;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 24px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+    .btn-shopping:hover { background: #fb8c00; color: white; }
+</style>
+
+<div class="order-container">
+    <h2 class="order-title"><i class="fas fa-box-open"></i> Quản lý đơn hàng của bạn</h2>
+
+    @{
+        var activeOrders = Model?.Where(o => o.OrderStatus == 1 || o.OrderStatus == 2).OrderByDescending(o => o.CreatedAt).ToList() ?? new List<ASM.Models.Order>();
+        var historyOrders = Model?.Where(o => o.OrderStatus == 3 || o.OrderStatus == 4).OrderByDescending(o => o.CreatedAt).ToList() ?? new List<ASM.Models.Order>();
+    }
+
+    <div class="order-section">
+        <h3 class="section-subtitle"><i class="fas fa-clock"></i> Đơn hàng đang xử lý</h3>
+        
+        @if (activeOrders.Count > 0)
+        {
+            <div class="table-responsive">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Sản phẩm</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th style="text-align: right;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in activeOrders)
+                        {
+                            <tr>
+                                <td><strong style="color: #3e2723;">#@order.OrderId</strong></td>
+                                <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <span class="product-summary">
+                                        @{
+                                            var firstProduct = order.OrderDetails?.FirstOrDefault()?.Product?.ProductName;
+                                            var totalItems = order.OrderDetails?.Count ?? 0;
+                                        }
+                                        @(firstProduct ?? "Sản phẩm cửa hàng")
+                                        
+                                        @if (totalItems > 1)
+                                        {
+                                            <br/>
+                                            <span style="font-size: 12px; color: #64748b; font-weight: normal;">(và @(totalItems - 1) món khác)</span>
+                                        }
+                                    </span>
+                                </td>
+                                <td class="order-price">@order.FinalAmount.ToString("N0")đ</td>
+                                <td>
+                                    <span class="status-badge st-@order.OrderStatus">
+                                        @(order.OrderStatus == 1 ? "Chờ xác nhận" : "Đang giao hàng")
+                                    </span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <a asp-controller="Order" asp-action="Detail" asp-route-id="@order.OrderId" class="btn-detail">
+                                        Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-orders">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h4>Bạn chưa có đơn hàng nào đang xử lý</h4>
+                <p>Hãy dạo một vòng thực đơn và chọn cho mình một món đồ uống yêu thích nhé!</p>
+                <a href="/" class="btn-shopping">Tiếp tục mua sắm</a>
+            </div>
+        }
+    </div>
+
+    <div class="order-section history-section">
+        <h3 class="section-subtitle"><i class="fas fa-history"></i> Lịch sử mua hàng</h3>
+        
+        @if (historyOrders.Count > 0)
+        {
+            <div class="table-responsive">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày hoàn tất</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th style="text-align: right;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in historyOrders)
+                        {
+                            <tr>
+                                <td><strong style="color: #3e2723;">#@order.OrderId</strong></td>
+                                <td>@order.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td class="order-price">@order.FinalAmount.ToString("N0")đ</td>
+                                <td>
+                                    <span class="status-badge st-@order.OrderStatus">
+                                        @(order.OrderStatus == 3 ? "Hoàn thành" : "Đã hủy")
+                                    </span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <a asp-controller="Order" asp-action="Detail" asp-route-id="@order.OrderId" class="btn-detail">
+                                        Xem lại <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-orders">
+                <i class="fa-solid fa-box-open"></i>
+                <h4>Lịch sử trống</h4>
+                <p>Bạn chưa có đơn hàng nào đã hoàn thành hoặc bị huỷ.</p>
+            </div>
+        }
+    </div>
+</div>

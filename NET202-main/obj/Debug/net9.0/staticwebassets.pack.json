@@ -1,0 +1,493 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\ASM.bundle.scp.css",
+      "PackagePath": "staticwebassets\\ASM.o4htjc7odh.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\0bec3df6-77fe-4958-a2b2-04968101df98_Screenshot_20260322_065648.png",
+      "PackagePath": "staticwebassets\\Images\\0bec3df6-77fe-4958-a2b2-04968101df98_Screenshot_20260322_065648.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\0d0194c9-8d78-4856-b7b9-3aed70b02566_banhtiramisu.webp",
+      "PackagePath": "staticwebassets\\Images\\0d0194c9-8d78-4856-b7b9-3aed70b02566_banhtiramisu.webp"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\19315efc-6ba1-44f3-b6f3-cfcb3c09885b_ca-phe-truyen-thong-3-9b6.png",
+      "PackagePath": "staticwebassets\\Images\\19315efc-6ba1-44f3-b6f3-cfcb3c09885b_ca-phe-truyen-thong-3-9b6.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\1ee4340c-e933-452b-9a9b-c6e6a025c6c3_cd6cea7f36d07f781a5c015714ab15fc.jpg",
+      "PackagePath": "staticwebassets\\Images\\1ee4340c-e933-452b-9a9b-c6e6a025c6c3_cd6cea7f36d07f781a5c015714ab15fc.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\274065d3-3e94-45dd-bf91-e47f73392df2_Screenshot_20260322_065452.png",
+      "PackagePath": "staticwebassets\\Images\\274065d3-3e94-45dd-bf91-e47f73392df2_Screenshot_20260322_065452.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\38646144-8d41-4571-9ba5-0127442ee166_1d73c301a9a6c3d1b8a374f92fda1983.jpg",
+      "PackagePath": "staticwebassets\\Images\\38646144-8d41-4571-9ba5-0127442ee166_1d73c301a9a6c3d1b8a374f92fda1983.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\3f796422-afa9-488e-bb1b-b736d8038624_Screenshot_20260322_065717.png",
+      "PackagePath": "staticwebassets\\Images\\3f796422-afa9-488e-bb1b-b736d8038624_Screenshot_20260322_065717.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\41e9043b-75ca-4413-8d80-62720f60d451.jpg",
+      "PackagePath": "staticwebassets\\Images\\41e9043b-75ca-4413-8d80-62720f60d451.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\52afc894-c3a5-4cd6-9cc1-ca587f0e85bb.png",
+      "PackagePath": "staticwebassets\\Images\\52afc894-c3a5-4cd6-9cc1-ca587f0e85bb.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\60ba0749-d9bf-4ba3-80f9-c4ecd4ad6d58_Screenshot_20260322_065616.png",
+      "PackagePath": "staticwebassets\\Images\\60ba0749-d9bf-4ba3-80f9-c4ecd4ad6d58_Screenshot_20260322_065616.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\65919ffb-2947-4d6d-901e-ba86011cb589_Screenshot 2026-03-17 212001.png",
+      "PackagePath": "staticwebassets\\Images\\65919ffb-2947-4d6d-901e-ba86011cb589_Screenshot 2026-03-17 212001.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\733ffe9c-7622-4d88-aa3c-c7e13ded96b5_967474784214fe305f2332ce1bcbd469.jpg",
+      "PackagePath": "staticwebassets\\Images\\733ffe9c-7622-4d88-aa3c-c7e13ded96b5_967474784214fe305f2332ce1bcbd469.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\825c776e-16b1-41ea-9ea2-eb898ae1831a_63484ef3322405a08f469b710a883b97.jpg",
+      "PackagePath": "staticwebassets\\Images\\825c776e-16b1-41ea-9ea2-eb898ae1831a_63484ef3322405a08f469b710a883b97.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\85bae1c2-0fd8-46c5-9e17-7abb48ab2e4f_Screenshot 2026-03-14 001636.png",
+      "PackagePath": "staticwebassets\\Images\\85bae1c2-0fd8-46c5-9e17-7abb48ab2e4f_Screenshot 2026-03-14 001636.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\92db526d-bf26-4d39-b81c-b9f5d7b73d37_84790ac5fe308ac52f5023379f1f6811.jpg",
+      "PackagePath": "staticwebassets\\Images\\92db526d-bf26-4d39-b81c-b9f5d7b73d37_84790ac5fe308ac52f5023379f1f6811.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\945ef726-030f-4fad-9d01-51fb1ae86c09_Screenshot_20260322_065744.png",
+      "PackagePath": "staticwebassets\\Images\\945ef726-030f-4fad-9d01-51fb1ae86c09_Screenshot_20260322_065744.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\98fefce2-c83d-4020-8bbd-7fb8fdc635c9_OIP.webp",
+      "PackagePath": "staticwebassets\\Images\\98fefce2-c83d-4020-8bbd-7fb8fdc635c9_OIP.webp"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\9e7749ea-06e8-486d-a4f7-4681481000f5.png",
+      "PackagePath": "staticwebassets\\Images\\9e7749ea-06e8-486d-a4f7-4681481000f5.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\9fd5c46b-8a11-4b5f-ada8-37099dd013a2_cc32481f44aedc6161f4514aa51e86ed (1).jpg",
+      "PackagePath": "staticwebassets\\Images\\9fd5c46b-8a11-4b5f-ada8-37099dd013a2_cc32481f44aedc6161f4514aa51e86ed (1).jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Cauchuyennha.png",
+      "PackagePath": "staticwebassets\\Images\\Cauchuyennha.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\Gemini_Generated_Image_fo7jf1fo7jf1fo7j-Photoroom.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\Gemini_Generated_Image_fo7jf1fo7jf1fo7j-Photoroom.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\Gemini_Generated_Image_qikjwpqikjwpqikj-Photoroom.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\Gemini_Generated_Image_qikjwpqikjwpqikj-Photoroom.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\Gemini_Generated_Image_tnlfl3tnlfl3tnlf-Photoroom.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\Gemini_Generated_Image_tnlfl3tnlfl3tnlf-Photoroom.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\RESOURCES.md",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\RESOURCES.md"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\brand_logo_new.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\brand_logo_new.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\brand_wood_logo.jpg",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\brand_wood_logo.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\cafe_bg.jpg",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\cafe_bg.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\coffee.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\coffee.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\rider.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\rider.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\user_happy.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\user_happy.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\b3f235a6-8881-474e-a79c-dce6fc2ee8a9_Screenshot 2026-03-14 001636.png",
+      "PackagePath": "staticwebassets\\Images\\b3f235a6-8881-474e-a79c-dce6fc2ee8a9_Screenshot 2026-03-14 001636.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\b7b1d19f-9dea-4c9a-b532-38a30d59cf67_Screenshot_20260322_065548.png",
+      "PackagePath": "staticwebassets\\Images\\b7b1d19f-9dea-4c9a-b532-38a30d59cf67_Screenshot_20260322_065548.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\be7b5bcc-5168-4ae8-a0f0-3cd20b718237_cc32481f44aedc6161f4514aa51e86ed.jpg",
+      "PackagePath": "staticwebassets\\Images\\be7b5bcc-5168-4ae8-a0f0-3cd20b718237_cc32481f44aedc6161f4514aa51e86ed.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_cover.png",
+      "PackagePath": "staticwebassets\\Images\\book_cover.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_intro.png",
+      "PackagePath": "staticwebassets\\Images\\book_intro.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_toc.png",
+      "PackagePath": "staticwebassets\\Images\\book_toc.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\c479691e-3704-45bd-b3ef-1fc44fb25158_Screenshot 2026-03-14 085622.png",
+      "PackagePath": "staticwebassets\\Images\\c479691e-3704-45bd-b3ef-1fc44fb25158_Screenshot 2026-03-14 085622.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\d50bc417-4e0a-4102-a4ed-56e3256735ff_Screenshot_20260322_065336.png",
+      "PackagePath": "staticwebassets\\Images\\d50bc417-4e0a-4102-a4ed-56e3256735ff_Screenshot_20260322_065336.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\default.png",
+      "PackagePath": "staticwebassets\\Images\\default.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\e57e78da-a6ca-40dc-bfb9-689911af5b4a_Screenshot 2026-03-17 212001.png",
+      "PackagePath": "staticwebassets\\Images\\e57e78da-a6ca-40dc-bfb9-689911af5b4a_Screenshot 2026-03-17 212001.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\fa71dd50-6b72-463d-a386-34bd6fd803ce_339f6597db264329b1038df6a2407883.jpg",
+      "PackagePath": "staticwebassets\\Images\\fa71dd50-6b72-463d-a386-34bd6fd803ce_339f6597db264329b1038df6a2407883.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\fd8009b9-0fb7-413b-9c97-56ed3b10c7e8_Screenshot_20260322_065409.png",
+      "PackagePath": "staticwebassets\\Images\\fd8009b9-0fb7-413b-9c97-56ed3b10c7e8_Screenshot_20260322_065409.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\fd9364f7-4edd-48e9-94d2-e3a061da81c6_172a03a45a4282ff627445b9fa5677d9.jpg",
+      "PackagePath": "staticwebassets\\Images\\fd9364f7-4edd-48e9-94d2-e3a061da81c6_172a03a45a4282ff627445b9fa5677d9.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\giohang.jpg",
+      "PackagePath": "staticwebassets\\Images\\giohang.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\image.png",
+      "PackagePath": "staticwebassets\\Images\\image.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\logo1.png",
+      "PackagePath": "staticwebassets\\Images\\logo1.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\sreach.webp",
+      "PackagePath": "staticwebassets\\Images\\sreach.webp"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\unnamed.jpg",
+      "PackagePath": "staticwebassets\\Images\\unnamed.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\Admin.css",
+      "PackagePath": "staticwebassets\\css\\Admin.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\ChucnangAdmin.css",
+      "PackagePath": "staticwebassets\\css\\ChucnangAdmin.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\Order.css",
+      "PackagePath": "staticwebassets\\css\\Order.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\Profile.css",
+      "PackagePath": "staticwebassets\\css\\Profile.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css",
+      "PackagePath": "staticwebassets\\css\\style.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\styledk.css",
+      "PackagePath": "staticwebassets\\css\\styledk.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.js"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.ASM.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.ASM.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.ASM.props",
+      "PackagePath": "build\\ASM.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.ASM.props",
+      "PackagePath": "buildMultiTargeting\\ASM.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.ASM.props",
+      "PackagePath": "buildTransitive\\ASM.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
