@@ -20,7 +20,7 @@
        ========================================= */
     .hero-banner { 
         width: 100vw; position: relative; left: 50%; transform: translateX(-50%); 
-        margin-top: -30px; height: 500px; display: flex; align-items: center; justify-content: center; 
+        margin-top: 0; height: 500px; display: flex; align-items: center; justify-content: center; 
         text-align: center; color: var(--bb-text-light); overflow: hidden; 
     }
     .hero-banner::before { 
@@ -80,9 +80,7 @@
     /* States are handled by JS updateState for precision */
 
     .book-spine-v3 {
-        position: absolute; width: 20px; height: 100%; left: -10px; top: 0;
-        background: #23150D; border-radius: 5px 0 0 5px; z-index: 100;
-        box-shadow: -10px 0 20px rgba(0,0,0,0.3);
+        display: none;
     }
 
     .page-3d {
@@ -95,7 +93,8 @@
     .page-side-v3 {
         width: 100%; height: 100%; position: absolute; backface-visibility: hidden;
         background: linear-gradient(135deg, #fff 0%, #f7f3f0 100%);
-        border: 1px solid rgba(0,0,0,0.1); border-radius: 4px 25px 25px 4px; overflow: hidden; cursor: pointer;
+        border: none; border-radius: 4px 25px 25px 4px; overflow: hidden; cursor: pointer;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.12), 0 5px 15px rgba(0,0,0,0.06);
     }
     .side-back-v3 { transform: rotateY(180deg); border-radius: 25px 4px 4px 25px; }
     .page-img-v3 { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
@@ -108,10 +107,7 @@
     .page-3d { pointer-events: none; }
     .page-3d.active-right, .page-3d.active-left { pointer-events: auto; }
     
-    .book-spine-v3 { cursor: pointer; transition: 0.3s; }
-    .book-spine-v3:hover { background: #3d2b1f; }
-
-    /* Categories filter styling for the menu page */
+     /* Categories filter styling for the menu page */
     .filter-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
     .filter-link { text-decoration: none; background: #fff; color: var(--bb-dark); padding: 10px 25px; border-radius: 25px; font-weight: 700; transition: 0.3s; border: 2px solid transparent; }
     .filter-link.active { background: var(--bb-amber); color: #fff; }
@@ -209,22 +205,22 @@
                     {
                         <div class="page-3d @(i == 1 ? "active-right" : "")" style="z-index: @(10 - i);" id="pg3d-@i">
                             <div class="page-side-v3 side-front-v3" onclick="doNextSash()">
-                                @if (i == 1) { <img src="/Images/book_cover.png" class="page-img-v3" /> }
-                                else if (i == 2) { <img src="/Images/book_toc.png" class="page-img-v3" /> }
+                                @if (i == 1) { <img src="/Images/book_cover_v2.png" class="page-img-v3" /> }
+                                else if (i == 2) { <img src="/Images/book_toc_v2.png" class="page-img-v3" /> }
+                                else if (i == 3) { <img src="/Images/book_story_v2.png" class="page-img-v3" /> }
+                                else if (i == 4) { <img src="/Images/book_bread.png" class="page-img-v3" /> }
+                                else if (i == 5) { <img src="/Images/book_values.png" class="page-img-v3" /> }
                                 else { <img src="/Images/book_intro.png" class="page-img-v3" style="opacity: 0.3;" /> }
                                 <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.15; pointer-events:none;">
                                     <img src="/Images/logo1.png" style="width:50%" />
                                 </div>
                             </div>
                             <div class="page-side-v3 side-back-v3" onclick="doPrevSash()">
-                                @if (i == 1) { 
-                                    <div style="background:#fdf6f0; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px; text-align:center;">
-                                        <img src="/Images/logo1.png" style="width:150px; margin-bottom:20px; opacity:0.8;" />
-                                        <h3 style="font-weight:900; color:#3d2b1f;">CHÀO MỪNG ĐẾN VỚI BREAD & BREW</h3>
-                                        <p style="font-size:0.9rem; color:#6b4f3a;">Hương vị cà phê đích thực & Bánh ngọt thủ công</p>
-                                    </div>
-                                }
-                                else if (i == 2) { <img src="/Images/book_intro.png" class="page-img-v3" /> }
+                                @if (i == 1) { <img src="/Images/book_intro_v2.jpg" class="page-img-v3" /> }
+                                else if (i == 2) { <img src="/Images/book_intro_v3.png" class="page-img-v3" /> }
+                                else if (i == 3) { <img src="/Images/book_brew.png" class="page-img-v3" /> }
+                                else if (i == 4) { <img src="/Images/book_model.png" class="page-img-v3" /> }
+                                else if (i == 5) { <img src="/Images/book_back_cover.png" class="page-img-v3" /> }
                                 else { <img src="/Images/book_toc.png" class="page-img-v3" style="opacity: 0.3;" /> }
                                 <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.1; pointer-events:none;">
                                     <img src="/Images/logo1.png" style="width:60%" />

@@ -346,6 +346,21 @@ namespace ASM.Controllers
             return View(order);
         }
 
+        // AUTO-CONFIRM PAYMENT (Simulated AI Detection)
+        [HttpPost]
+        public async Task<IActionResult> ConfirmPaymentAuto(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                order.PaymentStatus = 1; // 1: Đã thanh toán
+                order.OrderStatus = 2;   // 2: Đang chuẩn bị (Tự động chuyển tiếp trạng thái)
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
         // TRANG ĐẶT HÀNG THÀNH CÔNG
         public IActionResult OrderSuccess()
         {

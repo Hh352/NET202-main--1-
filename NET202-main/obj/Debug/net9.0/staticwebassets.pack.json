@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Images\\0d0194c9-8d78-4856-b7b9-3aed70b02566_banhtiramisu.webp"
     },
     {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\177b571c-681a-4ebb-a854-aab703861dd1.png",
+      "PackagePath": "staticwebassets\\Images\\177b571c-681a-4ebb-a854-aab703861dd1.png"
+    },
+    {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\19315efc-6ba1-44f3-b6f3-cfcb3c09885b_ca-phe-truyen-thong-3-9b6.png",
       "PackagePath": "staticwebassets\\Images\\19315efc-6ba1-44f3-b6f3-cfcb3c09885b_ca-phe-truyen-thong-3-9b6.png"
     },
@@ -137,16 +141,56 @@
       "PackagePath": "staticwebassets\\Images\\be7b5bcc-5168-4ae8-a0f0-3cd20b718237_cc32481f44aedc6161f4514aa51e86ed.jpg"
     },
     {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_back_cover.png",
+      "PackagePath": "staticwebassets\\Images\\book_back_cover.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_bread.png",
+      "PackagePath": "staticwebassets\\Images\\book_bread.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_brew.png",
+      "PackagePath": "staticwebassets\\Images\\book_brew.png"
+    },
+    {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_cover.png",
       "PackagePath": "staticwebassets\\Images\\book_cover.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_cover_v2.png",
+      "PackagePath": "staticwebassets\\Images\\book_cover_v2.png"
     },
     {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_intro.png",
       "PackagePath": "staticwebassets\\Images\\book_intro.png"
     },
     {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_intro_v2.jpg",
+      "PackagePath": "staticwebassets\\Images\\book_intro_v2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_intro_v3.png",
+      "PackagePath": "staticwebassets\\Images\\book_intro_v3.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_model.png",
+      "PackagePath": "staticwebassets\\Images\\book_model.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_story_v2.png",
+      "PackagePath": "staticwebassets\\Images\\book_story_v2.png"
+    },
+    {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_toc.png",
       "PackagePath": "staticwebassets\\Images\\book_toc.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_toc_v2.png",
+      "PackagePath": "staticwebassets\\Images\\book_toc_v2.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\book_values.png",
+      "PackagePath": "staticwebassets\\Images\\book_values.png"
     },
     {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\d50bc417-4e0a-4102-a4ed-56e3256735ff_Screenshot_20260322_065336.png",
