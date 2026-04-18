@@ -1,0 +1,190 @@
+@model IEnumerable<ASM.Models.Voucher>
+@{
+    ViewData["Title"] = "Trung tâm Voucher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body { background-color: #f8fafc; }
+    
+    .vc-header-wrap {
+        text-align: center;
+        padding: 60px 20px 40px;
+    }
+    .vc-breadcrumb { font-size: 1.1rem; color: #475569; font-weight: 600; margin-bottom: 20px; display: block; text-align: left; max-width: 1000px; margin: 0 auto 30px;}
+    .vc-title { font-size: 2.5rem; font-weight: 900; color: #0f172a; margin-bottom: 10px; }
+    .vc-subtitle { font-size: 1.2rem; color: #475569; font-weight: 500; }
+
+    .vc-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        max-width: 1000px;
+        margin: 0 auto 80px;
+        padding: 0 20px;
+    }
+    @@media (min-width: 768px) {
+        .vc-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .v-card {
+        display: flex;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
+    .v-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+
+    .v-card-left {
+        flex: 1;
+        padding: 25px 20px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .v-amount-box {
+        text-align: left;
+        min-width: 90px;
+    }
+    .v-amount-prefix { font-size: 1.1rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 2px; }
+    .v-amount-val { font-size: 3rem; font-weight: 900; color: #1e293b; line-height: 1; letter-spacing: -2px;}
+    .v-amount-unit { font-size: 1.8rem; font-weight: 800;}
+
+    .v-info { flex: 1; border-left: 1px solid #f1f5f9; padding-left: 20px;}
+    .v-title { font-size: 1.05rem; font-weight: 600; color: #1e293b; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+    .v-date { font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 6px; }
+
+    .v-card-right {
+        width: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-left: 2px dashed #cbd5e1;
+        position: relative;
+    }
+    /* half circles for realistic ticket cut appearance */
+    .v-card-right::before, .v-card-right::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #f8fafc; 
+        border-radius: 50%;
+        left: -11px;
+    }
+    .v-card-right::before { top: -10px; }
+    .v-card-right::after { bottom: -10px; }
+
+    .v-btn {
+        background: #1e3a8a;
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .v-btn:hover { background: #172554; box-shadow: 0 4px 10px rgba(30,58,138,0.3);}
+    .v-btn.saved { background: #10b981; pointer-events: none; }
+</style>
+
+<div class="vc-header-wrap">
+    <div class="vc-breadcrumb">Trung tâm Voucher</div>
+    <h1 class="vc-title">Kho Voucher & Ưu đãi đặc biệt</h1>
+    <div class="vc-subtitle">Bread & Brew</div>
+</div>
+
+<div class="vc-grid">
+    @if (Model != null && Model.Any())
+    {
+        var savedIds = ViewBag.SavedVoucherIds as List<int> ?? new List<int>();
+        foreach (var item in Model)
+        {
+            bool isSaved = savedIds.Contains(item.VoucherId);
+            <div class="v-card fade-up-init reveal">
+                <div class="v-card-left">
+                    <div class="v-amount-box">
+                        <div class="v-amount-prefix">GIẢM</div>
+                        <div class="v-amount-val">
+                            @if (item.DiscountType == 1) // Percent
+                            {
+                                @((int)item.DiscountValue)<span class="v-amount-unit">%</span>
+                            }
+                            else 
+                            {
+                                @((int)(item.DiscountValue / 1000))<span class="v-amount-unit">K</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="v-info">
+                        <div class="v-title">Đơn tối thiểu @((int)(item.MinOrderValue / 1000))k - @(item.Name ?? "Tất cả menu")</div>
+                        <div class="v-date"><i class="fa-regular fa-clock"></i> Hạn dùng: @item.EndDate.ToString("dd.MM.yyyy")</div>
+                    </div>
+                </div>
+                <div class="v-card-right">
+                    @if (isSaved)
+                    {
+                        <button class="v-btn saved">Đã lưu</button>
+                    }
+                    else
+                    {
+                        <button class="v-btn" onclick="saveVoucher(this, '@item.Code', @item.VoucherId)">Lưu</button>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: #94a3b8;">
+            <i class="fa-solid fa-ticket-simple" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.4;"></i>
+            <h4>Hiện tại chưa có mã giảm giá nào đang áp dụng.</h4>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Reveal elements on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                el.classList.remove('fade-up-init');
+            });
+        });
+
+        function saveVoucher(btn, code, vId) {
+            // 1. Copy to clipboard
+            navigator.clipboard.writeText(code).then(() => {
+                // 2. Call server to save to DB
+                fetch('/Home/SaveVoucherToDb?voucherId=' + vId, {
+                    method: 'POST'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        btn.innerHTML = 'Đã lưu';
+                        btn.classList.add('saved');
+                        Swal.fire({
+                            toast: true,
+                            position: 'bottom-end',
+                            icon: 'success',
+                            title: 'Mã: ' + code,
+                            text: data.message || 'Đã sao chép và lưu vào kho!',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire('Chú ý', data.message, 'info');
+                    }
+                });
+            });
+        }
+    </script>
+}

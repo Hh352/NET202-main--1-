@@ -15,6 +15,7 @@ namespace ASM.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<UserVoucher> UserVouchers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +29,7 @@ namespace ASM.Data
             modelBuilder.Entity<Cart>().ToTable("Cart");
             modelBuilder.Entity<OrderDetail>().ToTable("OrderDetail");
             modelBuilder.Entity<Review>().ToTable("Review");
+            modelBuilder.Entity<UserVoucher>().ToTable("UserVoucher");
 
             modelBuilder.Entity<Review>()
                 .HasOne(d => d.User).WithMany(n => n.Reviews)

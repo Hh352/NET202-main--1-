@@ -1,3 +1,4 @@
+@inject ASM.Data.ApplicationDbContext _dbContextForLayout
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -6,12 +7,12 @@
     <title>@ViewData["Title"] - Bread & Brew</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Be Vietnam Pro', sans-serif;
             background-color: #fdf6f0;
             color: #4b2e2e;
             padding-top: 75px; /* Match header height exactly */
@@ -19,6 +20,17 @@
             display: flex;
             flex-direction: column;
             margin: 0;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ LỖI FONT TIẾNG VIỆT TOÀN TRANG */
+        h1, h2, h3, h4, h5, h6, span, p, a, div, input, button, textarea, label {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        /* Ngoại trừ các i tag là icon của FontAwesome */
+        i.fa-solid, i.fa-brands, i.fa-regular, i.fa {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+            font-weight: 900; 
         }
 
         main {
@@ -98,43 +110,50 @@
             opacity: 1;
         }
 
-        /* ===== THỰC ĐƠN DROPDOWN ===== */
+        /* ===== THỰC ĐƠN MEGA MENU ====== */
         .menu-dropdown { position: relative; }
         .menu-dropdown-content {
             position: absolute;
             top: 100%;
-            left: 0;
+            left: -200px;
             background: #ffffff;
-            min-width: 220px;
+            min-width: 700px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             opacity: 0;
             visibility: hidden;
             transform: translateY(15px);
             transition: all 0.3s ease;
             z-index: 2000;
-            padding: 10px;
+            padding: 30px 40px;
             border: 1px solid rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
         }
         .menu-dropdown:hover .menu-dropdown-content {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
+        .mm-col h4 {
+            color: #116A49; /* Tông màu xanh lá kiểu Phúc Long */
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .mm-col h4.amber { color: #d97706; }
         .m-d-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
+            display: block;
+            padding: 8px 0;
             color: #4b2e2e;
             text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
+            font-weight: 600;
+            font-size: 0.95rem;
             transition: 0.2s;
-            border-radius: 8px;
         }
-        .m-d-item i { font-size: 1.15rem; width: 22px; text-align: center; color: #d97706; }
-        .m-d-item:hover { background-color: #fef3c7; color: #d97706; padding-left: 20px; }
+        .m-d-item:hover { color: #d97706; padding-left: 8px; }
 
         /* ===== LIVE SEARCH BAR (Expandable) ===== */
         .search-container {
@@ -424,14 +443,47 @@
             
             <div class="menu-dropdown">
                 <a class="bb-nav-link" href="/Home/Index?categoryId=0">Thực đơn<i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-top: 2px;"></i></a>
+                @{
+                    var layoutCats = _dbContextForLayout.Categories.Where(c => c.Status == "Active").ToList();
+                    
+                    int GetCatId(string name) {
+                        return layoutCats.FirstOrDefault(c => c.CategoryName.Contains(name))?.CategoryId ?? 0;
+                    }
+                }
                 <div class="menu-dropdown-content">
-                    <a href="/Home/Index?categoryId=1" class="m-d-item"><i class="fa-solid fa-mug-hot"></i> Cà phê</a>
-                    <a href="/Home/Index?categoryId=2" class="m-d-item"><i class="fa-solid fa-glass-water"></i> Trà sữa</a>
-                    <a href="/Home/Index?categoryId=3" class="m-d-item"><i class="fa-solid fa-cookie"></i> Bánh ngọt</a>
+                    <div class="mm-col">
+                        <h4>THỨC UỐNG</h4>
+                        <a href="/Home/Index?categoryId=@GetCatId("Cà phê truyền thống")" class="m-d-item">Cà phê truyền thống</a>
+                        <a href="/Home/Index?categoryId=@GetCatId("Trà & Trái cây")" class="m-d-item">Trà & Trái cây</a>
+                        <a href="/Home/Index?categoryId=@GetCatId("Đá xay")" class="m-d-item">Đá xay (Freeze)</a>
+                        <a href="/Home/Index?categoryId=@GetCatId("Nước ép")" class="m-d-item">Nước ép & Sinh tố</a>
+                    </div>
+                    <div class="mm-col">
+                        <h4>BÁNH CÁC LOẠI</h4>
+                        <a href="/Home/Index?categoryId=@GetCatId("Bánh ngọt")" class="m-d-item">Bánh ngọt & Pastry</a>
+                        <a href="/Home/Index?categoryId=@GetCatId("Bánh mì")" class="m-d-item">Bánh mì & Đồ mặn</a>
+                    </div>
+                    <div class="mm-col">
+                        <h4>SẢN PHẨM KHÁC</h4>
+                        <a href="/Home/Index?categoryId=@GetCatId("Cà phê đóng gói")" class="m-d-item">Cà phê đóng gói</a>
+                        <a href="/Home/Index?categoryId=@GetCatId("Merchandise")" class="m-d-item">Quà tặng & Phụ kiện</a>
+                    </div>
+                    <div class="mm-col">
+                        <h4 class="amber">XEM TẤT CẢ</h4>
+                        <a href="/Home/Index?categoryId=0" class="m-d-item" style="font-weight: 800; color: #d97706;">
+                            Toàn bộ Thực đơn <i class="fa-solid fa-arrow-right-long" style="margin-left: 5px;"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
+            <a class="bb-nav-link" href="/Home/Voucher">Voucher</a>
+
             <a class="bb-nav-link" href="/Home/AboutUs">Về chúng tôi</a>
+            <!-- <a class="bb-nav-link" href="#" onclick="openCoffeePromo(); return false;" style="position: relative;">
+                Khuyến mãi
+                <span style="position: absolute; top: -12px; right: -18px; background: #EA580C; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: 800; border: 2px solid #3d2b1f;">HOT</span>
+            </a> -->
         </div>
 
         <!-- PHẢI: ACTIONS -->
@@ -455,6 +507,19 @@
                         <div class="user-dropdown-menu" id="userDropdown">
                             <a href="/Profile/Index" class="user-dropdown-item"><i class="fa-solid fa-circle-user" style="color:#d97706;"></i> Hồ sơ</a>
                             <a href="/Order/Index" class="user-dropdown-item"><i class="fa-solid fa-box-open" style="color:#d97706;"></i> Đơn hàng</a>
+                            <a href="/Home/MyVoucher" class="user-dropdown-item"><i class="fa-solid fa-ticket" style="color:#d97706;"></i> Kho voucher</a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="user-dropdown-divider"></div>
+                                <a href="/Admin/Report" class="user-dropdown-item" style="color:#d97706;"><i class="fa-solid fa-gauge"></i> Quản trị hệ thống</a>
+                            }
+                            else if (User.IsInRole("Staff"))
+                            {
+                                <div class="user-dropdown-divider"></div>
+                                <a href="/Staff/OnlineOrder" class="user-dropdown-item" style="color:#d97706;"><i class="fa-solid fa-shop"></i> Quản lý bán hàng</a>
+                            }
+
                             <div class="user-dropdown-divider"></div>
                             <a href="/Account/Logout" class="user-dropdown-item logout"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
                         </div>
@@ -566,6 +631,16 @@
             }
         });
 
+        // BỔ SUNG: Xử lý nhấn Enter trên thanh tìm kiếm Live Search
+        document.getElementById('liveSearchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                if (query.trim() !== '') {
+                    window.location.href = '/Home/Search?query=' + encodeURIComponent(query);
+                }
+            }
+        });
+
         // Close search when clicking outside
         document.addEventListener('click', function(e) {
             const container = document.getElementById('searchContainer');
@@ -575,6 +650,495 @@
         });
     </script>
 
+    <!-- COFFEE PROMO MODAL ANIMATION -->
+    <!-- TẠM ẨN MODAL KHUYẾN MÃI
+    <style>
+        .cp-modal { display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .cp-modal.active { display: flex; animation: cp_fadeIn 0.3s forwards; }
+        @@keyframes cp_fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .cp-modal-content { position: relative; width: 100%; max-width: 400px; height: 650px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .cp-close { position: absolute; top: 10px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10; opacity: 0.7; }
+        .cp-close:hover { opacity: 1; }
+        
+        /* --- LAYOUT BỐ CỤC CHÍNH --- */
+        .cp-stage { position: relative; width: 100%; max-width: 360px; height: 600px; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
+
+        /* --- THE COSTA STYLE CUP --- */
+        .cp-cup { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 20; width: 280px; height: 180px; cursor: pointer; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
+        .cp-cup:hover { transform: translateX(-50%) scale(1.03); }
+        .cp-cup::before { content: 'NHẤN VÀO CỐC'; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); color: #fff; font-weight: 900; font-size: 14px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); pointer-events: none; opacity: 1; transition: 0.3s; }
+        
+        /* Ẩn chữ gợi ý khi đã mở */
+        .cp-stage.revealed .cp-cup::before { opacity: 0; }
+        
+        /* Miệng cốc (Opening) */
+        .cp-cup-opening { position: absolute; top: 0; left: 0; width: 100%; height: 50px; background: #6b0f1a; border-radius: 50%; z-index: 2; border: 3px solid #fff; box-shadow: inset 0 10px 20px rgba(0,0,0,0.9); }
+        
+        /* Thân cốc */
+        .cp-cup-body { position: absolute; top: 25px; left: 5px; width: 270px; height: 150px; background: linear-gradient(to right, #881324, #d1112b 50%, #881324); border-radius: 0 0 50px 50px; z-index: 1; border: 3px solid #fff; border-top: none; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px;}
+        .cp-cup-body i { color: rgba(255,255,255,0.2); font-size: 60px; }
+
+        /* --- THE VOUCHER TICKET --- */
+        .cp-ticket-wrapper { position: absolute; top: 26px; left: 50%; transform: translateX(-50%); width: 270px; height: 0; overflow: hidden; z-index: 5; display: flex; align-items: flex-start; justify-content: center; transition: height 1s cubic-bezier(0.25, 1, 0.5, 1) 0.1s; }
+        
+        /* Khi mở, thả wrapper dài ra để chứa vé */
+        .cp-stage.revealed .cp-ticket-wrapper { height: 460px; overflow: visible; }
+
+        /* Thân vé chính */
+        .cp-ticket { width: 100%; height: 430px; background: linear-gradient(180deg, #ea580c, #fb923c 20%, #fed7aa 60%, #ea580c); background-size: 100% 150%; transform: translateY(-100%); transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1) 0.1s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; padding: 130px 20px 30px; position: relative; }
+        
+        /* Hiệu ứng trượt xuống */
+        .cp-stage.revealed .cp-ticket { transform: translateY(0); }
+
+        /* Hiệu ứng xé răng cưa mép dưới */
+        .cp-ticket {
+            -webkit-mask-image: radial-gradient(12px at 12px 100%, transparent 11px, #000 12px);
+            -webkit-mask-size: 24px 100%;
+            -webkit-mask-repeat: repeat-x;
+        }
+
+        /* --- NỘI DUNG VÉ --- */
+        .cp-val { font-size: 70px; font-weight: 900; color: #fff; margin: 0; line-height: 1; text-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+        .cp-val small { font-size: 35px; margin-left: -5px; }
+        .cp-title { font-size: 14px; font-weight: 800; color: #fff; text-transform: uppercase; margin: 5px 0 15px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 15px; width: 100%; text-align: center; letter-spacing: 1px;}
+        
+        .cp-code { border: 2px solid #ea580c; background: transparent; color: #ea580c; font-size: 20px; font-weight: 900; padding: 10px 20px; border-radius: 30px; margin-bottom: 15px; letter-spacing: 2px; }
+        
+        .cp-timer { background: #fff; color: #b91c1c; font-family: 'Courier New', monospace; font-size: 28px; font-weight: 900; padding: 8px 20px; border-radius: 10px; margin-bottom: auto; box-shadow: inset 0 3px 6px rgba(0,0,0,0.1); }
+        
+        .cp-use-btn { background: #b91c1c; color: #fff; border: none; font-weight: 900; font-size: 18px; padding: 15px 30px; border-radius: 30px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 15px; box-shadow: 0 5px 15px rgba(185,28,28,0.4); }
+        .cp-use-btn:hover { background: #991b1b; transform: translateY(-2px); }
+
+        .cp-cup-wrapper.pouring + .cp-ticket-wrapper .cp-ticket { transform: translateY(0); }
+
+        .cp-ticket-header { padding: 35px 20px 20px; text-align: center; border-bottom: 2px dashed rgba(255,255,255,0.4); }
+        .cp-ticket-header h2 { font-size: 70px; font-weight: 900; color: #fff; margin: 0; line-height: 0.9; text-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .cp-ticket-header p { font-size: 15px; font-weight: 800; color: #fff; margin: 10px 0 0; text-transform: uppercase; letter-spacing: 1px; }
+
+        .cp-ticket-body { padding: 25px 20px; text-align: center; }
+        .cp-code { display: inline-block; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.6); padding: 10px 20px; border-radius: 12px; font-weight: 900; color: #fff; font-size: 24px; margin-bottom: 12px; letter-spacing: 3px; cursor: pointer; }
+        .cp-desc { color: rgba(255,255,255,0.9); font-size: 14px; margin-bottom: 20px; font-weight: 600; }
+        .cp-timer { font-family: 'Courier New', Courier, monospace; font-size: 32px; font-weight: 900; background: #fff; color: #ea580c; border-radius: 12px; padding: 10px; margin: 0 10px 10px; box-shadow: inset 0 4px 8px rgba(0,0,0,0.15); display: flex; justify-content: center; gap: 5px; }
+
+        .cp-btn { width: 100%; border: none; background: #9a3412; color: #fff; font-weight: 900; font-size: 18px; padding: 20px; cursor: pointer; transition: 0.3s; margin-top: auto; border-radius: 0 0 18px 18px; }
+        .cp-btn:hover { background: #7c2d12; }
+    </style>
+
+    <div id="coffeePromoModal" class="cp-modal">
+        <div class="cp-modal-content">
+            <span class="cp-close" onclick="closeCoffeePromo()">&times;</span>
+            <div class="cp-stage" id="cpStage">
+                
+                <!-- The Huge Cup -->
+                <div class="cp-cup" onclick="pourCoffeePromo()">
+                    <div class="cp-cup-opening"></div>
+                    <div class="cp-cup-body">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                </div>
+
+                <!-- The Slidedown Ticket -->
+                <div class="cp-ticket-wrapper">
+                    <div class="cp-ticket">
+                        <h2 class="cp-val">50<small>%</small></h2>
+                        <div class="cp-title">Welcome Voucher</div>
+                        
+                        <div class="cp-code" id="cpVoucherCodeText">NEWACCOUNT26</div>
+                        <div class="cp-timer" id="cpTimer">47:59:59</div>
+                        
+                        <button class="cp-use-btn" onclick="copyAndUsePromo()">LƯU & SỬ DỤNG NGAY</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@@11"></script>
+    <script>
+        let cpTimerInterval;
+
+        function openCoffeePromo() {
+            Swal.fire({ title: 'Đang mở hộp quà...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            
+            fetch('/Home/CheckPromoAjax')
+                .then(res => res.json())
+                .then(data => {
+                    Swal.close();
+                    if (data.success) {
+                        document.getElementById('cpVoucherCodeText').innerText = data.voucherCode;
+                        document.getElementById('cpStage').classList.remove('revealed');
+                        document.getElementById('coffeePromoModal').classList.add('active');
+                        startCPTimer(48 * 60 * 60); // Đếm ngược 48h
+                    } else {
+                        Swal.fire({ icon: 'info', title: 'Thông báo', text: data.message, confirmButtonColor: '#ea580c' });
+                    }
+                })
+                .catch(err => {
+                    Swal.close();
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi kết nối. Vui lòng thử lại.', confirmButtonColor: '#ea580c' });
+                });
+        }
+
+        function closeCoffeePromo() {
+            document.getElementById('coffeePromoModal').classList.remove('active');
+            clearInterval(cpTimerInterval);
+        }
+
+        function pourCoffeePromo() {
+            var stage = document.getElementById('cpStage');
+            if (!stage.classList.contains('revealed')) {
+                stage.classList.add('revealed');
+            }
+        }
+
+        function copyAndUsePromo() {
+            var code = document.getElementById('cpVoucherCodeText').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                Swal.fire({
+                    icon: 'success', title: 'Đã lưu mã!',
+                    text: 'Mã ' + code + ' đã được lưu vào bộ nhớ tạm. Bạn có thể dán vào bước Thanh toán.',
+                    confirmButtonColor: '#ea580c'
+                }).then(() => {
+                    closeCoffeePromo();
+                    window.location.href = '/Home/Index?categoryId=0';
+                });
+            });
+        }
+
+        function startCPTimer(duration) {
+            clearInterval(cpTimerInterval);
+            var timer = duration, hours, minutes, seconds;
+            var display = document.getElementById('cpTimer');
+            
+            cpTimerInterval = setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = 0;
+                    clearInterval(cpTimerInterval);
+                }
+            }, 1000);
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- ====== NEW ACCOUNT GIFT BOX ====== -->
+    @if (User.Identity.IsAuthenticated)
+    {
+    <style>
+        /* FLOATING BUTTON */
+        #giftBoxBtn {
+            position: fixed; bottom: 28px; left: 28px; z-index: 9000;
+            width: 62px; height: 62px; border-radius: 50%;
+            background: linear-gradient(135deg, #d97706, #ea580c);
+            border: none; cursor: pointer; display: none;
+            align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(217,119,6,0.5);
+            animation: giftPulse 2.5s infinite;
+            transition: transform 0.2s ease;
+        }
+        #giftBoxBtn:hover { transform: scale(1.12); }
+        #giftBoxBtn .gift-icon { font-size: 1.7rem; animation: giftWiggle 1.8s infinite ease-in-out; }
+        #giftBoxBtn .gift-badge {
+            position: absolute; top: -4px; right: -4px; width: 20px; height: 20px;
+            background: #ef4444; border-radius: 50%; border: 2px solid #fff;
+            font-size: 10px; font-weight: 900; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @@keyframes giftPulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(217,119,6,0.5); }
+            50% { box-shadow: 0 8px 35px rgba(234,88,12,0.8), 0 0 0 8px rgba(217,119,6,0.15); }
+        }
+        @@keyframes giftWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg); }
+            40% { transform: rotate(15deg); }
+            60% { transform: rotate(-10deg); }
+            80% { transform: rotate(8deg); }
+        }
+
+        /* OVERLAY */
+        #giftOverlay {
+            display: none; position: fixed; inset: 0; z-index: 10000;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+            align-items: center; justify-content: center;
+        }
+
+        /* GIFT BOX SCENE */
+        #giftScene { position: relative; width: 260px; text-align: center; cursor: pointer; }
+        #giftBox3d {
+            width: 160px; margin: 0 auto;
+            animation: boxFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+            transition: transform 0.3s ease;
+        }
+        #giftBox3d:hover { transform: scale(1.08); }
+        @@keyframes boxFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+        .gift-open-hint {
+            color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 800;
+            margin-top: 18px; letter-spacing: 0.5px;
+            animation: hintBlink 1.5s ease-in-out infinite;
+        }
+        @@keyframes hintBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* VOUCHER CARD (hidden initially) */
+        #giftVoucherCard {
+            display: none; width: 340px; max-width: 92vw;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            animation: cardReveal 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+        @@keyframes cardReveal {
+            from { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* PARTICLES */
+        .gift-particle {
+            position: fixed; pointer-events: none; z-index: 10001;
+            font-size: 1.5rem;
+            animation: particleFly 1.2s ease-out forwards;
+        }
+        @@keyframes particleFly {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+        }
+
+        .gift-close-btn {
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(255,255,255,0.15); border: none; color: #fff;
+            width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+            font-size: 18px; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px); transition: 0.2s;
+        }
+        .gift-close-btn:hover { background: rgba(255,255,255,0.3); }
+    </style>
+
+    <!-- FLOATING BUTTON (🎁 Góc trái) -->
+    <button id="giftBoxBtn" aria-label="Quà tặng thành viên mới">
+        <span class="gift-icon">🎁</span>
+        <span class="gift-badge">!</span>
+    </button>
+    <div id="giftOverlay">
+        <button class="gift-close-btn" onclick="closeGiftOverlay()"><i class="fa-solid fa-xmark"></i></button>
+
+        <!-- SCENE 1: Gift box chờ mở -->
+        <div id="giftScene" onclick="openGiftBox()">
+            <img id="giftBox3d" src="https://em-content.zobj.net/source/microsoft/379/wrapped-gift_1f381.png"
+                 onerror="this.src='https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/1f381.png'"
+                 alt="Hộp quà" />
+            <p class="gift-open-hint">✨ Bấm để mở quà ✨</p>
+            <p style="color:rgba(255,255,255,0.55); font-size:0.78rem; margin-top:6px; font-weight:700;">Dành riêng cho thành viên mới</p>
+        </div>
+
+        <!-- SCENE 2: Voucher PHÓNG TO (420px) -->
+        <div id="giftVoucherCard" style="position:relative; width:420px; max-width:92vw; display:none;">
+            <!-- Ảnh tờ vé làm nền (To hơn) -->
+            <img src="/Images/Redesign/voucher.png"
+                 style="width:100%; display:block; filter: drop-shadow(0 25px 60px rgba(0,0,0,0.7));"
+                 alt="Voucher" />
+
+            <!-- Overlay nội dung (Đã phóng to tỉ lệ thuận) -->
+            <div style="position:absolute; top:38%; left:28%; right:28%; bottom:32%; display:flex; flex-direction:column; justify-content:space-between; padding:0; text-align:center;">
+                
+                <!-- PHẦN 1: GIẢM GIÁ (Cực lớn) -->
+                <div>
+                    <div style="font-size:2.8rem; font-weight:1000; color:#fff; line-height:0.8; letter-spacing:-1.5px; text-shadow:0 3px 15px rgba(0,0,0,0.4);">
+                        90%
+                    </div>
+                </div>
+
+                <!-- PHẦN 2: MÃ VÀ ĐẾM NGƯỢC -->
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#fff; border:1.5px dashed #b91c1c; border-radius:6px; padding:4px 0; font-family:monospace; font-size:1.15rem; font-weight:950; color:#b91c1c; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                        NEWACCOUNT26
+                    </div>
+                    <div id="giftCountdown" style="font-size:1.1rem; font-weight:1000; color:#fff; font-family:monospace; text-shadow:0 1px 5px rgba(0,0,0,0.5);">47:59:59</div>
+                </div>
+
+                <!-- PHẦN 3: NÚT (Pill style, to và dễ bấm) -->
+                <div id="giftActionArea" style="display:flex; flex-direction:column; gap:5px;">
+                    <button id="btnSaveGift" onclick="saveGiftVoucher()"
+                            style="width:100%; padding:10px 0; background:#fff; color:#b91c1c; border:none; border-radius:30px; font-size:0.95rem; font-weight:1000; cursor:pointer; text-transform:uppercase; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+                        LƯU VÀO KHO
+                    </button>
+                    <div onclick="closeGiftOverlay()" style="font-size:0.75rem; color:rgba(255,255,255,0.85); cursor:pointer; font-weight:700; text-decoration:underline;">
+                        Để sau
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var _giftData = null;
+        var _giftCountdownInterval = null;
+
+        // Gọi API kiểm tra điều kiện ngay khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/Home/GetNewAccountGiftBox')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.show) {
+                        _giftData = data;
+                        var btn = document.getElementById('giftBoxBtn');
+                        btn.style.display = 'flex';
+
+                        // Nếu đã lưu thì ẩn badge !
+                        if (data.alreadySaved) {
+                            btn.querySelector('.gift-badge').style.display = 'none';
+                        }
+
+                        // Bắt đầu countdown ngay trên button (không cần mở modal)
+                        startCountdown(data.expiryTimestamp);
+                    }
+                })
+                .catch(() => {}); // Không hiện lỗi nếu API fail
+        });
+
+        function openGiftOverlay() {
+            var overlay = document.getElementById('giftOverlay');
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Reset về scene 1 khi mở lại
+            document.getElementById('giftScene').style.display = 'block';
+            document.getElementById('giftVoucherCard').style.display = 'none';
+        }
+
+        function closeGiftOverlay() {
+            document.getElementById('giftOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('giftOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeGiftOverlay();
+        });
+
+        document.getElementById('giftBoxBtn').addEventListener('click', openGiftOverlay);
+
+        function openGiftBox() {
+            // Tung confetti
+            spawnParticles();
+
+            // Hiệu ứng shake rồi ẩn box
+            var box = document.getElementById('giftBox3d');
+            box.style.animation = 'none';
+            box.style.transform = 'scale(1.2) rotate(10deg)';
+            setTimeout(() => { box.style.transform = 'scale(0) rotate(-30deg)'; }, 150);
+
+            setTimeout(() => {
+                document.getElementById('giftScene').style.display = 'none';
+                var card = document.getElementById('giftVoucherCard');
+                card.style.display = 'block';
+                card.style.animation = 'none';
+                card.offsetHeight; // force reflow
+                card.style.animation = 'cardReveal 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards';
+
+                // Hiển thị trạng thái đã lưu nếu cần
+                if (_giftData && _giftData.alreadySaved) {
+                    var actionArea = document.getElementById('giftActionArea');
+                    actionArea.innerHTML = '<div style="text-align:center; padding:10px;"><i class="fa-solid fa-circle-check" style="color:#10b981; font-size:2rem;"></i><p style="font-weight:900; color:#065f46; margin-top:8px;">Đã lưu vào Kho Voucher! 🎉</p><p style="font-size:0.8rem; color:#6b7280;">Sử dụng khi đặt hàng để được giảm 90%</p></div>';
+                }
+            }, 350);
+        }
+
+        function spawnParticles() {
+            var emojis = ['🎉', '🎊', '⭐', '✨', '🌟', '💫', '🎁', '🎈'];
+            for (var i = 0; i < 18; i++) {
+                (function(idx) {
+                    setTimeout(() => {
+                        var p = document.createElement('div');
+                        p.className = 'gift-particle';
+                        p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                        var startX = window.innerWidth / 2 + (Math.random() - 0.5) * 100;
+                        var startY = window.innerHeight / 2 + (Math.random() - 0.5) * 100;
+                        p.style.left = startX + 'px';
+                        p.style.top = startY + 'px';
+                        var angle = Math.random() * 360;
+                        var dist = 120 + Math.random() * 200;
+                        p.style.setProperty('--px', (Math.cos(angle) * dist) + 'px');
+                        p.style.setProperty('--py', (Math.sin(angle) * dist) + 'px');
+                        document.body.appendChild(p);
+                        setTimeout(() => p.remove(), 1300);
+                    }, idx * 50);
+                })(i);
+            }
+        }
+
+        function startCountdown(expiryTimestamp) {
+            if (_giftCountdownInterval) clearInterval(_giftCountdownInterval);
+            _giftCountdownInterval = setInterval(() => {
+                var now = Math.floor(Date.now() / 1000);
+                var remaining = expiryTimestamp - now;
+                if (remaining <= 0) {
+                    clearInterval(_giftCountdownInterval);
+                    document.getElementById('giftCountdown').innerText = 'HẾT HẠN';
+                    document.getElementById('giftCountdown').style.color = '#ef4444';
+                    document.getElementById('giftBoxBtn').style.display = 'none';
+                    return;
+                }
+                var h = Math.floor(remaining / 3600);
+                var m = Math.floor((remaining % 3600) / 60);
+                var s = remaining % 60;
+                var fmt = (n) => n < 10 ? '0' + n : '' + n;
+                document.getElementById('giftCountdown').innerText = fmt(h) + ':' + fmt(m) + ':' + fmt(s);
+            }, 1000);
+        }
+
+        function saveGiftVoucher() {
+            if (!_giftData) return;
+            var btn = document.getElementById('btnSaveGift');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+            btn.style.pointerEvents = 'none';
+
+            fetch('/Home/SaveVoucherToDb?voucherId=' + _giftData.voucherId, {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Server error: ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    _giftData.alreadySaved = true;
+                    document.getElementById('giftActionArea').innerHTML = `
+                        <div style="text-align:center; padding:10px 0;">
+                            <div style="font-size:3rem; margin-bottom:8px;">🎉</div>
+                            <div style="font-weight:900; color:#065f46; font-size:1.1rem;">Đã lưu vào Kho Voucher!</div>
+                            <div style="font-size:0.8rem; color:#6b7280; margin-top:4px;">Dùng khi đặt hàng để được giảm 90%</div>
+                            <a href="/Home/MyVoucher" style="display:inline-block; margin-top:14px; padding:10px 24px; background:linear-gradient(90deg,#ea580c,#d97706); color:#fff; border-radius:10px; font-weight:900; text-decoration:none; font-size:0.9rem;">Xem Kho Voucher</a>
+                        </div>`;
+                    document.querySelector('#giftBoxBtn .gift-badge').style.display = 'none';
+                } else {
+                    alert(data.message || 'Lỗi không xác định');
+                    btn.innerHTML = '🎁 LƯU LẠI';
+                    btn.style.pointerEvents = 'auto';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                btn.innerHTML = '❌ Lỗi hệ thống';
+                alert('Có lỗi xảy ra: ' + err.message);
+                btn.style.pointerEvents = 'auto';
+            });
+        }
+    </script>
+    }
+
 </body>
 </html>

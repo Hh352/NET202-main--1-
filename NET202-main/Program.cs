@@ -80,27 +80,57 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // =========================================================================
-// [THÊM MỚI] TỰ ĐỘNG TẠO TÀI KHOẢN ADMIN KHI CHẠY (SEED DATA)
+// [TỐI ƯU] TỰ ĐỘNG KHỞI TẠO DATABASE VÀ DỮ LIỆU (SEED DATA)
 // =========================================================================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
     
-    // Kiểm tra xem đã có admin chưa
-    if (!context.Users.Any(u => u.Email == "admin@gmail.com"))
+    try 
     {
-        var admin = new User
+        // 1. Tự động tạo Database và áp dụng các bản cập nhật (Migration)
+        context.Database.Migrate();
+
+        // 2. Tạo tài khoản Admin mẫu
+        if (!context.Users.Any(u => u.Email == "admin@gmail.com"))
         {
-            FullName = "Administrator",
-            Email = "admin@gmail.com",
-            Password = "123", // Mật khẩu mẫu
-            Role = 2, // 2 là Admin
-            Status = "Active",
-            CreatedAt = DateTime.Now
-        };
-        context.Users.Add(admin);
+            context.Users.Add(new User
+            {
+                FullName = "Administrator",
+                Email = "admin@gmail.com",
+                Password = "123",
+                Role = 2, // Admin
+                Status = "Active",
+                CreatedAt = DateTime.Now
+            });
+        }
+
+        // 3. Tạo tài khoản Khách hàng mẫu (Để test Gift Box)
+        if (!context.Users.Any(u => u.Email == "user@gmail.com"))
+        {
+            context.Users.Add(new User
+            {
+                FullName = "Test Customer",
+                Email = "user@gmail.com",
+                Password = "123",
+                Role = 1, // Customer
+                Status = "Active",
+                CreatedAt = DateTime.Now // Tài khoản mới sẽ hiện Gift Box ngay!
+            });
+        }
+        
         context.SaveChanges();
+
+        // 🚀 GỌI SEED DATA CHO CÁC THÀNH PHẦN KHÁC
+        ASM.Data.DbSeeder.SeedMenuData(context);
+        ASM.Data.DbSeeder.SeedReviewsData(context);
+        ASM.Data.DbSeeder.SeedVouchersData(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Có lỗi xảy ra khi khởi tạo dữ liệu mẫu.");
     }
 }
 

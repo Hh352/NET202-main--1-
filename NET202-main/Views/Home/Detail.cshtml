@@ -10,7 +10,26 @@
         return "/Images/" + clean;
     }
 
-    var reviews = Model.Reviews?.OrderByDescending(r => r.ReviewId).ToList() ?? new List<ASM.Models.Review>();
+    var dbReviews = Model.Reviews?.OrderByDescending(r => r.ReviewId).ToList() ?? new List<ASM.Models.Review>();
+    
+    // Khôi phục dữ liệu mẫu (Mock Data)
+    var mockReviews = new List<ASM.Models.Review> {
+        new ASM.Models.Review { 
+            User = new ASM.Models.User { FullName = "Hương Ly" }, 
+            Rating = 5, 
+            Comment = "Trời ơi món này siêu đỉnh! Vị đậm đà, chuẩn gu nhà mình luôn. Đánh giá 5 sao không nói nhiều!", 
+            CreatedAt = DateTime.Now.AddDays(-2) 
+        },
+        new ASM.Models.Review { 
+            User = new ASM.Models.User { FullName = "Tuấn Phong" }, 
+            Rating = 4, 
+            Comment = "Đồ uống khá ngon, đóng gói rất cẩn thận và đẹp mắt. Sẽ tiếp tục ủng hộ quán.", 
+            CreatedAt = DateTime.Now.AddDays(-5) 
+        }
+    };
+    
+    // Gộp dữ liệu thật và dữ liệu mẫu
+    var reviews = dbReviews.Concat(mockReviews).ToList();
     var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 5;
 
     // CUSTOM DESCRIPTION GENERATOR (Base on User Request Image 4)
@@ -41,7 +60,7 @@
         --bb-text: #23150D;
     }
 
-    body { background-color: var(--bb-bg); font-family: 'Outfit', sans-serif; color: var(--bb-text); margin: 0; }
+    body { background-color: var(--bb-bg); color: var(--bb-text); margin: 0; }
 
     /* --- PRODUCT MAIN --- */
     .p-detail-wrapper { padding: 140px 20px 80px; max-width: 1200px; margin: 0 auto; }
@@ -57,7 +76,7 @@
     .p-main-display:hover img { transform: scale(1.05); }
 
     .p-info-col { padding-top: 10px; }
-    .p-title { font-size: 3.5rem; font-weight: 900; color: var(--bb-dark); line-height: 1.1; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+    .p-title { font-size: 3.5rem; font-weight: 900; color: var(--bb-dark); line-height: 1.1; margin-bottom: 10px; }
     .p-stars-row { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; color: #fbbf24; font-size: 1.1rem; }
     .p-stars-row span { color: #94a3b8; font-weight: 500; }
 
@@ -98,6 +117,17 @@
 
     /* --- REVIEWS --- */
     .rev-card { display: flex; gap: 25px; padding: 35px; background: #fff; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    
+    .rev-form-container { background: #fff; padding: 35px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 40px; }
+    .rev-form-title { font-size: 1.5rem; font-weight: 800; color: var(--bb-dark); margin-bottom: 20px; }
+    .star-rating-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 5px; font-size: 1.5rem; margin-bottom: 20px; }
+    .star-rating-input input { display: none; }
+    .star-rating-input label { color: #cbd5e1; cursor: pointer; transition: 0.2s; }
+    .star-rating-input label:hover, .star-rating-input label:hover ~ label, .star-rating-input input:checked ~ label { color: #fbbf24; }
+    .rev-textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; font-size: 1rem; color: var(--bb-dark); outline: none; transition: 0.3s; margin-bottom: 20px; min-height: 100px; resize: vertical; }
+    .rev-textarea:focus { border-color: var(--bb-amber); }
+    .btn-submit-rev { background: var(--bb-amber); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .btn-submit-rev:hover { background: #b45309; transform: translateY(-2px); }
     .rev-avatar { width: 60px; height: 60px; background: linear-gradient(135deg, var(--bb-tan), var(--bb-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.4rem; }
     .rev-name { font-weight: 800; color: var(--bb-dark); margin-right: 15px; font-size: 1.1rem; }
     .rev-date { color: #94a3b8; font-size: 0.9rem; }
@@ -114,6 +144,26 @@
     .rev-textarea:focus { border-color: var(--bb-amber); background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
     .rev-submit-btn { background: var(--bb-dark); color: #fff; border: none; padding: 18px 50px; border-radius: 40px; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
     .rev-submit-btn:hover { background: #000; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+    .btn-load-more {
+        background: transparent;
+        color: var(--bb-amber);
+        border: 2px solid var(--bb-amber);
+        padding: 12px 40px;
+        border-radius: 30px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .btn-load-more:hover {
+        background: var(--bb-amber);
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(234, 88, 12, 0.2);
+    }
 
     /* --- RELATED SLIDER --- */
     .p-related-section { margin-top: 100px; padding: 60px 0; border-top: 1px solid rgba(0,0,0,0.05); }
@@ -159,7 +209,57 @@
     .rel-add-btn:hover { background: var(--bb-amber); color:#fff; }
     @@media(max-width: 768px) { .rel-card { min-width: 100%; } }
 
+    /* --- BACK TO TOP --- */
+    #btnBackToTop {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 55px;
+        height: 55px;
+        background: var(--bb-amber);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.4rem;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 5px 20px rgba(234,88,12,0.4);
+        transition: 0.3s;
+    }
+    #btnBackToTop:hover {
+        background: #b45309;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(234,88,12,0.6);
+    }
 
+    /* --- SCROLL DOWN --- */
+    #btnScrollDown {
+        position: fixed;
+        bottom: 110px;
+        right: 40px;
+        width: 55px;
+        height: 55px;
+        background: var(--bb-dark);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.4rem;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+    #btnScrollDown:hover {
+        background: #000;
+        transform: translateY(5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
 </style>
 
 <div class="p-detail-wrapper">
@@ -204,20 +304,67 @@
         </div>
     </div>
 
-    <!-- REVIEWS SECTION (Form removed, only display remains) -->
+    <!-- REVIEWS SECTION -->
     <div class="p-tabs">
         <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--bb-dark); margin-bottom: 40px; text-transform: uppercase;">Đánh giá từ khách hàng (@reviews.Count)</h2>
 
-        <div>
+        <!-- Form Viết Đánh Giá -->
+        @if (ViewBag.CanReview == true)
+        {
+            <div class="rev-form-container">
+                <h3 class="rev-form-title">Đề lại cảm nhận của bạn</h3>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <span id="starTextLabel" style="font-weight: 800; color: #ea580c; font-size: 1.2rem;">Tuyệt vời</span>
+                    <div class="star-rating-input">
+                        <input type="radio" id="star5" name="Rating" value="5" checked onchange="updateStarText(this.value)" />
+                        <label for="star5" onmouseover="previewStarText(5)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star4" name="Rating" value="4" onchange="updateStarText(this.value)" />
+                        <label for="star4" onmouseover="previewStarText(4)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star3" name="Rating" value="3" onchange="updateStarText(this.value)" />
+                        <label for="star3" onmouseover="previewStarText(3)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star2" name="Rating" value="2" onchange="updateStarText(this.value)" />
+                        <label for="star2" onmouseover="previewStarText(2)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star1" name="Rating" value="1" onchange="updateStarText(this.value)" />
+                        <label for="star1" onmouseover="previewStarText(1)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                    </div>
+                </div>
+
+                <textarea id="revComment" class="rev-textarea" placeholder="Chia sẻ cảm nhận của bạn về hương vị món này..."></textarea>
+                <button class="btn-submit-rev" onclick="submitReview()">GỬI ĐÁNH GIÁ</button>
+            </div>
+        }
+        else
+        {
+            <div class="rev-form-container" style="background: #f1f5f9; border: 2px dashed #cbd5e1; text-align: center; padding: 40px;">
+                <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: #94a3b8; margin-bottom: 15px;"></i>
+                <h4 style="color: #64748b; font-weight: 800; margin-bottom: 10px;">ĐÁNH GIÁ ĐÃ BỊ KHÓA</h4>
+                <p style="color: #94a3b8; font-size: 1rem;">Bạn chỉ có thể đánh giá sản phẩm này sau khi đã mua hàng và đơn hàng được giao thành công.</p>
+            </div>
+        }
+
+        <!-- Danh sách Đánh Giá -->
+        <div id="reviewsList">
             @if(reviews.Any()) {
+                int count = 0;
                 foreach (var r in reviews) {
-                    <div class="rev-card">
+                    count++;
+                    <div class="rev-card @(count > 5 ? "rev-hidden" : "")" style="@(count > 5 ? "display:none;" : "")">
                         <div class="rev-avatar">@(r.User?.FullName?[0] ?? 'K')</div>
                         <div class="rev-main">
                             <div><span class="rev-name">@r.User?.FullName</span> <span class="rev-date">@r.CreatedAt.ToString("dd/MM/yyyy")</span></div>
                             <div class="rev-stars">@for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star @(i <= r.Rating ? "" : "fa-regular")"></i> }</div>
                             <p class="rev-text">@r.Comment</p>
                         </div>
+                    </div>
+                }
+
+                if (reviews.Count > 5)
+                {
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button id="btnShowMore" class="btn-load-more" onclick="toggleReviews()" data-expanded="false" data-count="@(reviews.Count - 5)">
+                            XEM THÊM ĐÁNH GIÁ (CÒN @(reviews.Count - 5) LƯỢT) <i class="fa-solid fa-chevron-down ms-2"></i>
+                        </button>
                     </div>
                 }
             } else {
@@ -265,6 +412,15 @@
     </div>
 </div>
 
+<!-- Back to Top & Scroll Down Buttons -->
+<div class="fixed-nav-btns">
+    <button id="btnScrollDown" onclick="scrollToRevBtn()" title="Xem hết đánh giá">
+        <i class="fa-solid fa-arrow-down"></i>
+    </button>
+    <button id="btnBackToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Lên đầu trang">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+</div>
 
 <script>
     function setDispImg(el, src) {
@@ -298,5 +454,125 @@
         let amount = card.offsetWidth + 30; // Chiều rộng 1 card + gap 30px
         try { track.scrollBy({ left: dir * amount, behavior: 'smooth' }); }
         catch (e) { track.scrollLeft += dir * amount; }
+    }
+
+    /* Cập nhật chữ diễn giải mức độ hài lòng */
+    const starLabels = { 1: "Rất tệ", 2: "Tệ", 3: "Ổn", 4: "Tốt", 5: "Tuyệt vời" };
+    let currentRating = 5;
+
+    function updateStarText(val) {
+        currentRating = val;
+        document.getElementById('starTextLabel').innerText = starLabels[val];
+    }
+    
+    function previewStarText(val) {
+        document.getElementById('starTextLabel').innerText = starLabels[val];
+    }
+
+    function resetStarText() {
+        document.getElementById('starTextLabel').innerText = starLabels[currentRating];
+    }
+
+    // Xử lý gửi Review bằng Ajax
+    function submitReview() {
+        var checkedStar = document.querySelector('input[name="Rating"]:checked');
+        var rating = checkedStar ? checkedStar.value : 5;
+
+        var comment = document.getElementById('revComment').value.trim();
+
+        if (!comment) {
+            Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Vui lòng nhập nội dung đánh giá!', confirmButtonColor: '#EA580C' });
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('productId', @Model.ProductId);
+        formData.append('rating', rating);
+        formData.append('comment', comment);
+
+        fetch('/Home/SubmitReview', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success', title: 'Thành công', text: data.message, confirmButtonColor: '#EA580C'
+                }).then(() => {
+                    location.reload(); // Tải lại trang để hiện comment mới
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra', confirmButtonColor: '#EA580C' });
+            }
+        }).catch(err => {
+             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra trong quá trình gửi.', confirmButtonColor: '#EA580C' });
+        });
+    }
+
+    function toggleReviews() {
+        const hiddenReviews = document.querySelectorAll('.rev-hidden');
+        const btn = document.getElementById('btnShowMore');
+        if (!btn) return;
+
+        const isExpanded = btn.getAttribute('data-expanded') === 'true';
+        const remainingCount = btn.getAttribute('data-count');
+
+        if (!isExpanded) {
+            // Mở rộng
+            hiddenReviews.forEach(rev => {
+                rev.style.display = 'flex';
+                rev.classList.add('fade-up-init');
+                setTimeout(() => rev.classList.remove('fade-up-init'), 10);
+            });
+            btn.innerHTML = 'THU GỌN ĐÁNH GIÁ <i class="fa-solid fa-chevron-up ms-2"></i>';
+            btn.setAttribute('data-expanded', 'true');
+        } else {
+            // Thu gọn
+            hiddenReviews.forEach(rev => {
+                rev.style.display = 'none';
+            });
+            btn.innerHTML = `XEM THÊM ĐÁNH GIÁ (CÒN ${remainingCount} LƯỢT) <i class="fa-solid fa-chevron-down ms-2"></i>`;
+            btn.setAttribute('data-expanded', 'false');
+            
+            // Tự động cuộn trang lên trên khu vực đánh giá một chút
+            const reviewTop = document.querySelector('.p-tabs').offsetTop - 100;
+            window.scrollTo({ top: reviewTop, behavior: 'smooth' });
+        }
+    }
+
+    // Logic Ẩn/Hiện nút Back To Top & Scroll Down
+    window.addEventListener('scroll', function() {
+        const btnTop = document.getElementById('btnBackToTop');
+        const btnDown = document.getElementById('btnScrollDown');
+        const showMoreBtn = document.getElementById('btnShowMore');
+
+        if (btnTop) {
+            if (window.scrollY > 400) {
+                btnTop.style.display = 'flex';
+                // Chỉ hiện nút cuộn xuống khi đang có danh sách mở rộng và chưa cuộn tới cuối nút đó
+                if (showMoreBtn && showMoreBtn.getAttribute('data-expanded') === 'true') {
+                    const rect = showMoreBtn.getBoundingClientRect();
+                    if (rect.top > window.innerHeight) {
+                        btnDown.style.display = 'flex';
+                    } else {
+                        btnDown.style.display = 'none';
+                    }
+                } else {
+                    btnDown.style.display = 'none';
+                }
+            } else {
+                btnTop.style.display = 'none';
+                btnDown.style.display = 'none';
+            }
+        }
+    });
+
+    function scrollToRevBtn() {
+        const btn = document.getElementById('btnShowMore');
+        if (btn) {
+            const top = btn.offsetTop - (window.innerHeight / 2);
+            window.scrollTo({ top: top, behavior: 'smooth' });
+        }
     }
 </script>

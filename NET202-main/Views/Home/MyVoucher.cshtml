@@ -1,0 +1,165 @@
+@model IEnumerable<ASM.Models.Voucher>
+@{
+    ViewData["Title"] = "Kho Voucher của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body { background-color: #f3f4f6; }
+    
+    .myvc-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
+
+    .myvc-header {
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 15px;
+    }
+    .myvc-header h1 { font-size: 1.8rem; font-weight: 800; color: #1f2937; margin: 0; }
+    .myvc-header p { color: #6b7280; font-size: 0.95rem; margin-top: 5px; }
+
+    .myvc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .myvc-card {
+        display: flex;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: 0.2s;
+    }
+    .myvc-card:hover { transform: translateX(5px); border-color: #d97706; }
+
+    .myvc-left {
+        background: #fffbeb;
+        width: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 2px dashed #fcd34d;
+        position: relative;
+    }
+    .myvc-left::before, .myvc-left::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #f3f4f6;
+        border-radius: 50%;
+        right: -9px;
+    }
+    .myvc-left::before { top: -8px; }
+    .myvc-left::after { bottom: -8px; }
+
+    .myvc-val { font-size: 1.8rem; font-weight: 900; color: #d97706; }
+    .myvc-unit { font-size: 0.9rem; font-weight: 700; color: #d97706; }
+
+    .myvc-mid {
+        flex: 1;
+        padding: 15px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .myvc-name { font-size: 1rem; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .myvc-code { font-family: monospace; background: #f9fafb; padding: 2px 8px; border-radius: 4px; font-weight: 700; color: #374151; font-size: 0.95rem; width: fit-content; margin-bottom: 8px; border: 1px solid #f3f4f6;}
+    .myvc-info { font-size: 0.82rem; color: #6b7280; display: flex; align-items: center; gap: 4px; }
+
+    .myvc-right {
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+    }
+    .use-btn {
+        background: #d97706;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .use-btn:hover { background: #b45309; }
+
+    .empty-state {
+        text-align: center;
+        padding: 100px 20px;
+        background: white;
+        border-radius: 12px;
+        color: #9ca3af;
+    }
+</style>
+
+<div class="myvc-container">
+    <div class="myvc-header">
+        <h1>Kho Voucher của tôi</h1>
+        <p>Những ưu đãi đặc biệt bạn đã lưu lại để chờ sử dụng.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="myvc-list">
+            @foreach (var item in Model)
+            {
+                <div class="myvc-card">
+                    <div class="myvc-left">
+                        <div class="myvc-val">
+                             @if (item.DiscountType == 1) {
+                                 @((int)item.DiscountValue)<span class="myvc-unit">%</span>
+                             } else {
+                                 @((int)(item.DiscountValue / 1000))<span class="myvc-unit">K</span>
+                             }
+                        </div>
+                        <span style="font-size: 0.6rem; font-weight: 800; color: #d97706; text-transform: uppercase;">Giảm giá</span>
+                    </div>
+                    <div class="myvc-mid">
+                        <div class="myvc-name">@item.Name</div>
+                        <div class="myvc-code">@item.Code</div>
+                        <div class="myvc-info">
+                            <i class="fa-regular fa-calendar-check"></i> Hạn sử dụng: @item.EndDate.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+                    <div class="myvc-right">
+                        <button class="use-btn" onclick="copyAndUse('@item.Code')">Dùng ngay</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fa-solid fa-ticket-simple" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.2;"></i>
+            <h3>Kho trống trơn!</h3>
+            <p>Bạn chưa lưu voucher nào. Hãy ghé <a href="/Home/Voucher" style="color: #d97706; font-weight: 700;">Trung tâm Voucher</a> để săn deal nhé.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function copyAndUse(code) {
+             navigator.clipboard.writeText(code).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã sao chép mã!',
+                    text: 'Mã ' + code + ' đã được copy. Bạn sẽ được chuyển tới trang Thực đơn để chọn món ngay!',
+                    confirmButtonText: 'Đến Thực đơn ngay',
+                    confirmButtonColor: '#d97706'
+                }).then(() => {
+                    window.location.href = '/Home/Index';
+                });
+            });
+        }
+    </script>
+}

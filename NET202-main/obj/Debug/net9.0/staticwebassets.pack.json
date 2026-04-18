@@ -129,6 +129,14 @@
       "PackagePath": "staticwebassets\\Images\\Redesign\\user_happy.png"
     },
     {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\voucher.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher_ticket.png",
+      "PackagePath": "staticwebassets\\Images\\Redesign\\voucher_ticket.png"
+    },
+    {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\b3f235a6-8881-474e-a79c-dce6fc2ee8a9_Screenshot 2026-03-14 001636.png",
       "PackagePath": "staticwebassets\\Images\\b3f235a6-8881-474e-a79c-dce6fc2ee8a9_Screenshot 2026-03-14 001636.png"
     },
@@ -227,6 +235,10 @@
     {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\logo1.png",
       "PackagePath": "staticwebassets\\Images\\logo1.png"
+    },
+    {
+      "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\promo_cup.png",
+      "PackagePath": "staticwebassets\\Images\\promo_cup.png"
     },
     {
       "Id": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\sreach.webp",

@@ -78,6 +78,56 @@
                                           style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #23150D; font-weight: 600;"
                                           placeholder="Nhập địa chỉ giao hàng cụ thể...">@(string.IsNullOrEmpty(Model.ShippingAddress) ? Model.User?.Address : Model.ShippingAddress)</textarea>
                             </div>
+
+                            <!-- ====== VOUCHER SECTION NÂNG CẤP ====== -->
+                            <div style="margin-bottom: 25px;">
+                                <label style="display: block; font-weight: 800; color: #374151; margin-bottom: 10px; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-ticket" style="color: #d97706;"></i> Mã giảm giá
+                                </label>
+                                
+                                @if (Model.Voucher != null)
+                                {
+                                    <!-- Đã áp dụng -->
+                                    <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px;">
+                                        <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1.2rem;"></i>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 900; color: #065f46; font-family: monospace; font-size: 1rem;">@Model.Voucher.Code</div>
+                                            <div style="font-size: 0.8rem; color: #047857; font-weight: 600;">@Model.Voucher.Name</div>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                                            <div style="font-weight: 900; color: #10b981; font-size: 0.9rem; white-space: nowrap;">- @((Model.DiscountAmount).ToString("N0"))đ</div>
+                                            <button type="button" onclick="removeOrderVoucher()" 
+                                                    style="padding: 4px 10px; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s;"
+                                                    onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">
+                                                <i class="fa-solid fa-xmark"></i> Đổi / Bỏ
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <!-- Chưa áp dụng -->
+                                    <div style="display: flex; gap: 10px; align-items: stretch;">
+                                        <input type="text" id="orderVoucherCode" placeholder="Nhập hoặc chọn mã..."
+                                               style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #e5e7eb; background: #f9fafb; color: #1f2937; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; outline: none; transition: 0.2s;"
+                                               onfocus="this.style.borderColor='#d97706'; this.style.boxShadow='0 0 0 3px rgba(217,119,6,0.12)'"
+                                               onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+                                        <button type="button" onclick="applyOrderVoucher()" id="btnApplyVoucher"
+                                                style="padding: 0 18px; background: #d97706; color: white; border: none; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s; white-space: nowrap;"
+                                                onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">
+                                            Áp dụng
+                                        </button>
+                                        <button type="button" onclick="openVoucherModal()" id="btnChooseVoucher"
+                                                title="Chọn từ kho voucher"
+                                                style="padding: 0 14px; background: #fffbeb; color: #d97706; border: 1.5px solid #d97706; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s; white-space: nowrap;"
+                                                onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='#fffbeb'">
+                                            <i class="fa-solid fa-layer-group"></i> Kho
+                                        </button>
+                                    </div>
+                                    <p id="voucherMessage" style="margin: 7px 0 0 0; font-size: 0.82rem; font-weight: 700; display: none;"></p>
+                                }
+                            </div>
+
                             <button type="submit" style="width: 100%; padding: 20px; background: #EA580C; color: white; border: none; border-radius: 15px; font-weight: 950; font-size: 1.2rem; cursor: pointer; box-shadow: 0 10px 20px rgba(234, 88, 12, 0.2);">XÁC NHẬN ĐẶT HÀNG</button>
                         </form>
                     </div>
@@ -372,7 +422,7 @@
                     }
                 </style>
 
-                @if (!isConfirm)
+                @if (!isConfirm && Model.OrderStatus == 4)
                 {
                     <!-- 2. FOR YOU (AWARD/DIPLOMA FRAME - CONCAVE CORNERS) -->
                     <div class="for-you-award-outer">
@@ -470,8 +520,295 @@
     #reviewModal.active #reviewCard { transform: translateY(0); opacity: 1; }
 </style>
 
+<!-- ====== VOUCHER PICKER MODAL ====== -->
+<div id="voucherPickerModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.55); backdrop-filter:blur(6px); align-items:flex-end; justify-content:center;">
+    <div id="voucherPickerSheet" style="background:#fff; border-radius:28px 28px 0 0; width:100%; max-width:600px; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.33,1,0.68,1);">
+        
+        <!-- HEADER -->
+        <div style="padding: 20px 24px 0; flex-shrink: 0;">
+            <div style="width:40px; height:4px; background:#e5e7eb; border-radius:10px; margin: 0 auto 16px;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:#1f2937;"><i class="fa-solid fa-ticket-simple" style="color:#d97706; margin-right:8px;"></i>Chọn Mã Giảm Giá</h3>
+                <button onclick="closeVoucherModal()" style="background:#f3f4f6; border:none; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px; color:#6b7280; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <!-- TABS -->
+            <div style="display:flex; gap:0; background:#f3f4f6; border-radius:12px; padding:4px;">
+                <button id="tabSaved" onclick="switchTab('saved')" style="flex:1; padding:9px; border:none; border-radius:9px; font-weight:800; font-size:0.85rem; cursor:pointer; background:#fff; color:#d97706; box-shadow:0 1px 4px rgba(0,0,0,0.08); transition:0.2s;">
+                    <i class="fa-solid fa-bookmark"></i> Kho của tôi
+                </button>
+                <button id="tabAll" onclick="switchTab('all')" style="flex:1; padding:9px; border:none; border-radius:9px; font-weight:800; font-size:0.85rem; cursor:pointer; background:transparent; color:#9ca3af; transition:0.2s;">
+                    <i class="fa-solid fa-tags"></i> Tất cả ưu đãi
+                </button>
+            </div>
+        </div>
+
+        <!-- VOUCHER LIST (scrollable) -->
+        <div id="voucherListContainer" style="flex:1; overflow-y:auto; padding:16px 24px 24px;">
+            <div id="voucherLoadingState" style="text-align:center; padding:40px; color:#9ca3af;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;"></i>
+                <p style="margin-top:10px; font-weight:700;">Đang tải...</p>
+            </div>
+            <div id="savedVoucherList" style="display:none;"></div>
+            <div id="allVoucherList" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
 <script>
     var _selectedRating = 0;
+
+    // ============================================================
+    // VOUCHER PICKER LOGIC
+    // ============================================================
+    var _allVouchers = [];
+    var _currentTab = 'saved';
+
+    function openVoucherModal() {
+        var modal = document.getElementById('voucherPickerModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('voucherPickerSheet').style.transform = 'translateY(0)';
+        }, 10);
+        document.body.style.overflow = 'hidden';
+        loadVouchers();
+    }
+
+    function closeVoucherModal() {
+        document.getElementById('voucherPickerSheet').style.transform = 'translateY(100%)';
+        setTimeout(() => {
+            document.getElementById('voucherPickerModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }, 400);
+    }
+
+    document.getElementById('voucherPickerModal').addEventListener('click', function(e) {
+        if (e.target === this) closeVoucherModal();
+    });
+
+    function loadVouchers() {
+        document.getElementById('voucherLoadingState').style.display = 'block';
+        document.getElementById('savedVoucherList').style.display = 'none';
+        document.getElementById('allVoucherList').style.display = 'none';
+
+        fetch('/Cart/GetVouchersForOrder?orderId=@Model.OrderId')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('voucherLoadingState').style.display = 'none';
+                _allVouchers = data.vouchers || [];
+                renderTab(_currentTab);
+            });
+    }
+
+    function switchTab(tab) {
+        _currentTab = tab;
+        var tabSaved = document.getElementById('tabSaved');
+        var tabAll = document.getElementById('tabAll');
+
+        if (tab === 'saved') {
+            tabSaved.style.background = '#fff';
+            tabSaved.style.color = '#d97706';
+            tabSaved.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)';
+            tabAll.style.background = 'transparent';
+            tabAll.style.color = '#9ca3af';
+            tabAll.style.boxShadow = 'none';
+        } else {
+            tabAll.style.background = '#fff';
+            tabAll.style.color = '#d97706';
+            tabAll.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)';
+            tabSaved.style.background = 'transparent';
+            tabSaved.style.color = '#9ca3af';
+            tabSaved.style.boxShadow = 'none';
+        }
+        renderTab(tab);
+    }
+
+    function renderVoucherCard(v, tabContext) {
+        var discountText = v.discountType === 1 ? v.discountValue + '%' : (v.discountValue/1000).toFixed(0) + 'K';
+        var canUse = v.canUse;
+        var isApplied = v.isApplied;
+        var isSaved = v.isSaved;
+
+        // Badge trạng thái
+        var badgeHtml = '';
+        if (isApplied) badgeHtml = '<span style="background:#dcfce7; color:#15803d; font-size:10px; font-weight:900; padding:2px 8px; border-radius:20px;">✓ Đang dùng</span>';
+        else if (isSaved) badgeHtml = '<span style="background:#fef3c7; color:#d97706; font-size:10px; font-weight:900; padding:2px 8px; border-radius:20px;"><i class="fa-solid fa-bookmark"></i> Đã lưu</span>';
+
+        // Logic click & nút hành động theo tab
+        var clickHandler = '';
+        var actionBtn = '';
+        var cursor = 'default';
+        var borderColor = isApplied ? '#6ee7b7' : '#e5e7eb';
+        var cardOpacity = '1';
+
+        if (isApplied) {
+            // Đang được dùng: không làm gì
+            cursor = 'default';
+        } else if (isSaved && canUse) {
+            // Đã lưu + đủ điều kiện: click để áp dụng luôn
+            clickHandler = `onclick="selectVoucher('${v.code}')"`;
+            cursor = 'pointer';
+            borderColor = '#e5e7eb';
+        } else if (isSaved && !canUse) {
+            // Đã lưu nhưng chưa đủ điều kiện: xám, không click
+            cardOpacity = '0.6';
+            cursor = 'default';
+        } else {
+            // Chưa lưu (tab 'all'): chặn click, chỉ hiện nút Lưu
+            cardOpacity = canUse ? '1' : '0.6';
+            cursor = 'default';
+            var saveLabel = '<i class="fa-solid fa-bookmark"></i> Lưu';
+            actionBtn = `<button onclick="saveVoucherFromPopup(${v.voucherId}, this)" 
+                            style="align-self:center; padding:7px 14px; background:#d97706; color:#fff; border:none; border-radius:8px; font-size:0.78rem; font-weight:800; cursor:pointer; white-space:nowrap; transition:0.2s; flex-shrink:0;"
+                            onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">${saveLabel}</button>`;
+        }
+
+        var cantUseNote = !canUse ? `<div style="font-size:11px; color:#f59e0b; font-weight:700; margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Cần đơn tối thiểu ${(v.minOrderValue/1000).toFixed(0)}k</div>` : '';
+
+        var hoverAttrs = (cursor === 'pointer') ?
+            `onmouseover="this.style.borderColor='#d97706'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'"
+             onmouseout="this.style.borderColor='${borderColor}'; this.style.transform='none'; this.style.boxShadow='none'"` : '';
+
+        return `
+            <div ${clickHandler} ${hoverAttrs} style="display:flex; gap:0; border:1.5px solid ${borderColor}; border-radius:14px; overflow:hidden; margin-bottom:10px; cursor:${cursor}; background:#fff; opacity:${cardOpacity}; transition:0.2s;">
+                <!-- LEFT: discount -->
+                <div style="background: linear-gradient(135deg, #d97706, #b45309); width:82px; min-width:82px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 6px; position:relative;">
+                    <div style="position:absolute; right:-10px; top:50%; transform:translateY(-50%); width:20px; height:20px; background:#fff; border-radius:50%; z-index:2;"></div>
+                    <div style="font-size:0.55rem; font-weight:900; color:rgba(255,255,255,0.85); text-transform:uppercase; letter-spacing:1px;">Giảm</div>
+                    <div style="font-size:1.5rem; font-weight:1000; color:#fff; line-height:1.1;">${discountText}</div>
+                </div>
+                <!-- RIGHT: info -->
+                <div style="flex:1; padding:12px 14px; display:flex; align-items:center; gap:10px;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; flex-wrap:wrap;">
+                            <span style="font-weight:900; color:#1f2937; font-size:0.88rem;">${v.name || v.code}</span>
+                            ${badgeHtml}
+                        </div>
+                        <div style="font-family:monospace; font-weight:900; color:#d97706; font-size:0.78rem; letter-spacing:1px;">${v.code}</div>
+                        <div style="font-size:10px; color:#6b7280; font-weight:700; margin-top:2px;">HSD: ${v.endDate}</div>
+                        ${cantUseNote}
+                    </div>
+                    ${actionBtn}
+                </div>
+            </div>`;
+    }
+
+    function renderTab(tab) {
+        var savedEl = document.getElementById('savedVoucherList');
+        var allEl = document.getElementById('allVoucherList');
+        var savedVouchers = _allVouchers.filter(v => v.isSaved);
+        var allVouchers = _allVouchers;
+
+        if (tab === 'saved') {
+            savedEl.style.display = 'block';
+            allEl.style.display = 'none';
+            savedEl.innerHTML = savedVouchers.length > 0
+                ? savedVouchers.map(v => renderVoucherCard(v, 'saved')).join('')
+                : '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fa-solid fa-ticket-simple" style="font-size:2.5rem; opacity:0.2; margin-bottom:12px; display:block;"></i><p style="font-weight:700;">Kho trống! Lưu voucher từ trang <a href="/Home/Voucher" style="color:#d97706;">Trung tâm Voucher</a> nhé.</p></div>';
+        } else {
+            allEl.style.display = 'block';
+            savedEl.style.display = 'none';
+            allEl.innerHTML = allVouchers.length > 0
+                ? allVouchers.map(v => renderVoucherCard(v, 'all')).join('')
+                : '<div style="text-align:center; padding:40px; color:#9ca3af;"><p style="font-weight:700;">Hiện không có voucher nào.</p></div>';
+        }
+    }
+
+    function saveVoucherFromPopup(voucherId, btn) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.style.pointerEvents = 'none';
+
+        fetch(`/Home/SaveVoucherToDb?voucherId=${voucherId}`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Đã lưu';
+                btn.style.background = '#6b7280';
+                // Cập nhật trạng thái local và re-render
+                var voucher = _allVouchers.find(v => v.voucherId === voucherId);
+                if (voucher) voucher.isSaved = true;
+                renderTab(_currentTab);
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Lưu';
+                btn.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    function selectVoucher(code) {
+        closeVoucherModal();
+        doApplyVoucher(code);
+    }
+
+    function applyOrderVoucher() {
+        var code = document.getElementById('orderVoucherCode')?.value.trim();
+        if (!code) {
+            showVoucherMsg('Vui lòng nhập mã voucher!', false);
+            return;
+        }
+        doApplyVoucher(code);
+    }
+
+    function doApplyVoucher(code) {
+        var btn = document.getElementById('btnApplyVoucher');
+        if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.style.pointerEvents = 'none'; }
+
+        fetch(`/Cart/ApplyVoucherToOrder?orderId=@Model.OrderId&code=${encodeURIComponent(code)}`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showVoucherMsg('Áp dụng thành công! Đang cập nhật...', true);
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                if (btn) { btn.innerHTML = 'Áp dụng'; btn.style.pointerEvents = 'auto'; }
+                showVoucherMsg(data.message, false);
+            }
+        })
+        .catch(() => {
+            if (btn) { btn.innerHTML = 'Áp dụng'; btn.style.pointerEvents = 'auto'; }
+            showVoucherMsg('Có lỗi xảy ra, vui lòng thử lại!', false);
+        });
+    }
+
+    function removeOrderVoucher() {
+        Swal.fire({
+            title: 'Bỏ mã giảm giá?',
+            text: 'Bạn có chắc muốn bỏ mã đang áp dụng không?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Bỏ voucher',
+            cancelButtonText: 'Giữ lại'
+        }).then(result => {
+            if (result.isConfirmed) {
+                fetch('/Cart/RemoveVoucherFromOrder?orderId=@Model.OrderId', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({ icon: 'success', title: 'Đã bỏ voucher!', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 })
+                            .then(() => location.reload());
+                    }
+                });
+            }
+        });
+    }
+
+    function showVoucherMsg(text, success) {
+        var msg = document.getElementById('voucherMessage');
+        if (!msg) return;
+        msg.style.display = 'block';
+        msg.style.color = success ? '#16a34a' : '#ef4444';
+        msg.innerText = text;
+    }
 
     function openReviewModal() {
         var modal = document.getElementById('reviewModal');
@@ -579,21 +916,5 @@
     }
 </script>
 
-<script>
-    // TỰ ĐỘNG CẬP NHẬT TRẠNG THÁI (Auto-refresh)
-    // Nếu đơn hàng đang trong quá trình xử lý (1, 2, 3), tự động load lại trang mỗi 15s để xem update từ Staff
-    @{
-        bool needsRefresh = Model.OrderStatus >= 1 && Model.OrderStatus <= 3;
-    }
-
-    @if (needsRefresh)
-    {
-        <text>
-        setTimeout(function() {
-            if (!document.hidden) {
-                location.reload();
-            }
-        }, 15000); 
-        </text>
     }
 </script>

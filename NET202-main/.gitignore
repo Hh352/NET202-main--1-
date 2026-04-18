@@ -1,22 +1,23 @@
-# .gitignore for ASP.NET Core
+## [Hỗ trợ ASP.NET Core]
 bin/
 obj/
 .vs/
+.idea/
 .vscode/
 *.user
 *.suo
-*.userosscache
 *.sln.docstates
-out/
 
-# Environment files
-.env
-.env.local
+## [Cơ sở dữ liệu]
+*.db
+*.db-shm
+*.db-wal
 
-# User-specific files
-.idea/
-*.swp
-*.bak
+## [Thư mục build web]
+wwwroot/lib/
+node_modules/
+dist/
 
-# Logs
-*.log
+## [File cấu hình cục bộ]
+appsettings.Development.json
+appsettings.Local.json

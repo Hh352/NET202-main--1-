@@ -186,6 +186,97 @@ namespace ASM.Controllers
             return Json(new { success = true });
         }
 
+        // 6b. ÁP DỤNG VOUCHER VÀO ĐƠN HÀNG (Dành cho chức năng Mua Ngay)
+        [HttpPost]
+        public async Task<IActionResult> ApplyVoucherToOrder(int orderId, string code)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null || order.OrderStatus != 1) return Json(new { success = false, message = "Đơn hàng không hợp lệ!" });
+
+            var voucher = _context.Vouchers.FirstOrDefault(v => v.Code == code && v.Status == "Active");
+            if (voucher == null) return Json(new { success = false, message = "Mã giảm giá không tồn tại!" });
+            
+            if (DateTime.Now < voucher.StartDate || DateTime.Now > voucher.EndDate)
+                return Json(new { success = false, message = "Voucher không trong thời gian sử dụng!" });
+                
+            if (voucher.UsedCount >= voucher.UsageLimit)
+                return Json(new { success = false, message = "Voucher đã hết lượt sử dụng!" });
+
+            if (order.TotalAmount < voucher.MinOrderValue)
+                return Json(new { success = false, message = $"Đơn hàng chưa đạt mức tối thiểu {(voucher.MinOrderValue/1000)}k để dùng voucher này!" });
+
+            // Tính toán giảm giá
+            decimal discount = 0;
+            if (voucher.DiscountType == 1) discount = (order.TotalAmount * voucher.DiscountValue) / 100;
+            else discount = voucher.DiscountValue;
+            if (discount > order.TotalAmount) discount = order.TotalAmount;
+
+            order.VoucherId = voucher.VoucherId;
+            order.DiscountAmount = discount;
+            order.FinalAmount = order.TotalAmount - discount;
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, discountAmount = discount, finalAmount = order.FinalAmount });
+        }
+
+        // 6c. XÓA VOUCHER KHỎI ĐƠN HÀNG
+        [HttpPost]
+        public async Task<IActionResult> RemoveVoucherFromOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null || order.OrderStatus != 1)
+                return Json(new { success = false, message = "Không thể thay đổi đơn hàng này!" });
+
+            order.VoucherId = null;
+            order.DiscountAmount = 0;
+            order.FinalAmount = order.TotalAmount;
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
+        }
+
+        // 6c. LẤY DANH SÁCH VOUCHER CHO POPUP CHỌN VOUCHER
+        [HttpGet]
+        public async Task<IActionResult> GetVouchersForOrder(int orderId)
+        {
+            int uId = GetUserId();
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return Json(new { success = false });
+
+            var now = DateTime.Now;
+
+            // Tất cả voucher đang active
+            var allVouchers = await _context.Vouchers
+                .Where(v => v.Status == "Active" && v.StartDate <= now && v.EndDate >= now && v.UsedCount < v.UsageLimit)
+                .ToListAsync();
+
+            // Voucher mà user đã lưu vào kho
+            var savedVoucherIds = new List<int>();
+            if (uId > 0)
+            {
+                savedVoucherIds = await _context.UserVouchers
+                    .Where(uv => uv.UserId == uId)
+                    .Select(uv => uv.VoucherId)
+                    .ToListAsync();
+            }
+
+            var result = allVouchers.Select(v => new
+            {
+                v.VoucherId,
+                v.Code,
+                v.Name,
+                v.DiscountType,
+                v.DiscountValue,
+                v.MinOrderValue,
+                EndDate = v.EndDate.ToString("dd/MM/yyyy"),
+                IsSaved = savedVoucherIds.Contains(v.VoucherId),
+                CanUse = order.TotalAmount >= v.MinOrderValue,
+                IsApplied = order.VoucherId == v.VoucherId
+            }).OrderByDescending(v => v.IsSaved).ThenByDescending(v => v.CanUse).ToList();
+
+            return Json(new { success = true, vouchers = result });
+        }
+
         // 7. THANH TOÁN (TỪ GIỎ HÀNG SANG ĐƠN HÀNG - Đã gộp tính Voucher)
         [HttpPost]
         public async Task<IActionResult> Checkout()

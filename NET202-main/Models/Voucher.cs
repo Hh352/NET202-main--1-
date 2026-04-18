@@ -19,5 +19,6 @@ namespace ASM.Models
         [StringLength(50)] public string Status { get; set; } = "Active";
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<UserVoucher> UserVouchers { get; set; } = new List<UserVoucher>();
     }
 }

@@ -1,0 +1,238 @@
+@model IEnumerable<ASM.Models.Product>
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm - Bread & Brew";
+    var query = ViewBag.Query as string;
+}
+
+<style>
+    :root {
+        --bb-dark: #23150D;
+        --bb-amber: #EA580C;
+        --bb-tan: #D6A87C;
+        --bb-text-light: #F8FAFC;
+        --bb-card-bg: #2C1A0E;
+    }
+
+    .search-page-header {
+        padding: 60px 0 40px;
+        text-align: center;
+        background-color: #fdf6f0;
+    }
+
+    .search-title {
+        font-weight: 900;
+        font-size: 2.5rem;
+        color: var(--bb-dark);
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .search-bar-focus {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .search-bar-focus input {
+        width: 100%;
+        padding: 15px 50px 15px 25px;
+        border-radius: 30px;
+        border: 2px solid #dcd3c1;
+        font-size: 1.1rem;
+        font-weight: 600;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .search-bar-focus input:focus {
+        border-color: var(--bb-amber);
+        box-shadow: 0 5px 15px rgba(234, 88, 12, 0.1);
+    }
+
+    .search-bar-focus i {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8a6d5a;
+        font-size: 1.2rem;
+    }
+
+    .no-results {
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .no-results-text {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #b91c1c;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 20px;
+    }
+
+    .results-container {
+        padding: 60px 0;
+        background-color: var(--bb-tan);
+        min-height: 400px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .bb-card {
+        background-color: var(--bb-card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: 0.4s;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .bb-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    }
+
+    .bb-card-img-wrapper {
+        height: 280px;
+        overflow: hidden;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .bb-card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .bb-card-body {
+        padding: 25px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bb-card-title {
+        color: #fff;
+        font-weight: 800;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .bb-card-price {
+        color: var(--bb-amber);
+        font-weight: 900;
+        font-size: 1.3rem;
+        margin-bottom: 25px;
+    }
+
+    .bb-card-actions {
+        display: flex; gap: 15px; margin-top: auto;
+    }
+
+    .btn-buy {
+        flex: 1;
+        border: 2px solid var(--bb-amber);
+        color: var(--bb-amber) !important;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 800;
+        padding: 12px;
+        transition: 0.3s;
+    }
+
+    .btn-buy:hover {
+        background: var(--bb-amber);
+        color: #fff !important;
+    }
+
+    .btn-cart {
+        background: var(--bb-amber);
+        color: #fff;
+        border: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: 0.3s;
+    }
+</style>
+
+<div class="search-page-header">
+    <div class="container">
+        <h1 class="search-title">Kết quả tìm kiếm</h1>
+        <div class="search-bar-focus">
+            <input type="text" id="mainSearchInput" placeholder="Nhập từ khóa để tìm kiếm..." value="@query">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
+</div>
+
+<section class="results-container">
+    <div class="container">
+        @if (Model != null && Model.Any())
+        {
+            <p style="text-align: center; color: var(--bb-dark); font-weight: 700; margin-bottom: 40px;">
+                Tìm thấy @Model.Count() kết quả cho "@query"
+            </p>
+            <div class="grid-container">
+                @foreach (var item in Model)
+                {
+                    <div class="bb-card">
+                        @{
+                            var imgPath = string.IsNullOrEmpty(item.Image) ? "/Images/default.png" : 
+                                         (item.Image.Contains("http") ? item.Image : 
+                                         "/Images/" + item.Image.Replace("/Images/", "").Replace("Images/", "").TrimStart('/'));
+                        }
+                        <div class="bb-card-img-wrapper" onclick="location.href='/Home/Detail/@item.ProductId'">
+                            <img src="@imgPath" class="bb-card-img" onerror="this.src='/Images/default.png'" />
+                        </div>
+                        <div class="bb-card-body">
+                            <h3 class="bb-card-title">@item.ProductName</h3>
+                            <p class="bb-card-price">@item.Price.ToString("N0")đ</p>
+                            <div class="bb-card-actions">
+                                <a href="/Cart/BuyNow?productId=@item.ProductId" class="btn-buy">MUA NGAY</a>
+                                <button class="btn-cart" onclick="addToCart(@item.ProductId)"><i class="fa-solid fa-cart-shopping"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-results">
+                <i class="fa-solid fa-face-frown" style="font-size: 4rem; color: #8a6d5a;"></i>
+                <p class="no-results-text">KHÔNG TÌM THẤY BẤT KỲ KẾT QUẢ NÀO VỚI TỪ KHÓA TRÊN.</p>
+                <p style="color: #6b4f3a; margin-top: 10px;">Vui lòng thử lại với từ khóa khác.</p>
+                <a href="/Home/Index" class="btn-buy" style="display: inline-block; width: auto; padding: 12px 30px; margin-top: 20px;">QUAY LẠI TRANG CHỦ</a>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.getElementById('mainSearchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                if (query.trim() !== '') {
+                    window.location.href = '/Home/Search?query=' + encodeURIComponent(query);
+                }
+            }
+        });
+    </script>
+}

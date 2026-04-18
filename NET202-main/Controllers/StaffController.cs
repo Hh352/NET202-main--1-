@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ASM.Data;
 using ASM.Models;
+using ASM.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ASM.Controllers
@@ -177,22 +178,24 @@ public async Task<IActionResult> CreateOfflineOrder(int? categoryId, string? sea
     ViewBag.CurrentCategory = categoryId;
     ViewBag.SearchTerm = search;
 
-    // ĐÃ SỬA: Lấy cả món đang bán (Active) và món tạm hết hàng (Inactive).
-    // Chỉ ẩn đi những món mà Admin cố tình xóa/ẩn hoàn toàn (Hidden).
+    // Lấy danh sách sản phẩm (chỉ ẩn những món Hidden hoàn toàn)
     var query = _context.Products.Include(p => p.Category)
-                        .Where(p => p.Status == "Active" || p.Status == "Hidden").AsQueryable();
+                        .Where(p => p.Status == "Active" || p.Status == "Inactive").AsQueryable();
 
     if (categoryId.HasValue && categoryId > 0)
     {
         query = query.Where(p => p.CategoryId == categoryId);
     }
 
+    var products = await query.ToListAsync();
+
+    // CHUẨN HÓA TÌM KIẾM THÔNG MINH (Không dấu, không khoảng trắng)
     if (!string.IsNullOrWhiteSpace(search))
     {
-        query = query.Where(p => p.ProductName.ToLower().Contains(search.ToLower()));
+        var searchNormalized = Utilities.ToUnaccent(search);
+        products = products.Where(p => Utilities.ToUnaccent(p.ProductName).Contains(searchNormalized)).ToList();
     }
 
-    var products = await query.ToListAsync();
     return View(products);
 }
 

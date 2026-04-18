@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hX55c3QBkXBwk1NdWGKsdOeELcQ85XEddZSCj4yrrfg=",
+  "Hash": "pBzmrd5w5JLMSiJ8qfsMz0yVuPf+KnXPDfGGsalNfZs=",
   "Source": "ASM",
   "BasePath": "_content/ASM",
   "Mode": "Default",
@@ -1088,12 +1088,12 @@
       "OriginalItemSpec": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map"
     },
     {
-      "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-durt6t9j0h.gz",
+      "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-2wz26lxp76.gz",
       "SourceId": "ASM",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/ASM",
-      "RelativePath": "css/style#[.{fingerprint=durt6t9j0h}]?.css.gz",
+      "RelativePath": "css/style#[.{fingerprint=2wz26lxp76}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1102,8 +1102,8 @@
       "RelatedAsset": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "0zz4mu9c6d",
-      "Integrity": "5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8=",
+      "Fingerprint": "b8pxomzghd",
+      "Integrity": "+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css"
@@ -1627,8 +1627,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "durt6t9j0h",
-      "Integrity": "yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk=",
+      "Fingerprint": "2wz26lxp76",
+      "Integrity": "MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\style.css"
@@ -2642,6 +2642,27 @@
       "OriginalItemSpec": "wwwroot\\Images\\logo1.png"
     },
     {
+      "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\promo_cup.png",
+      "SourceId": "ASM",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\",
+      "BasePath": "_content/ASM",
+      "RelativePath": "Images/promo_cup#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4n7zn5td48",
+      "Integrity": "cMwNkLTdVvx2K2F2V9JTHgQsEZqlL6QAhj5pJlBiaQQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\promo_cup.png"
+    },
+    {
       "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\brand_logo_new.png",
       "SourceId": "ASM",
       "SourceType": "Discovered",
@@ -2850,6 +2871,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Images\\Redesign\\user_happy.png"
+    },
+    {
+      "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher_ticket.png",
+      "SourceId": "ASM",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\",
+      "BasePath": "_content/ASM",
+      "RelativePath": "Images/Redesign/voucher_ticket#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "0an5c8a7dr",
+      "Integrity": "GBEAd4cHm3cJZdpeGWnZNvllYCk+670jQ3sJj6ORWgE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Redesign\\voucher_ticket.png"
+    },
+    {
+      "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher.png",
+      "SourceId": "ASM",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\",
+      "BasePath": "_content/ASM",
+      "RelativePath": "Images/Redesign/voucher#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "684t7ul113",
+      "Integrity": "WhaBdbXGWK28N4a4r2Ca1ZtNcxw7W6NrZzEKFNAspUw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Redesign\\voucher.png"
     },
     {
       "Identity": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\sreach.webp",
@@ -5965,13 +6028,13 @@
       ]
     },
     {
-      "Route": "css/style.css",
-      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-durt6t9j0h.gz",
+      "Route": "css/style.2wz26lxp76.css",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-2wz26lxp76.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000715819613"
+          "Quality": "0.000706214689"
         }
       ],
       "ResponseHeaders": [
@@ -5981,19 +6044,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1396"
+          "Value": "1415"
         },
         {
           "Name": "ETag",
-          "Value": "\"5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8=\""
+          "Value": "\"+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -6009,18 +6072,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk=\""
+          "Value": "W/\"MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "2wz26lxp76"
+        },
+        {
+          "Name": "label",
+          "Value": "css/style.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk="
+          "Value": "sha256-MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0="
         }
       ]
     },
     {
-      "Route": "css/style.css",
+      "Route": "css/style.2wz26lxp76.css",
       "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -6030,7 +6101,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4846"
+          "Value": "4869"
         },
         {
           "Name": "Content-Type",
@@ -6038,121 +6109,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk=\""
+          "Value": "\"MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk="
-        }
-      ]
-    },
-    {
-      "Route": "css/style.css.gz",
-      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-durt6t9j0h.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1396"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8="
-        }
-      ]
-    },
-    {
-      "Route": "css/style.durt6t9j0h.css",
-      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-durt6t9j0h.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000715819613"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1396"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "durt6t9j0h"
+          "Value": "2wz26lxp76"
         },
         {
           "Name": "label",
@@ -6160,13 +6131,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk="
+          "Value": "sha256-MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0="
         }
       ]
     },
     {
-      "Route": "css/style.durt6t9j0h.css",
-      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css",
+      "Route": "css/style.2wz26lxp76.css.gz",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-2wz26lxp76.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6175,7 +6146,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4846"
+          "Value": "1415"
         },
         {
           "Name": "Content-Type",
@@ -6183,56 +6154,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk=\""
+          "Value": "\"+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "durt6t9j0h"
-        },
-        {
-          "Name": "label",
-          "Value": "css/style.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-yyMCBYz2H5Sf2RnPiQUitBSbDAxWA6jkWo/DIFuzIuk="
-        }
-      ]
-    },
-    {
-      "Route": "css/style.durt6t9j0h.css.gz",
-      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-durt6t9j0h.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1396"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 10 Apr 2026 03:11:47 GMT"
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6250,7 +6176,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "durt6t9j0h"
+          "Value": "2wz26lxp76"
         },
         {
           "Name": "label",
@@ -6258,7 +6184,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-5NIcbUuVR3DwF1UZXD2HmXZaWFaDKfZNDUkvptzdqg8="
+          "Value": "sha256-+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM="
+        }
+      ]
+    },
+    {
+      "Route": "css/style.css",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-2wz26lxp76.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000706214689"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1415"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0="
+        }
+      ]
+    },
+    {
+      "Route": "css/style.css",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\css\\style.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4869"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MqwPsS1Bcv4Tv/SQ42wCe/CxZZyFu3AqnynGoEZMXs0="
+        }
+      ]
+    },
+    {
+      "Route": "css/style.css.gz",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\obj\\Debug\\net9.0\\compressed\\qayoo475wo-2wz26lxp76.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1415"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 16 Apr 2026 19:03:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-+12xxe/rYVB5QWqFSjVNkHKKUV1QCJCRwMXO4/9qgvM="
         }
       ]
     },
@@ -10631,6 +10694,88 @@
       ]
     },
     {
+      "Route": "Images/promo_cup.4n7zn5td48.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\promo_cup.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "516029"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"cMwNkLTdVvx2K2F2V9JTHgQsEZqlL6QAhj5pJlBiaQQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 16 Apr 2026 18:36:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4n7zn5td48"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/promo_cup.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-cMwNkLTdVvx2K2F2V9JTHgQsEZqlL6QAhj5pJlBiaQQ="
+        }
+      ]
+    },
+    {
+      "Route": "Images/promo_cup.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\promo_cup.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "516029"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"cMwNkLTdVvx2K2F2V9JTHgQsEZqlL6QAhj5pJlBiaQQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 16 Apr 2026 18:36:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-cMwNkLTdVvx2K2F2V9JTHgQsEZqlL6QAhj5pJlBiaQQ="
+        }
+      ]
+    },
+    {
       "Route": "Images/Redesign/brand_logo_new.jcnqodgaal.png",
       "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\brand_logo_new.png",
       "Selectors": [],
@@ -11663,6 +11808,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-PehPKoFA/gMIsVFLDvZRoIrFjJywSKPMqCh289pc6eo="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Redesign/voucher_ticket.0an5c8a7dr.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher_ticket.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "565406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GBEAd4cHm3cJZdpeGWnZNvllYCk+670jQ3sJj6ORWgE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 18 Apr 2026 11:09:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "0an5c8a7dr"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Redesign/voucher_ticket.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-GBEAd4cHm3cJZdpeGWnZNvllYCk+670jQ3sJj6ORWgE="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Redesign/voucher_ticket.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher_ticket.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "565406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GBEAd4cHm3cJZdpeGWnZNvllYCk+670jQ3sJj6ORWgE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 18 Apr 2026 11:09:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-GBEAd4cHm3cJZdpeGWnZNvllYCk+670jQ3sJj6ORWgE="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Redesign/voucher.684t7ul113.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "105155"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WhaBdbXGWK28N4a4r2Ca1ZtNcxw7W6NrZzEKFNAspUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 18 Apr 2026 11:56:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "684t7ul113"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Redesign/voucher.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-WhaBdbXGWK28N4a4r2Ca1ZtNcxw7W6NrZzEKFNAspUw="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Redesign/voucher.png",
+      "AssetFile": "C:\\Users\\tranh\\Downloads\\NET202-main (1)\\NET202-main\\wwwroot\\Images\\Redesign\\voucher.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "105155"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"WhaBdbXGWK28N4a4r2Ca1ZtNcxw7W6NrZzEKFNAspUw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 18 Apr 2026 11:56:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-WhaBdbXGWK28N4a4r2Ca1ZtNcxw7W6NrZzEKFNAspUw="
         }
       ]
     },
