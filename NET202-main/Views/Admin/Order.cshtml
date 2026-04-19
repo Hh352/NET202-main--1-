@@ -1,155 +1,225 @@
 @model IEnumerable<ASM.Models.Order>
 @{
     ViewData["Title"] = "Quản lý Đơn hàng";
-    Layout = "_AdminLayout";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; 
+    
+    var totalOrders = Model.Count();
+    var processingCount = Model.Count(o => o.OrderType == 1 && (o.OrderStatus == 1 || o.OrderStatus == 2 || o.OrderStatus == 3));
+    var todayRevenue = Model.Where(o => o.OrderStatus != 5 && o.CreatedAt.Date == DateTime.Today).Sum(o => o.FinalAmount);
 }
 
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: { fontFamily: { sans: ['Inter', 'sans-serif'], } }
+        }
+    }
+</script>
+
 <style>
-    /* RESET TRIỆT ĐỂ BẢNG */
-    .fix-table-wrapper table { display: table !important; width: 100% !important; border-collapse: separate !important; border-spacing: 0 10px !important; }
-    .fix-table-wrapper thead { display: table-header-group !important; }
-    .fix-table-wrapper tbody { display: table-row-group !important; }
-    .fix-table-wrapper tr { display: table-row !important; background: #fff !important; }
-    .fix-table-wrapper td, .fix-table-wrapper th { 
-        display: table-cell !important; 
-        vertical-align: middle !important; 
-        padding: 15px !important; 
-        border: none !important;
-        background: #fff !important;
+    .receipt-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+        display: none; align-items: center; justify-content: center; z-index: 9999;
+        opacity: 0; transition: opacity 0.3s ease;
     }
-    .fix-table-wrapper th { background: transparent !important; color: #888; text-transform: uppercase; font-size: 11px; font-weight: 700; }
-    
-    /* Hiệu ứng bo góc từng dòng */
-    .fix-table-wrapper tr td:first-child { border-radius: 12px 0 0 12px !important; }
-    .fix-table-wrapper tr td:last-child { border-radius: 0 12px 12px 0 !important; }
-    
-    .btn-chi-tiet {
-        background-color: #f0f7ff;
-        color: #007bff;
-        border: 1px solid #d0e7ff;
-        padding: 6px 16px;
-        border-radius: 20px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 600;
-        display: inline-block;
-        transition: 0.2s;
+    .receipt-overlay.show {
+        display: flex; opacity: 1;
     }
-    .btn-chi-tiet:hover { background-color: #007bff; color: #fff; }
+
+    .receipt-card {
+        display: flex; flex-direction: column; align-items: center;
+        padding: 28px 32px; gap: 14px; width: 100%; max-width: 480px;
+        background: #FFFFFF; border-radius: 40px; position: relative;
+        box-shadow: 0px 13px 40px rgba(170, 170, 170, 0.12);
+        transform: translateY(20px); transition: transform 0.3s ease;
+        max-height: 90vh; overflow-y: auto;
+    }
+    .receipt-overlay.show .receipt-card { transform: translateY(0); }
+
+    .r-icon {
+        width: 64px; height: 64px; border-radius: 50%;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 28px; margin-bottom: -8px; flex-shrink: 0;
+        background: #e8f5e9; color: #10b981;
+    }
+    .r-icon.unpaid { background: #fff7ed; color: #f59e0b; }
+    .r-icon.cancelled { background: #fee2e2; color: #ef4444; }
+
+    .r-title { font-size: 16px; color: #6b7280; font-weight: 700; }
+    .r-amount { font-size: 36px; font-weight: 900; color: #111827; }
+    
+    .r-divider { width: 100%; border-top: 1px solid #f3f4f6; margin: 4px 0; flex-shrink: 0;}
+    .r-divider-dashed { width: 100%; border-top: 2px dashed #e5e7eb; margin: 4px 0; flex-shrink: 0;}
+    
+    .r-row { display: flex; justify-content: space-between; width: 100%; font-size: 14px; margin-bottom: 8px; flex-shrink: 0;}
+    .r-label { color: #6b7280; font-weight: 500; }
+    .r-value { color: #111827; font-weight: 700; text-align: right; }
+    
+    .r-items-scroll { width: 100%; overflow-y: auto; padding-right: 8px; }
+    .r-items-scroll::-webkit-scrollbar { width: 4px; }
+    .r-items-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+    @@media print {
+        @@page { margin: 0; }
+        body { background: #fff; }
+        body * { visibility: hidden; }
+        .receipt-overlay.show, .receipt-overlay.show * { visibility: visible; }
+        .receipt-overlay.show {
+            position: absolute; left: 0; top: 0;
+            background: white !important;
+            display: flex; justify-content: center; align-items: flex-start;
+            padding-top: 20px; width: 100%;
+        }
+        .receipt-card {
+            width: 80mm !important; max-width: 320px !important;
+            box-shadow: none !important; border: 1px dashed #ccc !important;
+            border-radius: 0 !important; padding: 20px !important; margin: 0 !important;
+            color: #000 !important; overflow: visible !important; max-height: none !important;
+        }
+        .r-amount, .r-label, .r-value, .r-title { color: #000 !important; }
+        .r-divider { border-top: 1px solid #000 !important; }
+        .r-divider-dashed { border-top: 1px dashed #000 !important; }
+        .r-items-scroll { max-height: none !important; overflow: visible !important; padding-right: 0 !important; }
+        .r-icon { display: none !important; }
+        .no-print { display: none !important; }
+    }
 </style>
 
-<div class="admin-card mb-4 border-0 shadow-sm">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="mb-1 fw-bold">Danh sách đơn hàng</h5>
-            <p class="text-muted mb-0 small">Theo dõi và cập nhật trạng thái đơn hàng của khách.</p>
+<div class="p-4 md:p-6 bg-gray-50 min-h-screen font-sans text-gray-800 no-print">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <i class="fa-solid fa-file-invoice-dollar text-emerald-600"></i> Quản lý Đơn hàng
+        </h1>
+        <p class="text-gray-500 text-sm mt-1">Theo dõi và giám sát tiến độ toàn bộ đơn hàng</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-5">
+            <div class="w-14 h-14 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Tổng đơn</p>
+                <p class="text-2xl font-black text-gray-900">@totalOrders</p>
+            </div>
         </div>
-    </div>
-</div>
-
-<div class="fix-table-wrapper">
-    <div class="table-responsive" style="overflow: visible;">
-        <table class="table-hover mb-0">
-            <thead>
-                <tr>
-                    <th class="ps-4">Mã đơn</th>
-                    <th>Khách hàng</th>
-                    <th>Ngày đặt</th>
-                    <th>Tổng tiền</th>
-                    <th class="text-center">Trạng thái</th>
-                    <th class="text-end pe-4">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <td class="ps-4 fw-bold text-primary">#@order.OrderId</td>
-                        <td>
-                            <div class="fw-bold text-dark">@order.User?.FullName</div>
-                            <div class="text-muted small">@order.PhoneNumber</div>
-                        </td>
-                        <td><div class="small">@order.CreatedAt.ToString("dd/MM/yyyy")</div><div class="text-muted small">@order.CreatedAt.ToString("HH:mm")</div></td>
-                        <td><strong class="text-dark">@order.FinalAmount.ToString("N0")đ</strong></td>
-                        <td class="text-center">
-                            <form asp-action="UpdateOrderStatus" method="post" class="d-inline">
-                                <input type="hidden" name="orderId" value="@order.OrderId" />
-                                <select name="orderStatus" class="form-select form-select-sm rounded-pill text-center d-inline-block" 
-                                        style="width: 130px; font-weight: 600; background-color: #f8f9fa; border: 1px solid #eee;" 
-                                        onchange="this.form.submit()">
-                                    <option value="1" selected="@(order.OrderStatus == 1)">Chờ xác nhận</option>
-                                    <option value="2" selected="@(order.OrderStatus == 2)">Đang giao</option>
-                                    <option value="3" selected="@(order.OrderStatus == 3)">Đã giao</option>
-                                    <option value="4" selected="@(order.OrderStatus == 4)">Hoàn thành</option>
-                                    <option value="5" selected="@(order.OrderStatus == 5)">Đã hủy</option>
-                                </select>
-                            </form>
-                        </td>
-                        <td class="text-end pe-4">
-                            <button type="button" class="btn-chi-tiet" data-bs-toggle="modal" data-bs-target="#orderDetailModal-@order.OrderId">
-                                <i class="fas fa-eye me-1"></i> Chi tiết
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-@foreach (var order in Model)
-{
-    <!-- Modal Chi Tiết Đơn Hàng (Đã đưa ra ngoài bảng) -->
-    <div class="modal fade" id="orderDetailModal-@order.OrderId" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title fw-bold">Chi tiết đơn hàng #@order.OrderId</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4 text-dark">
-                    <div class="row mb-4">
-                        <div class="col-md-6 border-end">
-                            <p class="mb-1 fw-bold">Thông tin nhận hàng:</p>
-                            <p class="mb-1">@order.User?.FullName</p>
-                            <p class="mb-1 text-muted">@order.PhoneNumber</p>
-                            <p class="mb-0 text-muted">@order.ShippingAddress</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-1 fw-bold">Tóm tắt:</p>
-                            <p class="mb-1">Loại thanh toán: <span class="badge bg-light text-dark border">@(order.PaymentMethod == 1 ? "Momo" : "Tiền mặt")</span></p>
-                            <p class="mb-0">Voucher dùng: <span class="text-success fw-bold">@(order.Voucher?.Code ?? "Không")</span></p>
-                        </div>
-                    </div>
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th class="text-center">SL</th>
-                                <th class="text-end">Đơn giá</th>
-                                <th class="text-end">Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var detail in order.OrderDetails ?? new List<ASM.Models.OrderDetail>())
-                            {
-                                <tr>
-                                    <td>@detail.Product?.ProductName</td>
-                                    <td class="text-center">@detail.Quantity</td>
-                                    <td class="text-end">@detail.Price.ToString("N0")đ</td>
-                                    <td class="text-end fw-bold">@((detail.Quantity * detail.Price).ToString("N0"))đ</td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
-                                <td class="text-end text-danger fw-bold fs-5">@order.FinalAmount.ToString("N0")đ</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-5">
+            <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Chờ xử lý</p>
+                <p class="text-2xl font-black text-gray-900">@processingCount</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-5">
+            <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Doanh thu hôm nay</p>
+                <p class="text-2xl font-black text-emerald-600">@todayRevenue.ToString("N0")đ</p>
             </div>
         </div>
     </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-sm">
+        <div class="table-responsive" style="width:100%;">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100 text-[11px] text-gray-500 uppercase tracking-wider font-bold">
+                        <th class="px-3 py-4 w-20">Mã đơn</th>
+                        <th class="px-3 py-4">Loại</th>
+                        <th class="px-3 py-4">Khách hàng</th>
+                        <th class="px-3 py-4">Thời gian</th>
+                        <th class="px-3 py-4">Tổng tiền</th>
+                        <th class="px-3 py-4 text-center">Trạng thái</th>
+                        <th class="px-3 py-4 text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @if(!Model.Any()) {
+                        <tr><td colspan="7" class="p-10 text-center text-gray-400">Chưa có đơn hàng nào.</td></tr>
+                    }
+                    @foreach(var o in Model.OrderByDescending(x => x.CreatedAt))
+                    {
+                        int displayStatus = (o.OrderType == 2 && o.OrderStatus != 5) ? 4 : o.OrderStatus;
+                        <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                            <td class="px-3 py-4 font-bold text-gray-900 text-xs">#ORD-@o.OrderId.ToString("D4")</td>
+                            <td class="px-3 py-4">
+                                @if(o.OrderType == 1) { <span class="px-2.5 py-0.5 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold">Online</span> }
+                                else { <span class="px-2.5 py-0.5 bg-orange-100 text-orange-700 rounded-full text-[10px] font-bold">Tại quầy</span> }
+                            </td>
+                            <td class="px-3 py-4">
+                                <div class="font-bold text-gray-900 text-xs max-w-[150px] truncate">@(o.User?.FullName ?? "Khách hệ thống")</div>
+                                <div class="text-[10px] text-gray-500 mt-1"><i class="fa-solid fa-phone"></i> @(o.User?.Phone ?? "---")</div>
+                            </td>
+                            <td class="px-3 py-4 text-gray-600 font-medium text-xs">
+                                <div>@o.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                <span class="text-[10px] text-gray-400">@o.CreatedAt.ToString("HH:mm")</span>
+                            </td>
+                            <td class="px-3 py-4 font-bold text-gray-900 text-xs whitespace-nowrap">@o.FinalAmount.ToString("N0")đ</td>
+                            <td class="px-3 py-4 text-center">
+                                @if(displayStatus == 1) { <span class="px-2.5 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">Mới</span> }
+                                else if(displayStatus == 2) { <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">Chuẩn bị</span> }
+                                else if(displayStatus == 3) { <span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-[10px] font-bold">Giao hàng</span> }
+                                else if(displayStatus == 4) { <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold">Hoàn thành</span> }
+                                else { <span class="px-2.5 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">Đã hủy</span> }
+                            </td>
+                            <td class="px-3 py-4 text-center">
+                                <button onclick="openBill(@o.OrderId)" class="w-7 h-7 rounded-full bg-gray-100 text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition-colors flex items-center justify-center mx-auto">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@foreach(var o in Model)
+{
+    int displayStatus = (o.OrderType == 2 && o.OrderStatus != 5) ? 4 : o.OrderStatus;
+    bool isPaid = o.PaymentStatus == 1 || displayStatus == 4;
+    bool isCancelled = displayStatus == 5;
+
+    <div id="bill-@o.OrderId" class="receipt-overlay" onclick="closeBill(@o.OrderId)">
+        <div class="receipt-card" onclick="event.stopPropagation()">
+            <button class="absolute top-6 right-6 text-gray-300 hover:text-red-500 no-print" onclick="closeBill(@o.OrderId)">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            @if(isCancelled) { <div class="r-icon cancelled"><i class="fa-solid fa-ban"></i></div> <div class="r-title text-red-500">ĐƠN ĐÃ HỦY</div> }
+            else if(isPaid) { <div class="r-icon"><i class="fa-solid fa-check"></i></div> <div class="r-title text-emerald-600">ĐÃ THANH TOÁN</div> }
+            else { <div class="r-icon unpaid"><i class="fa-solid fa-clock"></i></div> <div class="r-title text-orange-500">CHƯA THANH TOÁN</div> }
+            <div class="r-amount">@o.FinalAmount.ToString("N0")đ</div>
+            <div class="r-divider"></div>
+            <div class="r-row"><span class="r-label">Mã đơn</span><span class="r-value text-gray-500 font-mono">#ORD-@o.OrderId.ToString("D4")</span></div>
+            <div class="r-row"><span class="r-label">Trạng thái</span><span class="r-value">@(displayStatus == 1 ? "Mới" : displayStatus == 2 ? "Chuẩn bị" : displayStatus == 3 ? "Giao hàng" : displayStatus == 4 ? "Hoàn thành" : "Đã hủy")</span></div>
+            <div class="r-row"><span class="r-label">Thời gian</span><span class="r-value">@o.CreatedAt.ToString("dd-MM-yyyy, HH:mm")</span></div>
+            <div class="r-row"><span class="r-label">Phương thức</span><span class="r-value">@(o.PaymentMethod == 1 ? "Tiền mặt" : "Chuyển khoản")</span></div>
+            <div class="r-row"><span class="r-label">Khách hàng</span><span class="r-value">@(o.User?.FullName ?? "Khách tại quầy")</span></div>
+            <div class="r-divider-dashed mt-2"></div>
+            <div class="r-items-scroll max-h-[160px]">
+                @if(o.OrderDetails != null && o.OrderDetails.Any()) {
+                    foreach(var item in o.OrderDetails) {
+                        <div class="r-row !mb-3"><span class="r-label text-gray-800">@(item.Product?.ProductName ?? "Sản phẩm") <span class="text-xs font-bold text-gray-400">x @item.Quantity</span></span><span class="r-value text-gray-600">@((item.Price * item.Quantity).ToString("N0"))đ</span></div>
+                    }
+                } else { <div class="text-center text-red-500 text-xs mt-4 no-print">Vui lòng kiểm tra dữ liệu OrderDetails.</div> }
+            </div>
+            <div class="r-divider-dashed mb-2"></div>
+            <div class="r-row !mb-2"><span class="r-label">Tạm tính</span><span class="r-value">@o.TotalAmount.ToString("N0")đ</span></div>
+            <div class="r-row !mb-0"><span class="r-label">Giảm giá</span><span class="r-value text-red-500">- @((o.TotalAmount - o.FinalAmount).ToString("N0"))đ</span></div>
+            <button class="no-print mt-2 w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 font-bold text-sm border border-emerald-200" onclick="window.print()"><i class="fa-solid fa-print"></i> IN HÓA ĐƠN</button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function openBill(orderId) { document.getElementById('bill-' + orderId).classList.add('show'); }
+        function closeBill(orderId) { document.getElementById('bill-' + orderId).classList.remove('show'); }
+    </script>
 }
