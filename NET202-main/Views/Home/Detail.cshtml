@@ -120,10 +120,29 @@
     
     .rev-form-container { background: #fff; padding: 35px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 40px; }
     .rev-form-title { font-size: 1.5rem; font-weight: 800; color: var(--bb-dark); margin-bottom: 20px; }
-    .star-rating-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 5px; font-size: 1.5rem; margin-bottom: 20px; }
-    .star-rating-input input { display: none; }
-    .star-rating-input label { color: #cbd5e1; cursor: pointer; transition: 0.2s; }
-    .star-rating-input label:hover, .star-rating-input label:hover ~ label, .star-rating-input input:checked ~ label { color: #fbbf24; }
+    .star-rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 12px;
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+    }
+    .star-item {
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: transform 0.2s, color 0.2s;
+    }
+    .star-item:hover {
+        transform: scale(1.2);
+    }
+    .star-item.active, 
+    .star-item.active ~ .star-item,
+    .star-item:hover, 
+    .star-item:hover ~ .star-item {
+        color: #fbbf24 !important;
+    }
+
     .rev-textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; font-size: 1rem; color: var(--bb-dark); outline: none; transition: 0.3s; margin-bottom: 20px; min-height: 100px; resize: vertical; }
     .rev-textarea:focus { border-color: var(--bb-amber); }
     .btn-submit-rev { background: var(--bb-amber); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; }
@@ -131,13 +150,16 @@
     .rev-avatar { width: 60px; height: 60px; background: linear-gradient(135deg, var(--bb-tan), var(--bb-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.4rem; }
     .rev-name { font-weight: 800; color: var(--bb-dark); margin-right: 15px; font-size: 1.1rem; }
     .rev-date { color: #94a3b8; font-size: 0.9rem; }
-    .rev-stars { color: #fbbf24; font-size: 0.9rem; margin: 10px 0; }
+    .rev-stars i {
+        color: #fbbf24;
+        font-size: 0.9rem;
+    }
+    .rev-stars i.fa-regular {
+        color: #e2e8f0; /* Màu xám cho sao rỗng */
+    }
+    .rev-stars { margin: 10px 0; }
     .rev-text { color: #64748b; line-height: 1.8; font-size: 1.05rem; }
 
-    /* REAR FORM */
-    .rev-form-container { background: #fff; padding: 50px; border-radius: 32px; margin-top: 50px; border: 1px solid #f1f5f9; box-shadow: 0 20px 50px rgba(0,0,0,0.04); }
-    .stars-selector { display: flex; gap: 8px; color: #cbd5e1; font-size: 2.2rem; cursor: pointer; margin-bottom: 10px; }
-    .stars-selector i.active { color: #fbbf24; }
     .rating-label { font-weight: 800; color: var(--bb-amber); font-size: 1.3rem; margin-bottom: 25px; display: block; }
 
     .rev-textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px; min-height: 160px; font-family: inherit; margin-bottom: 30px; outline: none; transition: 0.3s; font-size: 1.1rem; background: #f8fafc; }
@@ -311,28 +333,25 @@
         <!-- Form Viết Đánh Giá -->
         @if (ViewBag.CanReview == true)
         {
-            <div class="rev-form-container">
+            <form id="reviewForm" action="/Home/SubmitReview" method="post" class="rev-form-container">
                 <h3 class="rev-form-title">Đề lại cảm nhận của bạn</h3>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <span id="starTextLabel" style="font-weight: 800; color: #ea580c; font-size: 1.2rem;">Tuyệt vời</span>
-                    <div class="star-rating-input">
-                        <input type="radio" id="star5" name="Rating" value="5" checked onchange="updateStarText(this.value)" />
-                        <label for="star5" onmouseover="previewStarText(5)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star4" name="Rating" value="4" onchange="updateStarText(this.value)" />
-                        <label for="star4" onmouseover="previewStarText(4)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star3" name="Rating" value="3" onchange="updateStarText(this.value)" />
-                        <label for="star3" onmouseover="previewStarText(3)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star2" name="Rating" value="2" onchange="updateStarText(this.value)" />
-                        <label for="star2" onmouseover="previewStarText(2)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star1" name="Rating" value="1" onchange="updateStarText(this.value)" />
-                        <label for="star1" onmouseover="previewStarText(1)" onmouseout="resetStarText()"><i class="fa-solid fa-star"></i></label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #fffaf5; padding: 20px; border-radius: 15px; border: 1px solid #ffe4d6;">
+                    <span id="starTextLabel" style="font-weight: 800; color: #ea580c; font-size: 1.4rem;">Tuyệt vời</span>
+                    <input type="hidden" name="rating" id="selectedRating" value="5" />
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    <div class="star-rating-input" id="starContainer">
+                        <i class="fa-solid fa-star star-item active" data-value="5" title="Tuyệt vời"></i>
+                        <i class="fa-solid fa-star star-item active" data-value="4" title="Tốt"></i>
+                        <i class="fa-solid fa-star star-item active" data-value="3" title="Ổn"></i>
+                        <i class="fa-solid fa-star star-item active" data-value="2" title="Tệ"></i>
+                        <i class="fa-solid fa-star star-item active" data-value="1" title="Rất tệ"></i>
                     </div>
                 </div>
 
-                <textarea id="revComment" class="rev-textarea" placeholder="Chia sẻ cảm nhận của bạn về hương vị món này..."></textarea>
-                <button class="btn-submit-rev" onclick="submitReview()">GỬI ĐÁNH GIÁ</button>
-            </div>
+                <textarea name="comment" id="revComment" class="rev-textarea" placeholder="Chia sẻ cảm nhận của bạn về hương vị món này..." required></textarea>
+                <button type="submit" class="rev-submit-btn">GỬI ĐÁNH GIÁ</button>
+            </form>
         }
         else
         {
@@ -353,7 +372,12 @@
                         <div class="rev-avatar">@(r.User?.FullName?[0] ?? 'K')</div>
                         <div class="rev-main">
                             <div><span class="rev-name">@r.User?.FullName</span> <span class="rev-date">@r.CreatedAt.ToString("dd/MM/yyyy")</span></div>
-                            <div class="rev-stars">@for (int i = 1; i <= 5; i++) { <i class="fa-solid fa-star @(i <= r.Rating ? "" : "fa-regular")"></i> }</div>
+                            <div class="rev-stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="@(i <= r.Rating ? "fa-solid" : "fa-regular") fa-star"></i>
+                                }
+                            </div>
                             <p class="rev-text">@r.Comment</p>
                         </div>
                     </div>
@@ -473,57 +497,62 @@
 
     /* Cập nhật chữ diễn giải mức độ hài lòng */
     const starLabels = { 1: "Rất tệ", 2: "Tệ", 3: "Ổn", 4: "Tốt", 5: "Tuyệt vời" };
-    let currentRating = 5;
-
-    function updateStarText(val) {
-        currentRating = val;
-        document.getElementById('starTextLabel').innerText = starLabels[val];
-    }
     
-    function previewStarText(val) {
-        document.getElementById('starTextLabel').innerText = starLabels[val];
-    }
+    // Khởi tạo sự kiện cho các ngôi sao
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('selectedRating');
+        const textLabel = document.getElementById('starTextLabel');
+        const starLabels = { 1: "Rất tệ", 2: "Tệ", 3: "Ổn", 4: "Tốt", 5: "Tuyệt vời" };
 
-    function resetStarText() {
-        document.getElementById('starTextLabel').innerText = starLabels[currentRating];
-    }
-
-    // Xử lý gửi Review bằng Ajax
-    function submitReview() {
-        var checkedStar = document.querySelector('input[name="Rating"]:checked');
-        var rating = checkedStar ? checkedStar.value : 5;
-
-        var comment = document.getElementById('revComment').value.trim();
-
-        if (!comment) {
-            Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Vui lòng nhập nội dung đánh giá!', confirmButtonColor: '#EA580C' });
-            return;
-        }
-
-        var formData = new FormData();
-        formData.append('productId', @Model.ProductId);
-        formData.append('rating', rating);
-        formData.append('comment', comment);
-
-        fetch('/Home/SubmitReview', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success', title: 'Thành công', text: data.message, confirmButtonColor: '#EA580C'
-                }).then(() => {
-                    location.reload(); // Tải lại trang để hiện comment mới
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const val = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = val;
+                textLabel.innerText = starLabels[val];
+                
+                // Cập nhật trạng thái active cho chính nó và các sao THẤP hơn (về bên phải visual)
+                stars.forEach(s => {
+                    const sVal = parseInt(s.getAttribute('data-value'));
+                    if (sVal <= val) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
                 });
-            } else {
-                Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra', confirmButtonColor: '#EA580C' });
-            }
-        }).catch(err => {
-             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra trong quá trình gửi.', confirmButtonColor: '#EA580C' });
+            });
         });
-    }
+
+        // Xử lý gửi form bằng Ajax
+        const form = document.getElementById('reviewForm');
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        Swal.fire({ 
+                            icon: 'success', 
+                            title: 'Thành công', 
+                            text: data.message,
+                            confirmButtonColor: '#EA580C' 
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message, confirmButtonColor: '#EA580C' });
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra khi gửi.', confirmButtonColor: '#EA580C' });
+                });
+            });
+        }
+    });
 
     function toggleReviews() {
         const hiddenReviews = document.querySelectorAll('.rev-hidden');

@@ -148,8 +148,8 @@ namespace ASM.Controllers
         // =========================================================
         // 4. GỬI ĐÁNH GIÁ (SUBMIT REVIEW)
         // =========================================================
-        [HttpPost]
-        public async Task<IActionResult> SubmitReview(int productId, int rating, string comment)
+        [HttpPost("Home/SubmitReview")]
+        public async Task<IActionResult> SubmitReview([FromForm] int productId, [FromForm] int rating, [FromForm] string comment)
         {
             if (!User.Identity.IsAuthenticated)
             {
