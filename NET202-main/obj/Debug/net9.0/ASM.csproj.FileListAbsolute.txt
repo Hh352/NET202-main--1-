@@ -829,8 +829,6 @@ C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\rjsmcshtml
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\scopedcss\bundle\ASM.styles.css
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\scopedcss\projectbundle\ASM.bundle.scp.css
-C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\clqkq9a0b1-{0}-0z9uj6zd9u-0z9uj6zd9u.gz
-C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\sufw5hs08a-{0}-389cqm2axn-389cqm2axn.gz
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\d05emtp7ml-{0}-1tdq6mcw2s-1tdq6mcw2s.gz
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\mnt4isnr42-{0}-5ipweew5fc-5ipweew5fc.gz
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\g8cyx9hoqh-{0}-2wz26lxp76-2wz26lxp76.gz
@@ -910,3 +908,5 @@ C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\refint\ASM
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ASM.pdb
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ASM.genruntimeconfig.cache
 C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\ref\ASM.dll
+C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\clqkq9a0b1-{0}-n4w7vaxn0g-n4w7vaxn0g.gz
+C:\Users\tranh\Downloads\NET202-main (1)\NET202-main\obj\Debug\net9.0\compressed\sufw5hs08a-{0}-ck9lcorzju-ck9lcorzju.gz

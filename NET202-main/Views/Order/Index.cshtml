@@ -91,10 +91,10 @@
         white-space: nowrap;
     }
 
-    .st-1 { background: #fef3c7; color: #d97706; } /* Chờ xác nhận */
+    .st-1 { background: #fef3c7; color: #d97706; } /* Đã xác nhận */
     .st-2 { background: #e0f2fe; color: #0284c7; } /* Đang chuẩn bị */
     .st-3 { background: #dcfce7; color: #16a34a; } /* Đang giao */
-    .st-4 { background: #f1f5f9; color: #475569; } /* Hoàn thành */
+    .st-4 { background: #f1f5f9; color: #475569; } /* Đã giao */
     .st-5 { background: #fee2e2; color: #dc2626; } /* Đã huỷ */
 
     /* Nút xem chi tiết */
@@ -144,7 +144,7 @@
     <h2 class="order-title"><i class="fas fa-box-open"></i> Quản lý đơn hàng của bạn</h2>
 
     @{
-        // Status: 1: Chờ xác nhận, 2: Đang chuẩn bị, 3: Đang giao, 4: Hoàn thành, 5: Đã hủy
+        // Status: 1: Đã xác nhận, 2: Đang chuẩn bị, 3: Đang giao, 4: Đã giao, 5: Đã hủy
         var activeOrders = Model?.Where(o => o.OrderStatus >= 1 && o.OrderStatus <= 3).OrderByDescending(o => o.CreatedAt).ToList() ?? new List<ASM.Models.Order>();
         var historyOrders = Model?.Where(o => o.OrderStatus >= 4).OrderByDescending(o => o.CreatedAt).ToList() ?? new List<ASM.Models.Order>();
     }
@@ -190,8 +190,8 @@
                                 <td class="order-price">@order.FinalAmount.ToString("N0")đ</td>
                                 <td>
                                     <span class="status-badge st-@order.OrderStatus">
-                                        @(order.OrderStatus == 1 ? "Chờ xác nhận" : 
-                                          order.OrderStatus == 2 ? "Đang chuẩn bị" : "Đang giao hàng")
+                                        @(order.OrderStatus == 1 ? "Đã xác nhận" : 
+                                          order.OrderStatus == 2 ? "Đang chuẩn bị" : "Đang giao")
                                     </span>
                                 </td>
                                 <td style="text-align: right;">
@@ -241,7 +241,7 @@
                                 <td class="order-price">@order.FinalAmount.ToString("N0")đ</td>
                                 <td>
                                     <span class="status-badge st-@order.OrderStatus">
-                                        @(order.OrderStatus == 4 ? "Hoàn thành" : "Đã hủy")
+                                        @(order.OrderStatus == 4 ? "Đã giao" : "Đã hủy")
                                     </span>
                                 </td>
                                 <td style="text-align: right;">

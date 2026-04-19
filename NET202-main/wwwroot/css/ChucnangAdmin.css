@@ -1,3 +1,10 @@
+/* RESET BẢNG VỀ CHUẨN ĐỂ TRÁNH LỖI FLEX DỌC */
+table, .table { display: table !important; }
+thead { display: table-header-group !important; }
+tbody { display: table-row-group !important; }
+tr { display: table-row !important; }
+td, th { display: table-cell !important; }
+
 /* Style cho các chức năng quản lý Admin (User, Menu, Category) */
 .table-custom {
     width: 100%;

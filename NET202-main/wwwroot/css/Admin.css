@@ -1,4 +1,4 @@
-/* Tổng hợp Style cho Admin Dashboard */
+/* TOÀN BỘ STYLE CHO ADMIN DASHBOARD */
 :root {
     --admin-primary: #4b2e2e;
     --admin-secondary: #d97706;
@@ -40,7 +40,60 @@
     font-size: 1.5rem;
 }
 
-.revenue-icon { background: #ecfdf5; color: #10b981; }
-.order-icon { background: #eff6ff; color: #3b82f6; }
-.pending-icon { background: #fffbe6; color: #d97706; }
-.cancel-icon { background: #fef2f2; color: #ef4444; }
+.revenue-icon {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.order-icon {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.pending-icon {
+    background: #fffbe6;
+    color: #d97706;
+}
+
+.cancel-icon {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.table thead th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--admin-text-light);
+    border-top: none;
+    padding: 16px;
+}
+
+.table tbody td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.btn-primary {
+    background-color: var(--admin-secondary);
+    border-color: var(--admin-secondary);
+    box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #b45309;
+    border-color: #b45309;
+}
+
+.sidebar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white !important;
+    border-left: 4px solid var(--admin-secondary);
+}
+
+.form-check-input:checked {
+    background-color: #10b981;
+    border-color: #10b981;
+}

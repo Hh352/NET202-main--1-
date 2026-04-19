@@ -29,100 +29,365 @@
         --cf-gold: rgb(200, 130, 26);
     }
 
-    body { background-color: #F8FAFC; }
+    body {
+        background-color: #F8FAFC;
+    }
 
-    .report-container { display: flex; flex-direction: column; gap: 24px; padding-bottom: 30px; }
+    .report-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding-bottom: 30px;
+    }
 
     /* WIDGET CHÀO MỪNG (HEADER) */
     .welcome-widget {
         background: linear-gradient(135deg, rgb(44, 26, 14) 0%, rgb(92, 51, 23) 60%, rgb(139, 69, 19) 100%);
-        border-radius: 16px; padding: 24px; display: flex; align-items: center; justify-content: space-between;
-        position: relative; overflow: hidden; color: white; box-shadow: 0 10px 25px -5px rgba(139, 69, 19, 0.4);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        box-shadow: 0 10px 25px -5px rgba(139, 69, 19, 0.4);
     }
-    .welcome-content { position: relative; z-index: 10; }
-    .welcome-subtitle { font-size: 13px; color: var(--cf-brown-light); margin-bottom: 4px; letter-spacing: 0.05em; font-weight: 600; text-transform: uppercase; }
-    .welcome-title { font-size: 24px; font-weight: 800; color: #FFF; margin: 0; }
-    .welcome-desc { font-size: 14px; color: var(--cf-brown-light); margin-top: 6px; margin-bottom: 0; }
-    
+
+    .welcome-content {
+        position: relative;
+        z-index: 10;
+    }
+
+    .welcome-subtitle {
+        font-size: 13px;
+        color: var(--cf-brown-light);
+        margin-bottom: 4px;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .welcome-title {
+        font-size: 24px;
+        font-weight: 800;
+        color: #FFF;
+        margin: 0;
+    }
+
+    .welcome-desc {
+        font-size: 14px;
+        color: var(--cf-brown-light);
+        margin-top: 6px;
+        margin-bottom: 0;
+    }
+
     .welcome-icon-box {
-        width: 64px; height: 64px; border-radius: 16px; background: rgba(255, 255, 255, 0.12);
-        display: flex; align-items: center; justify-content: center; font-size: 28px; color: rgb(245, 230, 200); position: relative; z-index: 10;
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: rgb(245, 230, 200);
+        position: relative;
+        z-index: 10;
         backdrop-filter: blur(4px);
     }
-    
+
     /* Vòng tròn trang trí */
-    .welcome-circle-1 { position: absolute; right: -32px; top: -32px; width: 144px; height: 144px; border-radius: 50%; background: rgba(255, 255, 255, 0.04); }
-    .welcome-circle-2 { position: absolute; right: 64px; bottom: -40px; width: 96px; height: 96px; border-radius: 50%; background: rgba(255, 255, 255, 0.04); }
+    .welcome-circle-1 {
+        position: absolute;
+        right: -32px;
+        top: -32px;
+        width: 144px;
+        height: 144px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .welcome-circle-2 {
+        position: absolute;
+        right: 64px;
+        bottom: -40px;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+    }
 
     /* WIDGET KPI (4 CỘT) */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .kpi-card { border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px; transition: 0.3s; }
-    .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-    
-    .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; }
-    .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    
-    .kpi-val { font-size: 24px; font-weight: 800; line-height: 1; margin: 0; }
-    .kpi-label { font-size: 13px; color: rgb(107, 76, 42); margin: 6px 0 0 0; font-weight: 500; }
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
 
-    .kpi-revenue { background: rgb(254, 243, 226); border: 1px solid rgba(200, 130, 26, 0.15); }
-    .kpi-revenue .kpi-icon { background: rgb(253, 230, 138); color: rgb(200, 130, 26); }
-    .kpi-revenue .kpi-val { color: rgb(200, 130, 26); }
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: 0.3s;
+    }
 
-    .kpi-orders { background: rgb(240, 253, 244); border: 1px solid rgba(22, 163, 74, 0.15); }
-    .kpi-orders .kpi-icon { background: rgb(187, 247, 208); color: rgb(22, 163, 74); }
-    .kpi-orders .kpi-val { color: rgb(22, 163, 74); }
+    .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
 
-    .kpi-cancel { background: rgb(254, 242, 242); border: 1px solid rgba(220, 38, 38, 0.15); }
-    .kpi-cancel .kpi-icon { background: rgb(254, 202, 202); color: rgb(220, 38, 38); }
-    .kpi-cancel .kpi-val { color: rgb(220, 38, 38); }
+    .kpi-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
 
-    .kpi-success { background: rgb(236, 254, 255); border: 1px solid rgba(8, 145, 178, 0.15); }
-    .kpi-success .kpi-icon { background: rgb(165, 243, 252); color: rgb(8, 145, 178); }
-    .kpi-success .kpi-val { color: rgb(8, 145, 178); }
+    .kpi-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .kpi-val {
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+    }
+
+    .kpi-label {
+        font-size: 13px;
+        color: rgb(107, 76, 42);
+        margin: 6px 0 0 0;
+        font-weight: 500;
+    }
+
+    .kpi-revenue {
+        background: rgb(254, 243, 226);
+        border: 1px solid rgba(200, 130, 26, 0.15);
+    }
+
+    .kpi-revenue .kpi-icon {
+        background: rgb(253, 230, 138);
+        color: rgb(200, 130, 26);
+    }
+
+    .kpi-revenue .kpi-val {
+        color: rgb(200, 130, 26);
+    }
+
+    .kpi-orders {
+        background: rgb(240, 253, 244);
+        border: 1px solid rgba(22, 163, 74, 0.15);
+    }
+
+    .kpi-orders .kpi-icon {
+        background: rgb(187, 247, 208);
+        color: rgb(22, 163, 74);
+    }
+
+    .kpi-orders .kpi-val {
+        color: rgb(22, 163, 74);
+    }
+
+    .kpi-cancel {
+        background: rgb(254, 242, 242);
+        border: 1px solid rgba(220, 38, 38, 0.15);
+    }
+
+    .kpi-cancel .kpi-icon {
+        background: rgb(254, 202, 202);
+        color: rgb(220, 38, 38);
+    }
+
+    .kpi-cancel .kpi-val {
+        color: rgb(220, 38, 38);
+    }
+
+    .kpi-success {
+        background: rgb(236, 254, 255);
+        border: 1px solid rgba(8, 145, 178, 0.15);
+    }
+
+    .kpi-success .kpi-icon {
+        background: rgb(165, 243, 252);
+        color: rgb(8, 145, 178);
+    }
+
+    .kpi-success .kpi-val {
+        color: rgb(8, 145, 178);
+    }
 
     /* BOX TRẮNG CHUNG */
     .white-box {
-        background: #FFF; border: 1px solid rgb(232, 221, 208);
-        border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        background: #FFF;
+        border: 1px solid rgb(232, 221, 208);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
     }
-    .box-title { font-size: 17px; font-weight: 800; color: rgb(26, 15, 0); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+    .box-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: rgb(26, 15, 0);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
     /* BẢNG TOP SẢN PHẨM */
-    .top-table { width: 100%; border-collapse: collapse; }
-    .top-table th { font-size: 12px; color: rgb(154, 122, 90); font-weight: 700; text-transform: uppercase; text-align: left; padding-bottom: 12px; border-bottom: 2px solid rgb(240, 232, 222); }
-    .top-table td { padding: 14px 0; border-bottom: 1px solid rgb(250, 245, 240); vertical-align: middle; }
-    .top-table tr:last-child td { border-bottom: none; }
-    
-    .rank-number { font-size: 15px; color: var(--cf-gold); font-weight: 800; width: 30px; }
-    .prod-name { font-size: 14px; font-weight: 600; color: rgb(26, 15, 0); }
-    .prod-qty { font-size: 14px; color: rgb(107, 76, 42); font-weight: 500;}
-    .prod-rev { font-size: 14.5px; color: var(--cf-brown-primary); font-weight: 800; text-align: right; }
+    .top-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .top-table th {
+        font-size: 12px;
+        color: rgb(154, 122, 90);
+        font-weight: 700;
+        text-transform: uppercase;
+        text-align: left;
+        padding-bottom: 12px;
+        border-bottom: 2px solid rgb(240, 232, 222);
+    }
+
+    .top-table td {
+        padding: 14px 0;
+        border-bottom: 1px solid rgb(250, 245, 240);
+        vertical-align: middle;
+    }
+
+    .top-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .rank-number {
+        font-size: 15px;
+        color: var(--cf-gold);
+        font-weight: 800;
+        width: 30px;
+    }
+
+    .prod-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: rgb(26, 15, 0);
+    }
+
+    .prod-qty {
+        font-size: 14px;
+        color: rgb(107, 76, 42);
+        font-weight: 500;
+    }
+
+    .prod-rev {
+        font-size: 14.5px;
+        color: var(--cf-brown-primary);
+        font-weight: 800;
+        text-align: right;
+    }
 
     /* CHART WRAPPER */
-    .chart-container { position: relative; height: 320px; width: 100%; }
-    .doughnut-container { position: relative; height: 180px; width: 180px; margin: 0 auto; }
+    .chart-container {
+        position: relative;
+        height: 320px;
+        width: 100%;
+    }
+
+    .doughnut-container {
+        position: relative;
+        height: 180px;
+        width: 180px;
+        margin: 0 auto;
+    }
 
     /* CUSTOM PROGRESS BAR */
-    .ratio-group { margin-top: 15px; }
-    .ratio-item { margin-bottom: 16px; }
-    .ratio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .r-label { font-size: 13px; color: rgb(74, 48, 32); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-    .r-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .r-dot.success { background: var(--cf-brown-primary); }
-    .r-dot.cancel { background: rgb(239, 68, 68); }
-    .r-percent { font-size: 14px; font-weight: 800; color: rgb(26, 15, 0); }
-    
-    .progress-track { height: 8px; background: rgb(240, 232, 222); border-radius: 10px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 10px; }
-    
-    .total-orders-info { border-top: 1px solid rgb(240, 232, 222); padding-top: 16px; margin-top: 24px; }
-    .total-orders-info p.lbl { font-size: 12px; color: rgb(154, 122, 90); margin-bottom: 2px; }
-    .total-orders-info p.val { font-size: 20px; font-weight: 900; color: var(--cf-brown-primary); margin: 0; }
+    .ratio-group {
+        margin-top: 15px;
+    }
+
+    .ratio-item {
+        margin-bottom: 16px;
+    }
+
+    .ratio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+
+    .r-label {
+        font-size: 13px;
+        color: rgb(74, 48, 32);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .r-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    .r-dot.success {
+        background: var(--cf-brown-primary);
+    }
+
+    .r-dot.cancel {
+        background: rgb(239, 68, 68);
+    }
+
+    .r-percent {
+        font-size: 14px;
+        font-weight: 800;
+        color: rgb(26, 15, 0);
+    }
+
+    .progress-track {
+        height: 8px;
+        background: rgb(240, 232, 222);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 10px;
+    }
+
+    .total-orders-info {
+        border-top: 1px solid rgb(240, 232, 222);
+        padding-top: 16px;
+        margin-top: 24px;
+    }
+
+    .total-orders-info p.lbl {
+        font-size: 12px;
+        color: rgb(154, 122, 90);
+        margin-bottom: 2px;
+    }
+
+    .total-orders-info p.val {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--cf-brown-primary);
+        margin: 0;
+    }
 </style>
 
 <div class="report-container">
-
     <div class="welcome-widget">
         <div class="welcome-content">
             <p class="welcome-subtitle">Tổng quan</p>
@@ -212,20 +477,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (ViewBag.TopProducts != null)
-                        {
-                            int stt = 1;
-                            foreach (var item in ViewBag.TopProducts)
-                            {
-                                <tr>
-                                    <td class="rank-number">@stt</td>
-                                    <td class="prod-name">@item.ProductName</td>
-                                    <td class="prod-qty" style="text-align: center;">@item.QuantitySold</td>
-                                    <td class="prod-rev">@String.Format("{0:N0}", item.Revenue)đ</td>
-                                </tr>
-                                stt++;
-                            }
+                    @if (ViewBag.TopProducts != null) {
+                        int stt = 1;
+                        foreach (var item in ViewBag.TopProducts) {
+                            <tr>
+                                <td class="rank-number">@stt</td>
+                                <td class="prod-name">@item.ProductName</td>
+                                <td class="prod-qty" style="text-align: center;">@item.QuantitySold</td>
+                                <td class="prod-rev">@String.Format("{0:N0}", item.Revenue)đ</td>
+                            </tr>
+                            stt++;
                         }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -234,7 +497,6 @@
         <div class="col-lg-5">
             <div class="white-box h-100">
                 <h2 class="box-title">📊 Tỉ lệ xử lý đơn hàng</h2>
-                
                 <div class="d-flex align-items-center gap-4 mt-4">
                     <div class="doughnut-container">
                         <canvas id="orderRatioChart"></canvas>
@@ -270,7 +532,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -282,8 +543,8 @@
         // --- 2. VẼ BIỂU ĐỒ DOANH THU ---
         const ctxRev = document.getElementById('revenueChart').getContext('2d');
         let gradientBrown = ctxRev.createLinearGradient(0, 0, 0, 300);
-        gradientBrown.addColorStop(0, 'rgba(139, 69, 19, 0.25)'); 
-        gradientBrown.addColorStop(1, 'rgba(139, 69, 19, 0.01)'); 
+        gradientBrown.addColorStop(0, 'rgba(139, 69, 19, 0.25)');
+        gradientBrown.addColorStop(1, 'rgba(139, 69, 19, 0.01)');
 
         new Chart(ctxRev, {
             type: 'line',
@@ -329,8 +590,9 @@
                     y: {
                         beginAtZero: true,
                         grid: { color: '#F0E8DE', drawBorder: false, borderDash: [4, 4] },
-                        ticks: { 
-                            color: '#9A7A5A', font: { size: 11, weight: '600' },
+                        ticks: {
+                            color: '#9A7A5A',
+                            font: { size: 11, weight: '600' },
                             callback: function(value) {
                                 if (value >= 1000000) return (value / 1000000) + ' Tr';
                                 if (value >= 1000) return (value / 1000) + 'K';
@@ -349,7 +611,7 @@
         // --- 3. VẼ BIỂU ĐỒ TRÒN ---
         const successRate = @successRate;
         const cancelRate = @cancelRate;
-        const pendingRate = Math.max(0, 100 - successRate - cancelRate).toFixed(1); 
+        const pendingRate = Math.max(0, 100 - successRate - cancelRate).toFixed(1);
 
         const ctxRatio = document.getElementById('orderRatioChart').getContext('2d');
         new Chart(ctxRatio, {
@@ -366,12 +628,14 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '75%', 
+                cutout: '75%',
                 plugins: {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function(context) { return ' ' + context.label + ': ' + context.raw + '%'; }
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.raw + '%';
+                            }
                         }
                     }
                 }
