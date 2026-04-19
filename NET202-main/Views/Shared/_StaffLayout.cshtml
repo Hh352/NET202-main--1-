@@ -41,7 +41,7 @@
 
         /* ===== SIDEBAR ===== */
         .sidebar { 
-            width: 240px;
+            width: 180px;
             background-color: var(--bg-sidebar); 
             display: flex; 
             flex-direction: column; 
@@ -145,7 +145,7 @@
 
         /* ===== MAIN CONTENT ===== */
         .main-wrapper { flex: 1;
-            display: flex; flex-direction: column; overflow: hidden; }
+            display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
         
         .topbar { 
             height: 65px;
@@ -202,8 +202,9 @@
 
         .content-body { 
             flex: 1;
-            padding: 28px; 
+            padding: 10px; 
             overflow-y: auto; 
+            min-width: 0;
         }
 
         /* ===== SCROLLBAR ===== */

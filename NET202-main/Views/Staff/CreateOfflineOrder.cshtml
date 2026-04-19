@@ -25,6 +25,9 @@
     .content-body { padding: 0 !important; }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scroll-x::-webkit-scrollbar { height: 4px; }
+    .custom-scroll-x::-webkit-scrollbar-thumb { background: #d97706; border-radius: 10px; }
+    .custom-scroll-x::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
     .custom-scroll::-webkit-scrollbar { width: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
     .card-hover:hover { transform: scale(1.03); border-color: #d97706; box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.2); }
@@ -36,32 +39,25 @@
 
     <div class="relative z-10 flex-1 flex flex-col bg-neutral-900/50 backdrop-blur">
         
-        <div class="border-b border-amber-900/20 bg-gradient-to-r from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl p-6 shadow-lg flex-shrink-0">
-            <div class="flex gap-4 mb-4 overflow-x-auto pb-2 scrollbar-hide items-center">
-                <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-amber-500 bg-gradient-to-br from-amber-600/20 to-amber-800/20 shadow-lg shadow-amber-900/30 scale-105 text-white">
-                    <i class="fa-solid fa-border-all text-amber-500 text-xl"></i>
-                    <span class="text-lg font-medium">TẤT CẢ</span>
+        <div class="border-b border-amber-900/20 bg-gradient-to-r from-neutral-900/90 to-neutral-900/50 backdrop-blur-xl p-3 shadow-lg flex-shrink-0">
+            <div id="categoryContainer" class="flex gap-2 mb-3 overflow-x-auto pb-2 custom-scroll-x items-center cursor-grab active:cursor-grabbing select-none">
+                <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex-shrink-0 flex items-center gap-2 px-4 py-2 border-2 rounded-xl transition-all duration-300 border-amber-500 bg-gradient-to-br from-amber-600/20 to-amber-800/20 shadow-lg shadow-amber-900/30 scale-105 text-white">
+                    <i class="fa-solid fa-border-all text-amber-500 text-sm"></i>
+                    <span class="text-xs font-bold">TẤT CẢ</span>
                 </button>
 
                 @foreach (var cat in categories)
                 {
-                    <button onclick="setCategory('cat-@cat.CategoryId')" id="btn-cat-@cat.CategoryId" class="cat-btn flex-shrink-0 flex items-center gap-3 px-8 py-4 border-2 rounded-2xl transition-all duration-300 border-neutral-700 hover:border-amber-700 hover:bg-neutral-800/50 text-neutral-400">
-                        @if(cat.CategoryName.ToLower().Contains("cà phê") || cat.CategoryName.ToLower().Contains("cafe")) { 
-                            <i class="fa-solid fa-mug-hot text-amber-500 text-xl"></i> 
-                        } else if(cat.CategoryName.ToLower().Contains("bánh") || cat.CategoryName.ToLower().Contains("cake")) { 
-                            <i class="fa-solid fa-cake-candles text-amber-500 text-xl"></i> 
-                        } else { 
-                            <i class="fa-solid fa-leaf text-amber-500 text-xl"></i> 
-                        }
-                        <span class="text-lg font-medium uppercase">@cat.CategoryName</span>
+                    <button onclick="setCategory('cat-@cat.CategoryId')" id="btn-cat-@cat.CategoryId" class="cat-btn flex-shrink-0 flex items-center gap-2 px-4 py-2 border-2 rounded-xl transition-all duration-300 border-neutral-700 hover:border-amber-700 hover:bg-neutral-800/50 text-neutral-400">
+                        <span class="text-xs font-bold uppercase">@cat.CategoryName</span>
                     </button>
                 }
             </div>
 
             <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 text-lg"></i>
-                <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." onkeyup="applyFilters()"
-                       class="w-full pl-12 pr-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 transition-all text-white placeholder-neutral-500 text-base" />
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 text-xs"></i>
+                <input type="text" id="searchInput" placeholder="Tìm tên món..." onkeyup="applyFilters()"
+                       class="w-full pl-10 pr-4 py-2 bg-neutral-800/50 border border-neutral-700 rounded-lg focus:outline-none focus:border-amber-600 transition-all text-white placeholder-neutral-500 text-xs" />
             </div>
         </div>
 
@@ -78,7 +74,7 @@
                             @group.Key
                         </h2>
                         
-                        <div class="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-3">
                             @foreach (var item in group)
                             {
                                 var isOutOfStock = item.Status == "Hidden";
@@ -107,8 +103,8 @@
                                         </button>
                                     </div>
                                     
-                                    <div class="p-4 flex flex-col flex-1 justify-between relative">
-                                        <div class="text-sm font-medium mb-3 text-neutral-100 line-clamp-2 leading-snug">@item.ProductName</div>
+                                    <div class="p-2 flex flex-col flex-1 justify-between relative">
+                                        <div class="text-[12px] font-semibold mb-1 text-neutral-100 line-clamp-1 leading-snug">@item.ProductName</div>
                                         
                                         <div class="flex items-center justify-between mt-auto">
                                             <div class="text-amber-400 font-bold tracking-tight">@item.Price.ToString("N0")đ</div>
@@ -133,16 +129,16 @@
         </div>
     </div>
 
-    <div class="relative z-20 w-[420px] bg-gradient-to-b from-neutral-900 to-neutral-950 border-l border-amber-900/30 flex flex-col shadow-2xl">
+    <div class="relative z-20 w-[300px] xl:w-[340px] bg-gradient-to-b from-neutral-900 to-neutral-950 border-l border-amber-900/30 flex flex-col shadow-2xl">
         
-        <div class="p-6 border-b border-amber-900/20">
-            <div class="flex items-center justify-between mb-1">
-                <h3 class="text-xl font-bold text-amber-200 tracking-wide">Đơn hàng mới</h3>
-                <button onclick="clearCart()" class="text-sm text-red-400 hover:text-red-300 font-medium transition-colors hidden" id="btnClearCart">
-                    Xóa tất cả
+        <div class="p-3 border-b border-amber-900/20">
+            <div class="flex items-center justify-between mb-0.5">
+                <h3 class="text-base font-bold text-amber-200 tracking-wide">Đơn hàng mới</h3>
+                <button onclick="clearCart()" class="text-[10px] text-red-400 hover:text-red-300 font-bold transition-colors hidden" id="btnClearCart">
+                    Xóa hết
                 </button>
             </div>
-            <div class="text-sm text-neutral-400 font-medium"><span id="txtItemCount">0</span> sản phẩm</div>
+            <div class="text-[10px] text-neutral-400 font-medium uppercase"><span id="txtItemCount">0</span> món đã chọn</div>
         </div>
 
         <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll" id="cartContainer">
@@ -152,36 +148,36 @@
             </div>
         </div>
 
-        <div class="p-6 border-t border-amber-900/20 space-y-5 bg-neutral-900/90 backdrop-blur-xl">
+        <div class="p-3 border-t border-amber-900/20 space-y-3 bg-neutral-900/90 backdrop-blur-xl">
             
-            <div class="space-y-3 mb-2">
+            <div class="space-y-1.5 mb-0.5">
                 <div class="relative">
-                    <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"></i>
-                    <input type="text" id="customerName" placeholder="Tên khách / Số thẻ rung..." class="w-full pl-10 pr-4 py-3 bg-neutral-800/80 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all text-white text-sm placeholder-neutral-500" />
+                    <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[10px]"></i>
+                    <input type="text" id="customerName" placeholder="Khách / Thẻ rung..." class="w-full pl-8 pr-4 py-2 bg-neutral-800/80 border border-neutral-700 rounded-lg focus:outline-none focus:border-amber-500 transition-all text-white text-[12px] placeholder-neutral-500" />
                 </div>
                 <div class="relative">
-                    <i class="fa-regular fa-comment-dots absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"></i>
-                    <input type="text" id="orderNote" placeholder="Ghi chú (ít đá, nhiều ngọt...)" class="w-full pl-10 pr-4 py-3 bg-neutral-800/80 border border-neutral-700 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all text-white text-sm placeholder-neutral-500" />
+                    <i class="fa-regular fa-comment-dots absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[10px]"></i>
+                    <input type="text" id="orderNote" placeholder="Ghi chú món..." class="w-full pl-8 pr-4 py-2 bg-neutral-800/80 border border-neutral-700 rounded-lg focus:outline-none focus:border-amber-500 transition-all text-white text-[12px] placeholder-neutral-500" />
                 </div>
             </div>
 
-            <div class="flex justify-between items-end border-t border-neutral-800 pt-4">
-                <span class="text-neutral-400 font-medium">Tổng thanh toán:</span>
-                <span class="text-3xl font-bold text-amber-400 tracking-tight" id="txtTotal">0đ</span>
+            <div class="flex justify-between items-center border-t border-neutral-800 pt-2">
+                <span class="text-neutral-400 text-xs font-bold uppercase">Tổng:</span>
+                <span class="text-xl font-bold text-amber-400 tracking-tight" id="txtTotal">0đ</span>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <button id="btnCash" onclick="setPaymentMethod('cash')" class="flex items-center justify-center gap-2 py-4 border-2 border-neutral-700 rounded-xl text-neutral-300 font-semibold hover:border-amber-600 transition-all">
-                    <i class="fa-solid fa-money-bill-wave"></i> Tiền mặt
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btnCash" onclick="setPaymentMethod('cash')" class="flex items-center justify-center gap-1.5 py-2.5 border border-neutral-700 rounded-lg text-neutral-300 text-[11px] font-bold uppercase hover:border-amber-600 transition-all">
+                    Tiền mặt
                 </button>
-                <button id="btnQR" onclick="setPaymentMethod('qr')" class="flex items-center justify-center gap-2 py-4 border-2 border-amber-500 bg-amber-500/10 rounded-xl text-amber-400 font-semibold transition-all">
-                    <i class="fa-solid fa-qrcode"></i> Thẻ / QR
+                <button id="btnQR" onclick="setPaymentMethod('qr')" class="flex items-center justify-center gap-1.5 py-2.5 border border-amber-500 bg-amber-500/10 rounded-lg text-amber-400 text-[11px] font-bold uppercase transition-all">
+                    QR / Thẻ
                 </button>
             </div>
 
             <button id="btnPay" disabled onclick="submitOrder()" 
-                    class="w-full py-5 bg-amber-600 hover:bg-amber-500 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:border-neutral-700 border border-amber-500 rounded-xl font-bold text-[17px] text-white transition-all shadow-[0_0_20px_rgba(217,119,6,0.3)] disabled:shadow-none uppercase tracking-wider flex items-center justify-center gap-2">
-                THANH TOÁN <i class="fa-solid fa-arrow-right"></i>
+                    class="w-full py-3.5 bg-amber-600 hover:bg-amber-500 disabled:bg-neutral-800 disabled:text-neutral-500 border border-amber-500 rounded-xl font-black text-sm text-white transition-all uppercase tracking-widest flex items-center justify-center gap-2">
+                THANH TOÁN
             </button>
         </div>
     </div>
@@ -622,9 +618,30 @@
         }
 
         function closeQrModal() {
-            document.getElementById('qrModal').classList.add('hidden');
-            document.getElementById('qrModal').classList.remove('flex');
-            resetPayBtn();
-        }
+        // Tính năng Kéo để cuộn (Drag to scroll) cho danh mục
+        const slider = document.getElementById('categoryContainer');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Tốc độ kéo
+            slider.scrollLeft = scrollLeft - walk;
+        });
     </script>
 }
