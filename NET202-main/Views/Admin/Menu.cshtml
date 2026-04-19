@@ -90,56 +90,60 @@
                             </form>
                         </td>
                     </tr>
-
-                    <!-- Modal Sửa Món Ăn -->
-                    <div class="modal fade" id="editMenuModal-@item.ProductId" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form asp-action="EditMenuItem" method="post" enctype="multipart/form-data" class="modal-content border-0 shadow">
-                                <div class="modal-header border-bottom-0">
-                                    <h5 class="modal-title fw-bold">Chỉnh sửa món ăn</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body p-4">
-                                    <input type="hidden" name="productId" value="@item.ProductId" />
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Tên món</label>
-                                        <input type="text" name="productName" value="@item.ProductName" class="form-control rounded-3" required>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">Giá bán</label>
-                                            <input type="number" name="price" value="@item.Price" class="form-control rounded-3" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">Danh mục</label>
-                                            <select name="categoryId" class="form-select rounded-3">
-                                                @foreach(var cat in categories ?? new List<ASM.Models.Category>()) {
-                                                    <option value="@cat.CategoryId" selected="@(item.CategoryId == cat.CategoryId)">@cat.CategoryName</option>
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Mô tả</label>
-                                        <textarea name="description" class="form-control rounded-3" rows="3">@item.Description</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Hình ảnh mới (nếu có)</label>
-                                        <input type="file" name="newImage" class="form-control rounded-3">
-                                    </div>
-                                </div>
-                                <div class="modal-footer border-top-0">
-                                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu thay đổi</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@foreach (var item in Model)
+{
+    <!-- Modal Sửa Món Ăn -->
+    <div class="modal fade" id="editMenuModal-@item.ProductId" tabindex="-1">
+        <div class="modal-dialog">
+            <form asp-action="EditMenuItem" method="post" enctype="multipart/form-data" class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Chỉnh sửa món ăn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" name="productId" value="@item.ProductId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên món</label>
+                        <input type="text" name="productName" value="@item.ProductName" class="form-control rounded-3" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Giá bán</label>
+                            <input type="number" name="price" value="@item.Price" class="form-control rounded-3" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Danh mục</label>
+                            <select name="categoryId" class="form-select rounded-3">
+                                @foreach (var cat in categories ?? new List<ASM.Models.Category>())
+                                {
+                                    <option value="@cat.CategoryId" selected="@(item.CategoryId == cat.CategoryId)">@cat.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mô tả</label>
+                        <textarea name="description" class="form-control rounded-3" rows="3">@item.Description</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Hình ảnh mới (nếu có)</label>
+                        <input type="file" name="newImage" class="form-control rounded-3">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
 
 <!-- Modal Thêm Món Ăn -->
 <div class="modal fade" id="addMenuModal" tabindex="-1">

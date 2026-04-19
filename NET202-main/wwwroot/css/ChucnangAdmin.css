@@ -52,3 +52,27 @@ td, th { display: table-cell !important; }
 .badge-active { background: #ecfdf5; color: #065f46; }
 .badge-locked { background: #fef2f2; color: #991b1b; }
 .badge-pending { background: #fffbe6; color: #92400e; }
+
+/* FIX MODAL LAYOUT */
+.modal-content {
+    border-radius: 12px;
+}
+.modal-body label {
+    display: block !important; /* Ép label xuống dòng độc lập */
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #475569;
+    text-align: left !important;
+}
+.modal-body .form-control, 
+.modal-body .form-select {
+    width: 100% !important; /* Ép input chiếm hết chiều ngang */
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 5px;
+    display: block !important;
+}
+.modal-body .mb-3 {
+    margin-bottom: 20px !important;
+    clear: both;
+}

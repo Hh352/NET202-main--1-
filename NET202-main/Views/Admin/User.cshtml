@@ -80,6 +80,45 @@
     </div>
 </div>
 
+@foreach (var user in Model)
+{
+    <!-- Modal Sửa Người Dùng -->
+    <div class="modal fade" id="editUserModal-@user.UserId" tabindex="-1">
+        <div class="modal-dialog">
+            <form asp-action="EditUser" method="post" class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Chỉnh sửa người dùng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" name="userId" value="@user.UserId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Họ và tên</label>
+                        <input type="text" name="fullName" value="@user.FullName" class="form-control rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" name="email" value="@user.Email" class="form-control rounded-3" readonly>
+                        <small class="text-muted">Email không thể thay đổi để bảo mật.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Vai trò</label>
+                        <select name="role" class="form-select rounded-3">
+                            <option value="0" selected="@(user.Role == 0)">Khách hàng (User)</option>
+                            <option value="1" selected="@(user.Role == 1)">Nhân viên (Staff)</option>
+                            <option value="2" selected="@(user.Role == 2)">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
 <!-- Modal Thêm Người Dùng (Rút gọn) -->
 <div class="modal fade" id="addUserModal" tabindex="-1">
     <div class="modal-dialog">

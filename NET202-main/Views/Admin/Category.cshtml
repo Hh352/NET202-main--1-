@@ -68,45 +68,48 @@
                             </form>
                         </td>
                     </tr>
-
-                    <!-- Modal Sửa Danh Mục -->
-                    <div class="modal fade" id="editCategoryModal-@item.CategoryId" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form asp-action="EditCategory" method="post" class="modal-content border-0 shadow">
-                                <div class="modal-header border-bottom-0">
-                                    <h5 class="modal-title fw-bold">Chỉnh sửa danh mục</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body p-4">
-                                    <input type="hidden" name="categoryId" value="@item.CategoryId" />
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Tên danh mục</label>
-                                        <input type="text" name="categoryName" value="@item.CategoryName" class="form-control rounded-3" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Mô tả</label>
-                                        <textarea name="description" class="form-control rounded-3" rows="3">@item.Description</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Hiển thị</label>
-                                        <select name="status" class="form-select rounded-3">
-                                            <option value="Active" selected="@(item.Status == "Active")">Công khai trên Website</option>
-                                            <option value="Hidden" selected="@(item.Status == "Hidden")">Ẩn khỏi khách hàng</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="modal-footer border-top-0">
-                                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Cập nhật</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@foreach (var item in Model)
+{
+    <!-- Modal Sửa Danh Mục -->
+    <div class="modal fade" id="editCategoryModal-@item.CategoryId" tabindex="-1">
+        <div class="modal-dialog">
+            <form asp-action="EditCategory" method="post" class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Chỉnh sửa danh mục</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" name="categoryId" value="@item.CategoryId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên danh mục</label>
+                        <input type="text" name="categoryName" value="@item.CategoryName" class="form-control rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mô tả</label>
+                        <textarea name="description" class="form-control rounded-3" rows="3">@item.Description</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Hiển thị</label>
+                        <select name="status" class="form-select rounded-3">
+                            <option value="Active" selected="@(item.Status == "Active")">Công khai trên Website</option>
+                            <option value="Hidden" selected="@(item.Status == "Hidden")">Ẩn khỏi khách hàng</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
 
 <!-- Modal Thêm Danh Mục -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
