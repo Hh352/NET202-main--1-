@@ -238,7 +238,7 @@ namespace ASM.Controllers
             var total = cartItems.Sum(x => x.Product != null ? x.Product.Price * x.Quantity : 0);
             var queryNormalized = (query ?? string.Empty).Trim().ToUpperInvariant();
 
-            var suggestions = _context.Vouchers
+            var vouchers = _context.Vouchers
                 .Where(v => v.Status == "Active"
                          && DateTime.Now >= v.StartDate
                          && DateTime.Now <= v.EndDate
@@ -246,7 +246,9 @@ namespace ASM.Controllers
                          && (string.IsNullOrEmpty(queryNormalized)
                               || v.Code.ToUpper().Contains(queryNormalized)
                               || (!string.IsNullOrEmpty(v.Name) && v.Name.ToUpper().Contains(queryNormalized))))
-                .AsEnumerable()
+                .OrderBy(v => v.MinOrderValue)
+                .ThenBy(v => v.Code)
+                .Take(10)
                 .Select(v => new
                 {
                     v.Code,
@@ -254,27 +256,11 @@ namespace ASM.Controllers
                     MinTotal = v.MinOrderValue,
                     IsEligible = total >= v.MinOrderValue,
                     v.DiscountType,
-                    v.DiscountValue,
-                    EstimatedDiscount = v.DiscountType == 1
-                        ? Math.Min(total * v.DiscountValue / 100, total)
-                        : Math.Min(v.DiscountValue, total)
-                })
-                .OrderByDescending(v => v.IsEligible)
-                .ThenByDescending(v => v.EstimatedDiscount)
-                .ThenBy(v => v.MinTotal)
-                .Take(3)
-                .Select(v => new
-                {
-                    v.Code,
-                    v.Name,
-                    v.MinTotal,
-                    v.IsEligible,
-                    v.DiscountType,
                     v.DiscountValue
                 })
                 .ToList();
 
-            return Json(suggestions);
+            return Json(vouchers);
         }
 
         // 7. THANH TOÁN (TỪ GIỎ HÀNG SANG ĐƠN HÀNG - Đã gộp tính Voucher)
