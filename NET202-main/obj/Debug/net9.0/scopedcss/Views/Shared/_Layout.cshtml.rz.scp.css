@@ -17,7 +17,8 @@ a[b-7xuikza0od] {
   border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active[b-7xuikza0od], .nav-pills .show > .nav-link[b-7xuikza0od] {
+.nav-pills .nav-link.active[b-7xuikza0od],
+.nav-pills .show>.nav-link[b-7xuikza0od] {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
@@ -26,6 +27,7 @@ a[b-7xuikza0od] {
 .border-top[b-7xuikza0od] {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom[b-7xuikza0od] {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -45,4 +47,18 @@ button.accept-policy[b-7xuikza0od] {
   width: 100%;
   white-space: nowrap;
   line-height: 60px;
+}
+
+.swal2-container.swal2-shown[b-7xuikza0od] {
+  z-index: 99999 !important;
+}
+
+.swal2-backdrop-show[b-7xuikza0od] {
+  z-index: 99998 !important;
+}
+
+/* Đảm bảo popup không bị che bởi bất kỳ thành phần nào của sidebar */
+.swal2-popup[b-7xuikza0od] {
+  z-index: 99999 !important;
+  font-family: 'Be Vietnam Pro', sans-serif !important;
 }
