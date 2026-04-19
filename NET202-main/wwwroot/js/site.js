@@ -48,7 +48,8 @@ function addToCart(productId, qty = 1) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 4000,
+                showCloseButton: true,
+                timer: 3000,
                 timerProgressBar: true,
                 background: '#ffffff',
                 color: '#4b2e2e',
@@ -60,7 +61,7 @@ function addToCart(productId, qty = 1) {
                         <img src="${imgSrc}" onerror="this.src='/Images/default.png'" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
                         <div>
                             <div style="font-weight: 800; font-size: 0.9rem;">${data.productName}</div>
-                            <div style="font-size: 0.8rem; color: #d97706; font-weight: 700;">Số lượng: 1 món mới đã được thêm</div>
+                            <div style="font-size: 0.8rem; color: #d97706; font-weight: 700;">Số lượng: ${qty} món mới đã được thêm</div>
                         </div>
                     </div>
                 `,

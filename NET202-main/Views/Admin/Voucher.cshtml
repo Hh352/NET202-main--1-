@@ -1,232 +1,152 @@
 @model IEnumerable<ASM.Models.Voucher>
 @{
-    ViewData["Title"] = "Quản lý Khuyến Mãi";
+    ViewData["Title"] = "Quản lý mã Voucher";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<style>
-    /* BỐ CỤC CHUNG & HEADER */
-    .voucher-container { background: #FFF; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-    .page-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .title-group { display: flex; align-items: center; gap: 14px; }
-    .title-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #FDE8D5, #F5D0AE); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #A0522D; font-size: 18px; }
-    .title-info h2 { font-size: 22px; font-weight: 800; color: #2A1C14; margin: 0 0 2px; }
-    .title-info span { font-size: 13px; color: #A0AEC0; font-weight: 500; }
-    .btn-add { background: linear-gradient(135deg, #8B5A2B, #6B3E1A); color: #FFF; padding: 10px 20px; border-radius: 30px; font-weight: 600; border: none; box-shadow: 0 3px 10px rgba(139,90,43,0.25); transition: 0.2s; }
-    .btn-add:hover { background: #6B3E1A; transform: translateY(-1px); color: #fff; }
-
-    .alert-top { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; min-width: 350px; font-weight: 600; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: slideDown 0.4s ease-out forwards; }
-    @@keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
-
-    /* TOOLBAR & FILTER */
-    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap; background: #faf5f0; padding: 16px 20px; border-radius: 12px; border: 1px solid #e8ddd0; }
-    .filter-group select { border: 1px solid #e8ddd0; border-radius: 8px; padding: 8px 12px; font-size: 13px; outline: none; margin-left: 8px; cursor: pointer; }
-    .search-box { position: relative; width: 260px; }
-    .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9a7a5a; }
-    .search-box input { width: 100%; padding: 8px 16px 8px 36px; border: 1px solid #e8ddd0; border-radius: 30px; font-size: 13px; outline: none; transition: 0.2s; }
-    .search-box input:focus { border-color: #c8821a; width: 280px; }
-
-    /* BẢNG DỮ LIỆU */
-    .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { padding: 12px 14px; color: #6b4c2a; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid #e8ddd0; text-align: center; background: #faf5f0; }
-    .admin-table td { padding: 14px; border-bottom: 1px solid #F5EDE4; font-size: 13px; vertical-align: middle; text-align: center; color: #1a0f00; }
-    .admin-table tr:hover { background: #faf5f0; }
-    
-    .code-tag { font-size: 12px; color: #8B4513; background: #FEF3E2; padding: 4px 8px; border-radius: 6px; font-weight: 800; letter-spacing: 0.5px; }
-    .discount-text { color: #16A34A; font-weight: 700; }
-    
-    /* TIẾN TRÌNH */
-    .progress-track { height: 6px; width: 80px; background: #e8ddd0; border-radius: 10px; margin: 4px auto 0; overflow: hidden; }
-    .progress-fill { height: 100%; background: #c8821a; border-radius: 10px; }
-
-    /* TRẠNG THÁI BADGE */
-    .badge-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
-    .st-running { background: #DCFCE7; color: #15803D; }
-    .st-ended { background: #F1F5F9; color: #64748B; } /* Màu xám cho Hết hạn */
-    .st-locked { background: #FEE2E2; color: #DC2626; } /* Màu đỏ cho Bị Khóa */
-    .st-upcoming { background: #FEF3E2; color: #C8821A; }
-
-    /* TOGGLE SWITCH */
-    .switch { position: relative; display: inline-block; width: 36px; height: 20px; margin: 0; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E0; transition: .3s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-    input:checked + .slider { background-color: #10B981; }
-    input:checked + .slider:before { transform: translateX(16px); }
-
-    /* NÚT HÀNH ĐỘNG */
-    .actions { display: flex; gap: 8px; justify-content: center; }
-    .btn-action { width: 32px; height: 32px; border-radius: 8px; background: transparent; display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; border: 1.5px solid; }
-    .btn-edit { border-color: #F59E0B; color: #F59E0B; } .btn-edit:hover { background: #F59E0B; color: #FFF; }
-    .btn-delete { border-color: #EF4444; color: #EF4444; } .btn-delete:hover { background: #EF4444; color: #FFF; }
-
-    /* MODAL */
-    .modal-content { border-radius: 14px; border: none; }
-    .form-label { font-weight: 600; font-size: 13px; margin-bottom: 4px; color: #1a0f00; }
-    .form-control, .form-select { border-radius: 8px; font-size: 13px; padding: 8px 12px; border: 1px solid #e8ddd0; }
-    .form-control:focus, .form-select:focus { border-color: #c8821a; box-shadow: none; }
-</style>
-
-@if (TempData["Success"] != null) { <div class="alert alert-success alert-dismissible fade show alert-top"><b>Thành công:</b> @TempData["Success"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
-@if (TempData["Error"] != null)   { <div class="alert alert-danger alert-dismissible fade show alert-top"><b>Lỗi:</b> @TempData["Error"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
-
-<div class="voucher-container">
-    <div class="page-header-top">
-        <div class="title-group">
-            <div class="title-icon"><i class="fa-solid fa-ticket"></i></div>
-            <div class="title-info"><h2>Quản lý Voucher</h2><span>@Model.Count() mã giảm giá</span></div>
+<div class="p-4 bg-white rounded-3 shadow-sm">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 bg-success bg-opacity-10 text-success" role="alert">
+            <i class="fa fa-check-circle me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <button class="btn-add" data-bs-toggle="modal" data-bs-target="#addModal"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 bg-danger bg-opacity-10 text-danger" role="alert">
+            <i class="fa fa-exclamation-circle me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h4 class="mb-0 fw-bold"><i class="fa fa-ticket-alt text-danger me-2"></i>Quản lý khuyến mãi</h4>
+            <small class="text-muted">Đang có @Model.Count() mã voucher trong hệ thống</small>
+        </div>
+        <button class="btn btn-danger d-flex align-items-center gap-2 px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
+            <i class="fa fa-plus-circle"></i> THÊM MÃ MỚI
+        </button>
     </div>
 
-    <div class="toolbar">
-        <div class="filter-group">
-            <span style="font-size:13px; font-weight:600; color:#6b4c2a;">Lọc trạng thái:</span>
-            <select id="statusFilterVoucher" onchange="filterVoucher()">
-                <option value="">Tất cả</option>
-                <option value="Running">Đang chạy</option>
-                <option value="Upcoming">Sắp tới</option>
-                <option value="Ended">Đã hết hạn</option>
-                <option value="Locked">Bị khóa</option>
-            </select>
-        </div>
-        <div class="search-box">
-            <i class="fa-solid fa-search"></i>
-            <input type="text" id="searchVoucher" placeholder="Tìm kiếm mã code, mô tả..." onkeyup="filterVoucher()">
-        </div>
-    </div>
-
-    <div style="overflow-x: auto; border: 1px solid #e8ddd0; border-radius: 12px;">
-        <table class="admin-table" id="voucherTable">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Mã Code</th>
-                    <th style="text-align: left;">Mô tả Voucher</th>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="bg-light bg-opacity-50">
+                <tr class="small text-muted text-uppercase fw-bold">
+                    <th class="ps-4">Mã CODE</th>
                     <th>Giá trị giảm</th>
-                    <th>Lượt dùng</th>
                     <th>Thời hạn</th>
-                    <th>Hoạt động</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-end pe-4">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
-                @{ int stt = 1; var today = DateTime.Now.Date; }
-                @foreach (var km in Model)
+                @foreach (var item in Model)
                 {
-                    int usedCount = km.Orders?.Count ?? km.UsedCount; 
-                    int percent = km.UsageLimit > 0 ? (int)Math.Round((double)usedCount / km.UsageLimit * 100) : 0;
-                    if (percent > 100) percent = 100;
+                    bool isExpired = item.EndDate < DateTime.Now;
+                    bool isLocked = item.Status == "Locked";
                     
-                    string statusClass = "", statusName = "", statusKey = "";
-                    
-                    // Phân loại 4 trạng thái
-                    if (km.Status == "Locked") {
-                        statusClass = "st-locked"; statusName = "Bị khóa"; statusKey = "Locked";
-                    } else if (km.EndDate.Date < today) {
-                        statusClass = "st-ended"; statusName = "Đã hết hạn"; statusKey = "Ended";
-                    } else if (km.StartDate.Date > today) {
-                        statusClass = "st-upcoming"; statusName = "Sắp tới"; statusKey = "Upcoming";
-                    } else {
-                        statusClass = "st-running"; statusName = "Đang chạy"; statusKey = "Running";
-                    }
-
-                    <tr data-status="@statusKey">
-                        <td style="color:#A0AEC0; font-weight:600;">@(stt++)</td>
-                        <td><span class="code-tag">@km.Code</span></td>
-                        
-                        <td style="text-align: left;">
-                            <div style="font-weight: 600; color: #3e2723;">@(km.Name ?? "Chưa có mô tả")</div>
-                            <div style="font-size: 12px; color: #9a7a5a;">Đơn tối thiểu: @String.Format("{0:N0}", km.MinOrderValue)đ</div>
+                    <tr class="@(isExpired || isLocked ? "opacity-50" : "")">
+                        <td class="ps-4">
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fw-bold text-uppercase font-monospace fs-6">
+                                @item.Code
+                            </span>
                         </td>
-                        
-                        <td><span class="discount-text">@(km.DiscountType == 1 ? $"{km.DiscountValue}%" : $"{String.Format("{0:N0}", km.DiscountValue)}đ")</span></td>
                         <td>
-                            <div style="font-weight:600;">@usedCount <span style="color:#9a7a5a; font-size:12px; font-weight:400;">/ @km.UsageLimit</span></div>
-                            <div class="progress-track"><div class="progress-fill" style="width: @percent%;"></div></div>
+                            <div class="fw-bold text-dark">
+                                @if(item.DiscountType == 1) { @(item.DiscountValue.ToString("N0") + "đ") }
+                                else { @(item.DiscountValue + "%") }
+                            </div>
+                            <small class="text-muted">Đơn tối thiểu: @item.MinOrderValue.ToString("N0")đ</small>
                         </td>
-                        <td style="font-size: 12px; color: #6b4c2a;">@km.StartDate.ToString("dd/MM/yyyy")<br>@km.EndDate.ToString("dd/MM/yyyy")</td>
-                        
                         <td>
-                            <form asp-action="ToggleVoucherStatus" asp-controller="Admin" method="post" style="margin:0;">
-                                <input type="hidden" name="id" value="@km.VoucherId" />
-                                <label class="switch" onclick="this.closest('form').submit();">
-                                    <input type="checkbox" @(km.Status == "Active" ? "checked" : "") tabindex="-1">
-                                    <span class="slider"></span>
-                                </label>
-                            </form>
+                            <div class="@(isExpired ? "text-danger" : "text-dark")">@item.StartDate.ToString("dd/MM") - @item.EndDate.ToString("dd/MM")</div>
+                            <small class="text-muted">Năm @item.EndDate.Year</small>
                         </td>
-
-                        <td><span class="badge-status @statusClass">@statusName</span></td>
-                        
-                        <td>
-                            <div class="actions">
-                                <button type="button" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editModal_@km.VoucherId" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-                                <form asp-action="DeleteVoucher" asp-controller="Admin" method="post" style="margin: 0;" onsubmit="return confirm('Xóa mã khuyến mãi này?');">
-                                    <input type="hidden" name="id" value="@km.VoucherId" />
-                                    <button type="submit" class="btn-action btn-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                        <td class="text-center">
+                            <span class="fw-bold">@item.UsageLimit</span>
+                            <div class="progress mt-1" style="height: 4px; width: 60px; margin: 0 auto;">
+                                <div class="progress-bar bg-danger" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            @if (isLocked) { <span class="badge bg-secondary px-3 py-2 rounded-pill">Đã khóa</span> }
+                            else if (isExpired) { <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Hết hạn</span> }
+                            else { <span class="badge bg-success px-3 py-2 rounded-pill">Đang chạy</span> }
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                <form asp-action="ToggleVoucherStatus" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id" value="@item.VoucherId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" title="@(isLocked ? "Mở khóa" : "Khóa")">
+                                        <i class="fa @(isLocked ? "fa-lock-open" : "fa-lock")"></i>
+                                    </button>
                                 </form>
+                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editVoucher-@item.VoucherId">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteVoucher-@item.VoucherId">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
 
-                    <div class="modal fade" id="editModal_@km.VoucherId" tabindex="-1">
+                    <!-- Edit Modal -->
+                    <div class="modal fade" id="editVoucher-@item.VoucherId" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <form asp-action="EditVoucher" asp-controller="Admin" method="post" onsubmit="return validateVoucherForm(this);">
-                                    <input type="hidden" name="VoucherId" value="@km.VoucherId" />
-                                    <input type="hidden" name="Status" value="@km.Status" /> 
-                                    
-                                    <div class="modal-header" style="background:#faf5f0; border-bottom:1px solid #e8ddd0;">
-                                        <h5 class="modal-title font-weight-bold">Sửa Voucher</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <div class="modal-content border-0 shadow">
+                                <form asp-action="EditVoucher" method="post">
+                                    <input type="hidden" name="VoucherId" value="@item.VoucherId" />
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold">Chỉnh sửa mã @item.Code</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="row mb-3">
-                                            <div class="col-5">
-                                                <label class="form-label">Mã Code *</label>
-                                                <input type="text" class="form-control" name="Code" value="@km.Code" oninput="this.value = this.value.toUpperCase()" required pattern="^[a-zA-Z0-9]+$" title="Chỉ nhập chữ và số, không khoảng trắng">
+                                    <div class="modal-body p-4">
+                                        <div class="row g-3">
+                                            <div class="col-12 mb-2 text-center bg-light p-3 rounded-3 border">
+                                                <small class="text-muted d-block mb-1">MÃ CODE (AUTO IN HOA)</small>
+                                                <input type="text" name="Code" value="@item.Code" class="form-control text-center font-monospace fw-bold text-danger fs-4" required />
                                             </div>
-                                            <div class="col-7">
-                                                <label class="form-label">Tên / Mô tả Voucher</label>
-                                                <input type="text" class="form-control" name="Name" value="@km.Name" placeholder="VD: Giảm giá mùa hè">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
+                                            <div class="col-12"><label class="form-label fw-bold">Tên Voucher</label><input type="text" name="Name" value="@item.Name" class="form-control" required /></div>
                                             <div class="col-6">
-                                                <label class="form-label">Loại giảm *</label>
-                                                <select class="form-select" name="DiscountType">
-                                                    <option value="1" selected="@(km.DiscountType == 1)">Theo %</option>
-                                                    <option value="2" selected="@(km.DiscountType == 2)">Theo VNĐ</option>
+                                                <label class="form-label fw-bold">Loại giảm</label>
+                                                <select name="DiscountType" class="form-select">
+                                                    <option value="1" selected="@(item.DiscountType == 1)">Số tiền (đ)</option>
+                                                    <option value="2" selected="@(item.DiscountType == 2)">Phần trăm (%)</option>
                                                 </select>
                                             </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Mức giảm *</label>
-                                                <input type="number" class="form-control" name="DiscountValue" value="@Math.Round(km.DiscountValue)" required min="1">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <label class="form-label">Đơn tối thiểu *</label>
-                                                <input type="number" class="form-control" name="MinOrderValue" value="@Math.Round(km.MinOrderValue)" required min="0">
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Số lượt dùng *</label>
-                                                <input type="number" class="form-control" name="UsageLimit" value="@km.UsageLimit" required min="1">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-6">
-                                                <label class="form-label">Ngày bắt đầu *</label>
-                                                <input type="date" class="form-control" name="StartDate" value="@km.StartDate.ToString("yyyy-MM-dd")" required>
-                                            </div>
-                                            <div class="col-6">
-                                                <label class="form-label">Ngày kết thúc *</label>
-                                                <input type="date" class="form-control" name="EndDate" value="@km.EndDate.ToString("yyyy-MM-dd")" required>
-                                            </div>
+                                            <div class="col-6"><label class="form-label fw-bold">Giá trị</label><input type="number" name="DiscountValue" value="@item.DiscountValue" class="form-control" required min="1" /></div>
+                                            <div class="col-6"><label class="form-label fw-bold">Đơn tối thiểu</label><input type="number" name="MinOrderValue" value="@item.MinOrderValue" class="form-control" required min="0" /></div>
+                                            <div class="col-6"><label class="form-label fw-bold">Lượt sử dụng</label><input type="number" name="UsageLimit" value="@item.UsageLimit" class="form-control" required min="1" /></div>
+                                            <div class="col-6"><label class="form-label fw-bold">Ngày bắt đầu</label><input type="datetime-local" name="StartDate" value="@item.StartDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required /></div>
+                                            <div class="col-6"><label class="form-label fw-bold">Ngày kết thúc</label><input type="datetime-local" name="EndDate" value="@item.EndDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required /></div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Lưu</button></div>
+                                    <div class="modal-footer bg-light border-0">
+                                        <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">HỦY</button>
+                                        <button type="submit" class="btn btn-warning px-4 fw-bold text-dark">LƯU CẬP NHẬT</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteVoucher-@item.VoucherId" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content p-4 text-center border-0 shadow">
+                                <div class="text-danger mb-3"><i class="fa fa-times-circle fa-4x"></i></div>
+                                <h3 class="fw-bold">Xóa mã voucher?</h3>
+                                <p class="text-muted">Hệ thống sẽ không cho xóa nếu mã đã phát sinh đơn hàng (bạn nên khóa thay vì xóa).</p>
+                                <form asp-action="DeleteVoucher" method="post" class="mt-3">
+                                    <input type="hidden" name="id" value="@item.VoucherId" />
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger px-4 fw-bold">XÓA NGAY</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -235,132 +155,43 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-3" style="font-size:13px; color:#A0AEC0;"><span id="footerText">Hiển thị @Model.Count() kết quả</span></div>
 </div>
 
-<div class="modal fade" id="addModal" tabindex="-1">
+<!-- Add Modal -->
+<div class="modal fade" id="addVoucherModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form asp-action="CreateVoucher" asp-controller="Admin" method="post" onsubmit="return validateVoucherForm(this);">
-                <input type="hidden" name="Status" value="Active" /> 
-                <div class="modal-header" style="background:#faf5f0; border-bottom:1px solid #e8ddd0;">
-                    <h5 class="modal-title font-weight-bold">Thêm Voucher</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow">
+            <form asp-action="CreateVoucher" method="post">
+                <div class="modal-header bg-danger py-3">
+                    <h5 class="modal-title fw-bold text-white"><i class="fa fa-gift me-2"></i>TẠO VOUCHER MỚI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-5">
-                            <label class="form-label">Mã Code *</label>
-                            <input type="text" class="form-control" name="Code" oninput="this.value = this.value.toUpperCase()" required pattern="^[a-zA-Z0-9]+$" title="Chỉ nhập chữ và số, không chứa khoảng trắng" placeholder="SUMMER2026">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mã khuyến mãi (Code) *</label>
+                            <input type="text" name="Code" class="form-control text-uppercase font-monospace fw-bold" placeholder="VD: CHAOTANXUAN" required maxlength="20" />
                         </div>
-                        <div class="col-7">
-                            <label class="form-label">Tên / Mô tả Voucher</label>
-                            <input type="text" class="form-control" name="Name" placeholder="VD: Khuyến mãi mừng hè...">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
+                        <div class="col-12"><label class="form-label fw-bold">Tên Voucher</label><input type="text" name="Name" class="form-control" placeholder="Mô tả ngắn..." required /></div>
                         <div class="col-6">
-                            <label class="form-label">Loại giảm *</label>
-                            <select class="form-select" name="DiscountType">
-                                <option value="1">Theo %</option>
-                                <option value="2">Theo VNĐ</option>
+                            <label class="form-label fw-bold">Loại giảm</label>
+                            <select name="DiscountType" class="form-select">
+                                <option value="1">Số tiền (đ)</option>
+                                <option value="2">Phần trăm (%)</option>
                             </select>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label">Mức giảm *</label>
-                            <input type="number" class="form-control" name="DiscountValue" required min="1" placeholder="VD: 10">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label">Đơn tối thiểu *</label>
-                            <input type="number" class="form-control" name="MinOrderValue" value="0" required min="0">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Lượt dùng *</label>
-                            <input type="number" class="form-control" name="UsageLimit" value="100" required min="1">
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label class="form-label">Ngày bắt đầu *</label>
-                            <input type="date" class="form-control" name="StartDate" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Ngày kết thúc *</label>
-                            <input type="date" class="form-control" name="EndDate" required value="@DateTime.Now.AddMonths(1).ToString("yyyy-MM-dd")">
-                        </div>
+                        <div class="col-6"><label class="form-label fw-bold">Giá trị</label><input type="number" name="DiscountValue" class="form-control" required min="1" /></div>
+                        <div class="col-6"><label class="form-label fw-bold">Đơn tối thiểu</label><input type="number" name="MinOrderValue" class="form-control" value="0" required min="0" /></div>
+                        <div class="col-6"><label class="form-label fw-bold">Số lượng phát hành</label><input type="number" name="UsageLimit" class="form-control" value="100" required min="1" /></div>
+                        <div class="col-6"><label class="form-label fw-bold">Ngày bắt đầu</label><input type="datetime-local" name="StartDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required /></div>
+                        <div class="col-6"><label class="form-label fw-bold">Ngày kết thúc</label><input type="datetime-local" name="EndDate" class="form-control" value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-ddTHH:mm")" required /></div>
                     </div>
                 </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Tạo Mới</button></div>
+                <div class="modal-footer bg-light border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">ĐÓNG</button>
+                    <button type="submit" class="btn btn-danger px-5 fw-bold">TẠO NGAY</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        function filterVoucher() {
-            var input = document.getElementById("searchVoucher").value.toLowerCase();
-            var statusFilter = document.getElementById("statusFilterVoucher").value;
-            var shown = 0, total = 0;
-            document.querySelectorAll("#voucherTable tbody tr[data-status]").forEach(row => {
-                total++;
-                var textMatch = row.innerText.toLowerCase().includes(input);
-                var statusMatch = !statusFilter || row.dataset.status === statusFilter;
-                
-                if (textMatch && statusMatch) {
-                    row.style.display = ""; shown++;
-                } else {
-                    row.style.display = "none";
-                }
-            });
-            document.getElementById("footerText").innerText = "Hiển thị " + shown + " / " + total + " kết quả";
-        }
-
-        function validateVoucherForm(form) {
-            var type = form.querySelector('[name="DiscountType"]').value;
-            var value = parseFloat(form.querySelector('[name="DiscountValue"]').value);
-            var minOrder = parseFloat(form.querySelector('[name="MinOrderValue"]').value);
-
-            if (type === "1" && value > 100) {
-                alert("Lỗi: Mức giảm theo phần trăm (%) không được vượt quá 100!");
-                return false;
-            }
-            if (type === "2" && value > minOrder && minOrder > 0) {
-                alert("Lỗi: Giá trị giảm (VNĐ) không được lớn hơn Đơn tối thiểu!");
-                return false;
-            }
-
-            var start = new Date(form.querySelector('[name="StartDate"]').value);
-            var end = new Date(form.querySelector('[name="EndDate"]').value);
-            if (end < start) {
-                alert("Lỗi: Ngày kết thúc không được nhỏ hơn Ngày bắt đầu!");
-                return false;
-            }
-            return true;
-        }
-
-        @if (TempData["ScrollDown"] != null && (bool)TempData["ScrollDown"] == true)
-        {
-            <text>
-            document.addEventListener("DOMContentLoaded", function() {
-                var container = document.querySelector('.content-body');
-                if(container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-                else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            });
-            </text>
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
-                var alerts = document.querySelectorAll('.alert-top');
-                alerts.forEach(function(alert) {
-                    alert.style.transition = 'opacity 0.5s ease, top 0.5s ease';
-                    alert.style.opacity = '0';
-                    alert.style.top = '-50px'; 
-                    setTimeout(() => alert.remove(), 500); 
-                });
-            }, 5000);
-        });
-    </script>
-}

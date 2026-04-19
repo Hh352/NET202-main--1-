@@ -13,9 +13,9 @@
 
     if (!isConfirm)
     {
-        statusText = Model.OrderStatus switch { 1=>"Chờ xác nhận", 2=>"Đang chuẩn bị", 3=>"Đang giao", 4=>"Đã giao", 5=>"Đã hủy", _=>"Đang cập nhật" };
+        statusText = Model.OrderStatus switch { 1=>"Đã xác nhận", 2=>"Đang chuẩn bị", 3=>"Đang giao", 4=>"Đã giao", 5=>"Đã hủy", _=>"Đang cập nhật" };
         statusDesc = Model.OrderStatus switch {
-            1 => "Đang chờ quán xác nhận đơn hàng của bạn",
+            1 => "Hệ thống đã tiếp nhận đơn hàng của bạn và đang chờ xử lý.",
             2 => "Cửa hàng đang tiến hành pha chế/đóng gói",
             3 => "Tài xế đã nhận món và đang trên đường tới bạn",
             4 => "Chúc bạn ngon miệng với Bread & Brew!",
@@ -36,7 +36,7 @@
 
 <link rel="stylesheet" href="~/css/Order.css" />
 
-<div class="order-full-page" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/Images/Redesign/cafe_bg.jpg'); background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh; padding: 40px 0; font-family: 'Inter', sans-serif; color: #fff;">
+<div class="order-full-page" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/Images/Redesign/cafe_bg.jpg'); background-size: cover; background-position: center; background-attachment: fixed; flex: 1; padding: 40px 0; font-family: 'Inter', sans-serif; color: #fff; display: flex; flex-direction: column;">
     <div class="order-container" style="max-width: 1240px; margin: 0 auto; padding: 0 20px; background: transparent !important; box-shadow: none !important;">
         
         <!-- HEADER BUTTON (GRAY GLASSMORPISM) -->
@@ -357,14 +357,17 @@
                         <div style="margin-bottom: 15px;">
                             @foreach (var item in Model.OrderDetails)
                             {
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f9fafb;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
-                                        <div style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; border: 1px solid #f1f5f9;">
+                                        <div style="width: 50px; height: 50px; border-radius: 12px; overflow: hidden; border: 1px solid #f1f5f9; flex-shrink: 0;">
                                             <img src="@(string.IsNullOrEmpty(item.Product?.Image) ? "/Images/default.png" : (item.Product.Image.Contains("http") ? item.Product.Image : $"/Images/{item.Product.Image}"))" style="width: 100%; height: 100%; object-fit: cover;" />
                                         </div>
-                                        <span style="color: #18181b; font-weight: 1000; font-size: 13.5px;">@(item.Product?.ProductName) x @item.Quantity</span>
+                                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                                            <span style="color: #18181b; font-weight: 1000; font-size: 14px; display: block; line-height: 1.2;">@(item.Product?.ProductName)</span>
+                                            <span style="display: inline-block; background: #f1f5f9; color: #64748b; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; width: fit-content;">x @item.Quantity</span>
+                                        </div>
                                     </div>
-                                    <span style="color: #18181b; font-weight: 1000; font-size: 13.5px;">@((item.Price * item.Quantity).ToString("N0"))đ</span>
+                                    <span style="color: #18181b; font-weight: 1000; font-size: 14px; background: #fffbeb; padding: 4px 10px; border-radius: 10px; color: #b45309;">@((item.Price * item.Quantity).ToString("N0"))đ</span>
                                 </div>
                             }
                         </div>
@@ -521,8 +524,8 @@
 </style>
 
 <!-- ====== VOUCHER PICKER MODAL ====== -->
-<div id="voucherPickerModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.55); backdrop-filter:blur(6px); align-items:flex-end; justify-content:center;">
-    <div id="voucherPickerSheet" style="background:#fff; border-radius:28px 28px 0 0; width:100%; max-width:600px; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.33,1,0.68,1);">
+<div id="voucherPickerModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.55); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px;">
+    <div id="voucherPickerSheet" style="background:#fff; border-radius:28px; width:100%; max-width:600px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; transform:scale(0.9); opacity:0; transition:0.3s cubic-bezier(0.34,1.56,0.64,1);">
         
         <!-- HEADER -->
         <div style="padding: 20px 24px 0; flex-shrink: 0;">
@@ -567,18 +570,22 @@
         var modal = document.getElementById('voucherPickerModal');
         modal.style.display = 'flex';
         setTimeout(() => {
-            document.getElementById('voucherPickerSheet').style.transform = 'translateY(0)';
+            var sheet = document.getElementById('voucherPickerSheet');
+            sheet.style.transform = 'scale(1)';
+            sheet.style.opacity = '1';
         }, 10);
         document.body.style.overflow = 'hidden';
         loadVouchers();
     }
 
     function closeVoucherModal() {
-        document.getElementById('voucherPickerSheet').style.transform = 'translateY(100%)';
+        var sheet = document.getElementById('voucherPickerSheet');
+        sheet.style.transform = 'scale(0.9)';
+        sheet.style.opacity = '0';
         setTimeout(() => {
             document.getElementById('voucherPickerModal').style.display = 'none';
             document.body.style.overflow = '';
-        }, 400);
+        }, 300);
     }
 
     document.getElementById('voucherPickerModal').addEventListener('click', function(e) {
@@ -718,7 +725,7 @@
         btn.style.pointerEvents = 'none';
 
         fetch(`/Home/SaveVoucherToDb?voucherId=${voucherId}`, {
-            method: 'POST',
+            method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(res => res.json())
@@ -756,7 +763,7 @@
         if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.style.pointerEvents = 'none'; }
 
         fetch(`/Cart/ApplyVoucherToOrder?orderId=@Model.OrderId&code=${encodeURIComponent(code)}`, {
-            method: 'POST',
+            method: 'GET',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(res => res.json())
@@ -788,7 +795,7 @@
         }).then(result => {
             if (result.isConfirmed) {
                 fetch('/Cart/RemoveVoucherFromOrder?orderId=@Model.OrderId', {
-                    method: 'POST',
+                    method: 'GET',
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(res => res.json())
@@ -913,8 +920,5 @@
                 .catch(err => Swal.fire('Lỗi!', 'Không thể thực hiện yêu cầu.', 'error'));
             }
         });
-    }
-</script>
-
     }
 </script>

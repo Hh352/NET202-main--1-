@@ -96,7 +96,7 @@
 </style>
 
 <div class="vc-header-wrap">
-    <div class="vc-breadcrumb">Trung tâm Voucher</div>
+
     <h1 class="vc-title">Kho Voucher & Ưu đãi đặc biệt</h1>
     <div class="vc-subtitle">Bread & Brew</div>
 </div>
@@ -164,7 +164,7 @@
             navigator.clipboard.writeText(code).then(() => {
                 // 2. Call server to save to DB
                 fetch('/Home/SaveVoucherToDb?voucherId=' + vId, {
-                    method: 'POST'
+                    method: 'GET'
                 })
                 .then(res => res.json())
                 .then(data => {

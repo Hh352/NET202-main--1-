@@ -284,7 +284,7 @@
             <!-- FEATURE LIST -->
             <ul class="p-feature-list">
                 <li class="p-feature-item"><i class="fa-solid fa-check"></i> Nguyên liệu sạch 100% tự nhiên</li>
-                <li class="p-feature-item"><i class="fa-solid fa-check"></i> Công thức pha chế độc quyền Bread & Brew</li>
+                <li class="p-feature-item"><i class="fa-solid fa-check"></i> Công thức độc quyền Bread & Brew</li>
                 <li class="p-feature-item"><i class="fa-solid fa-check"></i> Hương vị hoàn hảo chuẩn gu hiện đại</li>
             </ul>
 
@@ -445,15 +445,30 @@
         document.getElementById(id).classList.add('active');
     }
 
-    /* Slider logic */
+    /* Slider logic - Infinite Loop */
     function relScroll(dir) {
-        let track = document.getElementById('relTrack');
+        const track = document.getElementById('relTrack');
         if (!track) return;
-        let card = track.querySelector('.rel-card');
+        const card = track.querySelector('.rel-card');
         if (!card) return;
-        let amount = card.offsetWidth + 30; // Chiều rộng 1 card + gap 30px
-        try { track.scrollBy({ left: dir * amount, behavior: 'smooth' }); }
-        catch (e) { track.scrollLeft += dir * amount; }
+        const amount = card.offsetWidth + 30; // Chiều rộng 1 card + gap 30px
+        const maxScrollLeft = track.scrollWidth - track.clientWidth;
+
+        if (dir === 1) { // Click Next
+            if (track.scrollLeft >= maxScrollLeft - 10) {
+                // Tới cuối thì vòng lại đầu
+                track.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                track.scrollBy({ left: amount, behavior: 'smooth' });
+            }
+        } else { // Click Prev
+            if (track.scrollLeft <= 10) {
+                // Đang ở đầu thì lùi đến cuối
+                track.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
+            } else {
+                track.scrollBy({ left: -amount, behavior: 'smooth' });
+            }
+        }
     }
 
     /* Cập nhật chữ diễn giải mức độ hài lòng */

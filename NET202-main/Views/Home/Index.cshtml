@@ -236,7 +236,7 @@
                                 <img src="@imgPath" class="bb-card-img" onerror="this.src='/Images/default.png'" />
                             </div>
                             <div class="bb-card-body">
-                                <h3 class="bb-card-title">@item.ProductName</h3>
+                                <h3 class="bb-card-title" onclick="location.href='/Home/Detail/@item.ProductId'" style="cursor: pointer;" title="@item.ProductName">@item.ProductName</h3>
                                 @{
                                     var reviewCount = item.Reviews?.Count ?? 0;
                                     var avgRating = reviewCount > 0 ? item.Reviews.Average(r => r.Rating) : 0;
@@ -286,7 +286,7 @@
     {
         @* --- HIỂN THỊ CUỐN SÁCH KHI ĐÃ ĐĂNG NHẬP --- *@
         <section class="section-wrap bg-light-section" onclick="doResetSash()" style="cursor: default; padding: 40px 0;">
-            <h2 class="section-title fade-up-init reveal" style="color: var(--bb-dark); margin-bottom: 30px;">MENU & THÔNG TIN</h2>
+            <h2 class="section-title fade-up-init reveal" style="color: var(--bb-dark); margin-bottom: 30px;">CÂU CHUYỆN BREAD & BREW</h2>
             <div class="book-container-3d" style="min-height: 600px;">
                 <div class="book-origin" id="v3Book" onclick="event.stopPropagation()">
                     <div class="book-spine-v3" onclick="doPrevSash()"></div>
@@ -508,7 +508,7 @@ else
                                             <img src="@imgP" class="bb-card-img" onerror="this.src='/Images/default.png'" />
                                         </div>
                                         <div class="bb-card-body">
-                                            <h3 class="bb-card-title" title="@item.ProductName">@item.ProductName</h3>
+                                            <h3 class="bb-card-title" title="@item.ProductName" onclick="location.href='/Home/Detail/@item.ProductId'" style="cursor: pointer;">@item.ProductName</h3>
                                             <p class="bb-card-price">@item.Price.ToString("N0")đ</p>
                                             <div class="bb-card-actions">
                                                 <a href="/Cart/BuyNow?productId=@item.ProductId" class="btn-buy" style="font-size: 0.9rem;">ĐẶT MUA</a>
@@ -619,33 +619,57 @@ else
         
         updateState();
 
-        // 🚀 LOGIC FOR BEST-SELLER SLIDER
+        // 🚀 LOGIC FOR BEST-SELLER SLIDER INFINITE LOOP & AUTOPLAY
         const slider = document.getElementById('bestSlider');
         const prevBtn = document.getElementById('bestPrev');
         const nextBtn = document.getElementById('bestNext');
 
         if (slider && prevBtn && nextBtn) {
+            const getCardWidth = () => {
+                const card = slider.querySelector('.bb-card');
+                return card ? card.offsetWidth + 25 : 300;
+            };
+
             nextBtn.addEventListener('click', () => {
-                const cardWidth = slider.querySelector('.bb-card').offsetWidth + 25; // width + gap
-                slider.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+                if (slider.scrollLeft >= maxScrollLeft - 10) {
+                    // Tới cuối thì vòng lại sản phẩm đầu
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
+                }
             });
 
             prevBtn.addEventListener('click', () => {
-                const cardWidth = slider.querySelector('.bb-card').offsetWidth + 25; // width + gap
-                slider.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                if (slider.scrollLeft <= 10) {
+                    // Đang ở đầu thì lùi đến cuối
+                    const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+                    slider.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: -getCardWidth(), behavior: 'smooth' });
+                }
             });
 
-            // Optional: Hide buttons if not scrollable
-            const toggleButtons = () => {
-                prevBtn.disabled = slider.scrollLeft <= 0;
-                nextBtn.disabled = slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 1;
+            // Tự động chạy (Auto-play) mỗi 3 giây
+            let autoPlayInterval = setInterval(() => {
+                nextBtn.click();
+            }, 3000);
+
+            // Tạm dừng khi di chuột vào slider hoặc nút bấm
+            const pauseAutoPlay = () => clearInterval(autoPlayInterval);
+            const resumeAutoPlay = () => {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = setInterval(() => {
+                    nextBtn.click();
+                }, 3000);
             };
 
-            slider.addEventListener('scroll', toggleButtons);
-            window.addEventListener('resize', toggleButtons);
-            
-            // Initial check after content loads
-            setTimeout(toggleButtons, 500);
+            slider.addEventListener('mouseenter', pauseAutoPlay);
+            slider.addEventListener('mouseleave', resumeAutoPlay);
+            prevBtn.addEventListener('mouseenter', pauseAutoPlay);
+            nextBtn.addEventListener('mouseenter', pauseAutoPlay);
+            prevBtn.addEventListener('mouseleave', resumeAutoPlay);
+            nextBtn.addEventListener('mouseleave', resumeAutoPlay);
         }
     </script>
 }

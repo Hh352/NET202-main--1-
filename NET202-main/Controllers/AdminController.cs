@@ -257,11 +257,33 @@ namespace ASM.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currentUserId == id.ToString())
+            {
+                TempData["Error"] = "Lỗi: Bạn không thể xóa tài khoản của chính mình!";
+                return RedirectToAction("User");
+            }
+
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                bool hasOrders = await _context.Orders.AnyAsync(o => o.UserId == id);
+                bool hasCarts = await _context.Carts.AnyAsync(c => c.UserId == id);
+                bool hasReviews = await _context.Reviews.AnyAsync(r => r.UserId == id);
+
+                if (hasOrders || hasCarts || hasReviews)
+                {
+                    // Không xóa được vì có dữ liệu liên quan, chuyển sang khóa tài khoản
+                    user.Status = "Locked";
+                    await _context.SaveChangesAsync();
+                    TempData["Error"] = "Người dùng này có dữ liệu liên quan (đơn hàng, giỏ hàng, đánh giá) nên không thể xóa. Hệ thống đã tự động khóa tài khoản!";
+                }
+                else
+                {
+                    _context.Users.Remove(user);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = "Đã xóa người dùng thành công!";
+                }
             }
             return RedirectToAction("User");
         }
@@ -294,6 +316,13 @@ namespace ASM.Controllers
                 CategoryName = categoryName.Trim(), 
                 Description = description 
             };
+
+            bool nameExists = await _context.Categories.AnyAsync(c => c.CategoryName.ToLower() == categoryName.Trim().ToLower());
+            if (nameExists)
+            {
+                TempData["Error"] = "Lỗi: Tên danh mục đã tồn tại trong hệ thống!";
+                return RedirectToAction("Category");
+            }
 
             try
             {
@@ -329,6 +358,13 @@ namespace ASM.Controllers
             var cat = await _context.Categories.FindAsync(categoryId);
             if (cat != null)
             {
+                bool nameExists = await _context.Categories.AnyAsync(c => c.CategoryId != categoryId && c.CategoryName.ToLower() == categoryName.Trim().ToLower());
+                if (nameExists)
+                {
+                    TempData["Error"] = "Lỗi: Tên danh mục đã tồn tại trong hệ thống!";
+                    return RedirectToAction("Category");
+                }
+
                 cat.CategoryName = categoryName.Trim();
                 cat.Description = description;
                 if (!string.IsNullOrEmpty(status)) cat.Status = status;
@@ -353,11 +389,18 @@ namespace ASM.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var cat = await _context.Categories.FindAsync(id);
+            var cat = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.CategoryId == id);
             if (cat != null)
             {
+                if (cat.Products != null && cat.Products.Any())
+                {
+                    TempData["Error"] = $"Không thể xóa danh mục '{cat.CategoryName}' vì đang có {cat.Products.Count} sản phẩm thuộc danh mục này! Vui lòng xóa hoặc chuyển sản phẩm sang danh mục khác trước.";
+                    return RedirectToAction("Category");
+                }
+
                 _context.Categories.Remove(cat);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Đã xóa danh mục thành công!";
             }
             return RedirectToAction("Category");
         }
@@ -401,6 +444,13 @@ namespace ASM.Controllers
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
+
+            bool nameExists = await _context.Products.AnyAsync(p => p.ProductName.ToLower() == productName.Trim().ToLower());
+            if (nameExists)
+            {
+                TempData["Error"] = "Lỗi: Tên món đã tồn tại trong hệ thống!";
+                return RedirectToAction("Menu");
+            }
             
             if (image != null) product.Image = await SaveImageFile(image);
             
@@ -444,6 +494,13 @@ namespace ASM.Controllers
             var sp = await _context.Products.FindAsync(productId);
             if (sp != null)
             {
+                bool nameExists = await _context.Products.AnyAsync(p => p.ProductId != productId && p.ProductName.ToLower() == productName.Trim().ToLower());
+                if (nameExists)
+                {
+                    TempData["Error"] = "Lỗi: Tên món đã tồn tại trong hệ thống!";
+                    return RedirectToAction("Menu");
+                }
+
                 sp.ProductName = productName.Trim();
                 sp.Price = price;
                 sp.CategoryId = categoryId;
@@ -490,6 +547,13 @@ namespace ASM.Controllers
                 // Ép kiểu chữ IN HOA và xóa khoảng trắng thừa
                 voucher.Code = voucher.Code.Trim().ToUpper(); 
                 
+                bool codeExists = await _context.Vouchers.AnyAsync(v => v.Code.ToUpper() == voucher.Code);
+                if (codeExists)
+                {
+                    TempData["Error"] = "Lỗi: Mã Voucher đã tồn tại trong hệ thống!";
+                    return RedirectToAction("Voucher");
+                }
+
                 _context.Vouchers.Add(voucher);
                 await _context.SaveChangesAsync();
                 
@@ -505,7 +569,15 @@ namespace ASM.Controllers
             var existing = await _context.Vouchers.FindAsync(voucher.VoucherId);
             if (existing != null)
             {
-                existing.Code = voucher.Code.Trim().ToUpper(); 
+                voucher.Code = voucher.Code?.Trim().ToUpper() ?? "";
+                bool codeExists = await _context.Vouchers.AnyAsync(v => v.VoucherId != voucher.VoucherId && v.Code.ToUpper() == voucher.Code);
+                if (codeExists)
+                {
+                    TempData["Error"] = "Lỗi: Mã Voucher đã tồn tại trong hệ thống!";
+                    return RedirectToAction("Voucher");
+                }
+
+                existing.Code = voucher.Code; 
                 existing.Name = voucher.Name; 
                 existing.DiscountType = voucher.DiscountType;
                 existing.DiscountValue = voucher.DiscountValue;
@@ -534,11 +606,18 @@ namespace ASM.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVoucher(int id)
         {
-            var voucher = await _context.Vouchers.FindAsync(id);
+            var voucher = await _context.Vouchers.Include(v => v.Orders).FirstOrDefaultAsync(v => v.VoucherId == id);
             if (voucher != null)
             {
+                if (voucher.Orders != null && voucher.Orders.Any())
+                {
+                    TempData["Error"] = $"Không thể xóa voucher '{voucher.Code}' vì đã có {voucher.Orders.Count} đơn hàng sử dụng! Bạn có thể khóa voucher thay vì xóa.";
+                    return RedirectToAction("Voucher");
+                }
+
                 _context.Vouchers.Remove(voucher);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Đã xóa voucher thành công!";
             }
             return RedirectToAction("Voucher");
         }
@@ -548,6 +627,7 @@ namespace ASM.Controllers
 {
     var orders = await _context.Orders
         .Include(o => o.User)
+        .Include(o => o.Voucher)             // THÊM: Kéo thông tin voucher đã dùng
         .Include(o => o.OrderDetails)        // QUAN TRỌNG 1: Kéo chi tiết đơn
             .ThenInclude(od => od.Product)   // QUAN TRỌNG 2: Kéo thông tin món ăn
         .OrderByDescending(o => o.CreatedAt)

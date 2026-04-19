@@ -34,10 +34,12 @@
         }
 
         main {
-            display: block;
+            display: flex;
+            flex-direction: column;
             width: 100%;
             margin: 0 !important;
             padding: 0 !important;
+            flex-grow: 1;
         }
 
         /* ===== NAVBAR ===== */
@@ -425,6 +427,11 @@
         .voucher-box { display: flex; gap: 10px; margin-bottom: 20px; }
         .voucher-box input { flex: 1; padding: 10px 15px; border-radius: 10px; border: 1px solid #fde68a; outline: none; }
         .voucher-box button { background: #4b2e2e; color: white; border: none; padding: 0 15px; border-radius: 10px; font-weight: bold; }
+
+        /* Đảm bảo SweetAlert2 (Thông báo xóa món) hiện trên cùng giỏ hàng */
+        .swal2-container {
+            z-index: 99999 !important;
+        }
     </style>
 </head>
 <body>
@@ -468,12 +475,7 @@
                         <a href="/Home/Index?categoryId=@GetCatId("Cà phê đóng gói")" class="m-d-item">Cà phê đóng gói</a>
                         <a href="/Home/Index?categoryId=@GetCatId("Merchandise")" class="m-d-item">Quà tặng & Phụ kiện</a>
                     </div>
-                    <div class="mm-col">
-                        <h4 class="amber">XEM TẤT CẢ</h4>
-                        <a href="/Home/Index?categoryId=0" class="m-d-item" style="font-weight: 800; color: #d97706;">
-                            Toàn bộ Thực đơn <i class="fa-solid fa-arrow-right-long" style="margin-left: 5px;"></i>
-                        </a>
-                    </div>
+
                 </div>
             </div>
 
@@ -548,9 +550,8 @@
                 <span>TỔNG TIỀN:</span>
                 <span id="cartTotal" style="color:#d97706;">0đ</span>
             </div>
-            <div class="voucher-box">
-                <input type="text" id="voucherCode" placeholder="Mã giảm giá...">
-                <button onclick="applyVoucher()">ÁP DỤNG</button>
+            <div style="font-size: 0.75rem; color: #b45309; font-weight: 700; margin-bottom: 15px; text-align: center; border: 1px dashed #fcd34d; padding: 10px; border-radius: 8px; background: #fffbeb;">
+                TIẾP TỤC ĐẾN TRANG THANH TOÁN ĐỀ THÊM VOUCHER CHO GIÁ HỜI BẠN NHÉ!
             </div>
             <div id="voucherMessage"></div>
             <button class="btn-checkout-final" onclick="checkout()">THANH TOÁN NGAY</button>
@@ -650,184 +651,7 @@
         });
     </script>
 
-    <!-- COFFEE PROMO MODAL ANIMATION -->
-    <!-- TẠM ẨN MODAL KHUYẾN MÃI
-    <style>
-        .cp-modal { display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .cp-modal.active { display: flex; animation: cp_fadeIn 0.3s forwards; }
-        @@keyframes cp_fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .cp-modal-content { position: relative; width: 100%; max-width: 400px; height: 650px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .cp-close { position: absolute; top: 10px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10; opacity: 0.7; }
-        .cp-close:hover { opacity: 1; }
-        
-        /* --- LAYOUT BỐ CỤC CHÍNH --- */
-        .cp-stage { position: relative; width: 100%; max-width: 360px; height: 600px; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
 
-        /* --- THE COSTA STYLE CUP --- */
-        .cp-cup { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 20; width: 280px; height: 180px; cursor: pointer; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
-        .cp-cup:hover { transform: translateX(-50%) scale(1.03); }
-        .cp-cup::before { content: 'NHẤN VÀO CỐC'; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); color: #fff; font-weight: 900; font-size: 14px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); pointer-events: none; opacity: 1; transition: 0.3s; }
-        
-        /* Ẩn chữ gợi ý khi đã mở */
-        .cp-stage.revealed .cp-cup::before { opacity: 0; }
-        
-        /* Miệng cốc (Opening) */
-        .cp-cup-opening { position: absolute; top: 0; left: 0; width: 100%; height: 50px; background: #6b0f1a; border-radius: 50%; z-index: 2; border: 3px solid #fff; box-shadow: inset 0 10px 20px rgba(0,0,0,0.9); }
-        
-        /* Thân cốc */
-        .cp-cup-body { position: absolute; top: 25px; left: 5px; width: 270px; height: 150px; background: linear-gradient(to right, #881324, #d1112b 50%, #881324); border-radius: 0 0 50px 50px; z-index: 1; border: 3px solid #fff; border-top: none; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px;}
-        .cp-cup-body i { color: rgba(255,255,255,0.2); font-size: 60px; }
-
-        /* --- THE VOUCHER TICKET --- */
-        .cp-ticket-wrapper { position: absolute; top: 26px; left: 50%; transform: translateX(-50%); width: 270px; height: 0; overflow: hidden; z-index: 5; display: flex; align-items: flex-start; justify-content: center; transition: height 1s cubic-bezier(0.25, 1, 0.5, 1) 0.1s; }
-        
-        /* Khi mở, thả wrapper dài ra để chứa vé */
-        .cp-stage.revealed .cp-ticket-wrapper { height: 460px; overflow: visible; }
-
-        /* Thân vé chính */
-        .cp-ticket { width: 100%; height: 430px; background: linear-gradient(180deg, #ea580c, #fb923c 20%, #fed7aa 60%, #ea580c); background-size: 100% 150%; transform: translateY(-100%); transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1) 0.1s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; padding: 130px 20px 30px; position: relative; }
-        
-        /* Hiệu ứng trượt xuống */
-        .cp-stage.revealed .cp-ticket { transform: translateY(0); }
-
-        /* Hiệu ứng xé răng cưa mép dưới */
-        .cp-ticket {
-            -webkit-mask-image: radial-gradient(12px at 12px 100%, transparent 11px, #000 12px);
-            -webkit-mask-size: 24px 100%;
-            -webkit-mask-repeat: repeat-x;
-        }
-
-        /* --- NỘI DUNG VÉ --- */
-        .cp-val { font-size: 70px; font-weight: 900; color: #fff; margin: 0; line-height: 1; text-shadow: 0 3px 6px rgba(0,0,0,0.2); }
-        .cp-val small { font-size: 35px; margin-left: -5px; }
-        .cp-title { font-size: 14px; font-weight: 800; color: #fff; text-transform: uppercase; margin: 5px 0 15px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 15px; width: 100%; text-align: center; letter-spacing: 1px;}
-        
-        .cp-code { border: 2px solid #ea580c; background: transparent; color: #ea580c; font-size: 20px; font-weight: 900; padding: 10px 20px; border-radius: 30px; margin-bottom: 15px; letter-spacing: 2px; }
-        
-        .cp-timer { background: #fff; color: #b91c1c; font-family: 'Courier New', monospace; font-size: 28px; font-weight: 900; padding: 8px 20px; border-radius: 10px; margin-bottom: auto; box-shadow: inset 0 3px 6px rgba(0,0,0,0.1); }
-        
-        .cp-use-btn { background: #b91c1c; color: #fff; border: none; font-weight: 900; font-size: 18px; padding: 15px 30px; border-radius: 30px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 15px; box-shadow: 0 5px 15px rgba(185,28,28,0.4); }
-        .cp-use-btn:hover { background: #991b1b; transform: translateY(-2px); }
-
-        .cp-cup-wrapper.pouring + .cp-ticket-wrapper .cp-ticket { transform: translateY(0); }
-
-        .cp-ticket-header { padding: 35px 20px 20px; text-align: center; border-bottom: 2px dashed rgba(255,255,255,0.4); }
-        .cp-ticket-header h2 { font-size: 70px; font-weight: 900; color: #fff; margin: 0; line-height: 0.9; text-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .cp-ticket-header p { font-size: 15px; font-weight: 800; color: #fff; margin: 10px 0 0; text-transform: uppercase; letter-spacing: 1px; }
-
-        .cp-ticket-body { padding: 25px 20px; text-align: center; }
-        .cp-code { display: inline-block; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.6); padding: 10px 20px; border-radius: 12px; font-weight: 900; color: #fff; font-size: 24px; margin-bottom: 12px; letter-spacing: 3px; cursor: pointer; }
-        .cp-desc { color: rgba(255,255,255,0.9); font-size: 14px; margin-bottom: 20px; font-weight: 600; }
-        .cp-timer { font-family: 'Courier New', Courier, monospace; font-size: 32px; font-weight: 900; background: #fff; color: #ea580c; border-radius: 12px; padding: 10px; margin: 0 10px 10px; box-shadow: inset 0 4px 8px rgba(0,0,0,0.15); display: flex; justify-content: center; gap: 5px; }
-
-        .cp-btn { width: 100%; border: none; background: #9a3412; color: #fff; font-weight: 900; font-size: 18px; padding: 20px; cursor: pointer; transition: 0.3s; margin-top: auto; border-radius: 0 0 18px 18px; }
-        .cp-btn:hover { background: #7c2d12; }
-    </style>
-
-    <div id="coffeePromoModal" class="cp-modal">
-        <div class="cp-modal-content">
-            <span class="cp-close" onclick="closeCoffeePromo()">&times;</span>
-            <div class="cp-stage" id="cpStage">
-                
-                <!-- The Huge Cup -->
-                <div class="cp-cup" onclick="pourCoffeePromo()">
-                    <div class="cp-cup-opening"></div>
-                    <div class="cp-cup-body">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </div>
-                </div>
-
-                <!-- The Slidedown Ticket -->
-                <div class="cp-ticket-wrapper">
-                    <div class="cp-ticket">
-                        <h2 class="cp-val">50<small>%</small></h2>
-                        <div class="cp-title">Welcome Voucher</div>
-                        
-                        <div class="cp-code" id="cpVoucherCodeText">NEWACCOUNT26</div>
-                        <div class="cp-timer" id="cpTimer">47:59:59</div>
-                        
-                        <button class="cp-use-btn" onclick="copyAndUsePromo()">LƯU & SỬ DỤNG NGAY</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@@11"></script>
-    <script>
-        let cpTimerInterval;
-
-        function openCoffeePromo() {
-            Swal.fire({ title: 'Đang mở hộp quà...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            
-            fetch('/Home/CheckPromoAjax')
-                .then(res => res.json())
-                .then(data => {
-                    Swal.close();
-                    if (data.success) {
-                        document.getElementById('cpVoucherCodeText').innerText = data.voucherCode;
-                        document.getElementById('cpStage').classList.remove('revealed');
-                        document.getElementById('coffeePromoModal').classList.add('active');
-                        startCPTimer(48 * 60 * 60); // Đếm ngược 48h
-                    } else {
-                        Swal.fire({ icon: 'info', title: 'Thông báo', text: data.message, confirmButtonColor: '#ea580c' });
-                    }
-                })
-                .catch(err => {
-                    Swal.close();
-                    Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi kết nối. Vui lòng thử lại.', confirmButtonColor: '#ea580c' });
-                });
-        }
-
-        function closeCoffeePromo() {
-            document.getElementById('coffeePromoModal').classList.remove('active');
-            clearInterval(cpTimerInterval);
-        }
-
-        function pourCoffeePromo() {
-            var stage = document.getElementById('cpStage');
-            if (!stage.classList.contains('revealed')) {
-                stage.classList.add('revealed');
-            }
-        }
-
-        function copyAndUsePromo() {
-            var code = document.getElementById('cpVoucherCodeText').innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                Swal.fire({
-                    icon: 'success', title: 'Đã lưu mã!',
-                    text: 'Mã ' + code + ' đã được lưu vào bộ nhớ tạm. Bạn có thể dán vào bước Thanh toán.',
-                    confirmButtonColor: '#ea580c'
-                }).then(() => {
-                    closeCoffeePromo();
-                    window.location.href = '/Home/Index?categoryId=0';
-                });
-            });
-        }
-
-        function startCPTimer(duration) {
-            clearInterval(cpTimerInterval);
-            var timer = duration, hours, minutes, seconds;
-            var display = document.getElementById('cpTimer');
-            
-            cpTimerInterval = setInterval(function () {
-                hours = parseInt(timer / 3600, 10);
-                minutes = parseInt((timer % 3600) / 60, 10);
-                seconds = parseInt(timer % 60, 10);
-
-                hours = hours < 10 ? "0" + hours : hours;
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.textContent = hours + ":" + minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    timer = 0;
-                    clearInterval(cpTimerInterval);
-                }
-            }, 1000);
-        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
@@ -952,30 +776,30 @@
                  alt="Voucher" />
 
             <!-- Overlay nội dung (Đã phóng to tỉ lệ thuận) -->
-            <div style="position:absolute; top:38%; left:28%; right:28%; bottom:32%; display:flex; flex-direction:column; justify-content:space-between; padding:0; text-align:center;">
+            <div style="position:absolute; top:36%; left:24%; right:24%; bottom:28%; display:flex; flex-direction:column; justify-content:space-between; padding:0; text-align:center; overflow:hidden;">
                 
                 <!-- PHẦN 1: GIẢM GIÁ (Cực lớn) -->
                 <div>
-                    <div style="font-size:2.8rem; font-weight:1000; color:#fff; line-height:0.8; letter-spacing:-1.5px; text-shadow:0 3px 15px rgba(0,0,0,0.4);">
+                    <div style="font-size:2.2rem; font-weight:1000; color:#fff; line-height:0.9; letter-spacing:-1px; text-shadow:0 3px 15px rgba(0,0,0,0.4);">
                         90%
                     </div>
                 </div>
 
                 <!-- PHẦN 2: MÃ VÀ ĐẾM NGƯỢC -->
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    <div style="background:#fff; border:1.5px dashed #b91c1c; border-radius:6px; padding:4px 0; font-family:monospace; font-size:1.15rem; font-weight:950; color:#b91c1c; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                <div style="display:flex; flex-direction:column; gap:3px;">
+                    <div style="background:#fff; border:1.5px dashed #b91c1c; border-radius:6px; padding:3px 2px; font-family:monospace; font-size:0.95rem; font-weight:950; color:#b91c1c; box-shadow:0 2px 8px rgba(0,0,0,0.1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         NEWACCOUNT26
                     </div>
-                    <div id="giftCountdown" style="font-size:1.1rem; font-weight:1000; color:#fff; font-family:monospace; text-shadow:0 1px 5px rgba(0,0,0,0.5);">47:59:59</div>
+                    <div id="giftCountdown" style="font-size:0.95rem; font-weight:1000; color:#fff; font-family:monospace; text-shadow:0 1px 5px rgba(0,0,0,0.5);">47:59:59</div>
                 </div>
 
                 <!-- PHẦN 3: NÚT (Pill style, to và dễ bấm) -->
-                <div id="giftActionArea" style="display:flex; flex-direction:column; gap:5px;">
+                <div id="giftActionArea" style="display:flex; flex-direction:column; gap:4px;">
                     <button id="btnSaveGift" onclick="saveGiftVoucher()"
-                            style="width:100%; padding:10px 0; background:#fff; color:#b91c1c; border:none; border-radius:30px; font-size:0.95rem; font-weight:1000; cursor:pointer; text-transform:uppercase; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+                            style="width:100%; padding:7px 0; background:#fff; color:#b91c1c; border:none; border-radius:30px; font-size:0.8rem; font-weight:1000; cursor:pointer; text-transform:uppercase; box-shadow:0 4px 15px rgba(0,0,0,0.3); white-space:nowrap;">
                         LƯU VÀO KHO
                     </button>
-                    <div onclick="closeGiftOverlay()" style="font-size:0.75rem; color:rgba(255,255,255,0.85); cursor:pointer; font-weight:700; text-decoration:underline;">
+                    <div onclick="closeGiftOverlay()" style="font-size:0.7rem; color:rgba(255,255,255,0.85); cursor:pointer; font-weight:700; text-decoration:underline;">
                         Để sau
                     </div>
                 </div>

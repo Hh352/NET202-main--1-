@@ -169,7 +169,7 @@ namespace ASM.Controllers
         }
 
         // 6. ÁP DỤNG VOUCHER (Lưu vào Session)
-        [HttpPost]
+        [HttpGet]
         public IActionResult ApplyVoucher(string code)
         {
             var voucher = _context.Vouchers.FirstOrDefault(v => v.Code == code && v.Status == "Active");
@@ -181,13 +181,18 @@ namespace ASM.Controllers
             if (voucher.UsedCount >= voucher.UsageLimit)
                 return Json(new { success = false, message = "Voucher đã hết lượt sử dụng!" });
 
+            int userId = GetUserId();
+            bool hasUsed = _context.Orders.Any(o => o.UserId == userId && o.VoucherId == voucher.VoucherId && o.OrderStatus != 5);
+            if (hasUsed)
+                return Json(new { success = false, message = "Mỗi tài khoản chỉ được dùng mã này 1 lần!" });
+
             // Lưu mã hợp lệ vào Session
             HttpContext.Session.SetString("VoucherCode", code);
             return Json(new { success = true });
         }
 
         // 6b. ÁP DỤNG VOUCHER VÀO ĐƠN HÀNG (Dành cho chức năng Mua Ngay)
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> ApplyVoucherToOrder(int orderId, string code)
         {
             var order = await _context.Orders.FindAsync(orderId);
@@ -201,6 +206,10 @@ namespace ASM.Controllers
                 
             if (voucher.UsedCount >= voucher.UsageLimit)
                 return Json(new { success = false, message = "Voucher đã hết lượt sử dụng!" });
+
+            bool hasUsed = _context.Orders.Any(o => o.UserId == order.UserId && o.VoucherId == voucher.VoucherId && o.OrderStatus != 5 && o.OrderId != orderId);
+            if (hasUsed)
+                return Json(new { success = false, message = "Mỗi tài khoản chỉ được dùng mã này 1 lần!" });
 
             if (order.TotalAmount < voucher.MinOrderValue)
                 return Json(new { success = false, message = $"Đơn hàng chưa đạt mức tối thiểu {(voucher.MinOrderValue/1000)}k để dùng voucher này!" });
@@ -220,7 +229,7 @@ namespace ASM.Controllers
         }
 
         // 6c. XÓA VOUCHER KHỎI ĐƠN HÀNG
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> RemoveVoucherFromOrder(int orderId)
         {
             var order = await _context.Orders.FindAsync(orderId);
@@ -250,13 +259,19 @@ namespace ASM.Controllers
                 .Where(v => v.Status == "Active" && v.StartDate <= now && v.EndDate >= now && v.UsedCount < v.UsageLimit)
                 .ToListAsync();
 
-            // Voucher mà user đã lưu vào kho
+            // Lấy danh sách voucher user đã dùng ở các đơn hàng khác
             var savedVoucherIds = new List<int>();
+            var usedVoucherIds = new List<int?>();
             if (uId > 0)
             {
                 savedVoucherIds = await _context.UserVouchers
                     .Where(uv => uv.UserId == uId)
                     .Select(uv => uv.VoucherId)
+                    .ToListAsync();
+                
+                usedVoucherIds = await _context.Orders
+                    .Where(o => o.UserId == uId && o.OrderStatus != 5 && o.OrderId != orderId)
+                    .Select(o => o.VoucherId)
                     .ToListAsync();
             }
 
@@ -270,7 +285,7 @@ namespace ASM.Controllers
                 v.MinOrderValue,
                 EndDate = v.EndDate.ToString("dd/MM/yyyy"),
                 IsSaved = savedVoucherIds.Contains(v.VoucherId),
-                CanUse = order.TotalAmount >= v.MinOrderValue,
+                CanUse = order.TotalAmount >= v.MinOrderValue && !usedVoucherIds.Contains(v.VoucherId),
                 IsApplied = order.VoucherId == v.VoucherId
             }).OrderByDescending(v => v.IsSaved).ThenByDescending(v => v.CanUse).ToList();
 
@@ -301,12 +316,16 @@ namespace ASM.Controllers
                 var voucher = _context.Vouchers.FirstOrDefault(v => v.Code == voucherCode && v.Status == "Active");
                 if (voucher != null && totalAmount >= voucher.MinOrderValue)
                 {
-                    if (voucher.DiscountType == 1) discountAmount = (totalAmount * voucher.DiscountValue) / 100;
-                    else discountAmount = voucher.DiscountValue;
-                    if (discountAmount > totalAmount) discountAmount = totalAmount;
-                    
-                    voucherId = voucher.VoucherId;
-                    voucher.UsedCount++; // Cộng 1 lượt sử dụng
+                    bool hasUsed = _context.Orders.Any(o => o.UserId == uId && o.VoucherId == voucher.VoucherId && o.OrderStatus != 5);
+                    if (!hasUsed) 
+                    {
+                        if (voucher.DiscountType == 1) discountAmount = (totalAmount * voucher.DiscountValue) / 100;
+                        else discountAmount = voucher.DiscountValue;
+                        if (discountAmount > totalAmount) discountAmount = totalAmount;
+                        
+                        voucherId = voucher.VoucherId;
+                        voucher.UsedCount++; // Cộng 1 lượt sử dụng
+                    }
                 }
             }
 
@@ -445,7 +464,7 @@ namespace ASM.Controllers
             if (order != null)
             {
                 order.PaymentStatus = 1; // 1: Đã thanh toán
-                order.OrderStatus = 2;   // 2: Đang chuẩn bị (Tự động chuyển tiếp trạng thái)
+                order.OrderStatus = 1;   // 1: Chờ xác nhận (Giữ ở trạng thái 1 cho đồng bộ với COD)
                 await _context.SaveChangesAsync();
                 return Json(new { success = true });
             }

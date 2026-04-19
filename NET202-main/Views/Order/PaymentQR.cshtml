@@ -232,7 +232,7 @@
         <div class="subtitle">Sử dụng ứng dụng Ngân hàng hoặc MoMo hỗ trợ VietQR</div>
 
         <div class="qr-frame">
-            <img src="@vietQrUrl" style="width: 350px; height: 350px; display: block;" />
+            <img src="@vietQrUrl" onclick="simulateQRScan()" style="width: 350px; height: 350px; display: block; cursor: pointer;" title="Nhấn vào đây để giả lập quét mã thành công" />
         </div>
 
         <div class="bank-details-box">
@@ -248,6 +248,9 @@
         </div>
 
         <div class="btn-group">
+            <button onclick="simulateQRScan()" class="btn-action btn-confirm" style="margin-right: 15px;">
+                <i class="fa-solid fa-check-circle"></i> ĐÃ CHUYỂN KHOẢN
+            </button>
             <a href="javascript:history.back()" class="btn-action btn-back">
                 <i class="fa-solid fa-arrow-left"></i> QUAY VỀ
             </a>
@@ -257,42 +260,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@@11"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Tự động nhận diện sau 6 giây (Giả lập quét QR của hệ thống)
-        setTimeout(function() {
-            var statusBox = document.getElementById('statusBox');
-            var statusText = document.getElementById('statusText');
-            
-            // 1. Cập nhật UI ngay lập tức
-            statusBox.style.background = '#dcfce7';
-            statusBox.style.borderColor = '#22c55e';
-            statusBox.style.color = '#15803d';
-            statusText.innerText = 'Đã nhận diện thanh toán thành công!';
-            document.querySelector('.loader-dots').style.display = 'none';
+    function simulateQRScan() {
+        var statusBox = document.getElementById('statusBox');
+        var statusText = document.getElementById('statusText');
+        
+        // 1. Cập nhật UI ngay lập tức
+        statusBox.style.background = '#dcfce7';
+        statusBox.style.borderColor = '#22c55e';
+        statusBox.style.color = '#15803d';
+        statusText.innerText = 'Đã nhận diện thanh toán thành công!';
+        document.querySelector('.loader-dots').style.display = 'none';
 
-            // 2. Gửi lệnh cập nhật Database (Backend)
-            fetch('/Order/ConfirmPaymentAuto/@Model.OrderId', {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thanh toán hoàn tất!',
-                        text: 'Cảm ơn bạn! Đơn hàng sẽ sớm được chuyển tới.',
-                        timer: 3000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = '/Order/Detail/@Model.OrderId';
-                    });
-                }
-            })
-            .catch(err => {
-                console.error('Lỗi tự động xác nhận:', err);
-                statusText.innerText = 'Lỗi hệ thống. Vui lòng quay về trang đơn hàng.';
-            });
-        }, 6000); 
+        // 2. Gửi lệnh cập nhật Database (Backend)
+        fetch('/Order/ConfirmPaymentAuto/@Model.OrderId', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thanh toán hoàn tất!',
+                    text: 'Cảm ơn bạn! Đơn hàng sẽ sớm được chuyển tới.',
+                    timer: 3000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/Order/Detail/@Model.OrderId';
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Lỗi tự động xác nhận:', err);
+            statusText.innerText = 'Lỗi hệ thống. Vui lòng quay về trang đơn hàng.';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gợi ý cho người bảo vệ dự án
+        console.log("Mẹo: Nhấn trực tiếp vào ảnh QR để giả lập hệ thống nhận diện chuyển khoản thành công.");
     });
 </script>

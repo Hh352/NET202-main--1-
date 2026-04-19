@@ -24,8 +24,8 @@
     .search-box input:focus { border-color: #8B5A2B; }
 
     .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { padding: 12px 10px; color: #718096; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #EDF2F7; text-align: left; }
-    .admin-table td { padding: 12px 10px; border-bottom: 1px solid #F7FAFC; font-size: 13.5px; vertical-align: middle; }
+    .admin-table th { padding: 8px 6px; color: #718096; font-size: 11px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #EDF2F7; text-align: left; }
+    .admin-table td { padding: 8px 6px; border-bottom: 1px solid #F7FAFC; font-size: 13px; vertical-align: middle; }
     .admin-table tr:hover { background: #FEFAF6; }
     .avatar-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #F1E8DF; }
     .user-name { font-weight: 700; color: #2A1C14; }
@@ -82,98 +82,100 @@
         </div>
     </div>
 
-    <table class="admin-table" id="userTable">
-        <thead>
-            <tr><th>STT</th><th>ID</th><th>Avatar</th><th>Họ và Tên</th><th>Điện thoại</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr>
-        </thead>
-        <tbody>
-            @{ int stt = 1; }
-            @foreach (var user in Model)
-            {
-                bool isSelf = (user.UserId.ToString() == currentLoggedInId);
-                string roleName = user.Role == 2 ? "Admin" : (user.Role == 1 ? "Staff" : "User");
-                
-                <tr data-role="@roleName" data-status="@user.Status">
-                    <td style="color:#A0AEC0; font-weight:600;">@stt</td>
-                    <td><span class="user-id">@user.UserId</span></td>
-                    <td><img src="@(!string.IsNullOrEmpty(user.Avatar) ? "/Images/" + user.Avatar : "/Images/default.png")" class="avatar-img"></td>
-                    <td class="user-name">@user.FullName</td>
-                    <td style="color:#4A5568;">@(user.Phone ?? "—")</td>
-                    <td class="email-col" title="@user.Email">@user.Email</td>
+    <div class="table-responsive" style="width: 100%;">
+        <table class="admin-table" id="userTable">
+            <thead>
+                <tr><th>STT</th><th>ID</th><th>Avatar</th><th>Họ và Tên</th><th>Điện thoại</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr>
+            </thead>
+            <tbody>
+                @{ int stt = 1; }
+                @foreach (var user in Model)
+                {
+                    bool isSelf = (user.UserId.ToString() == currentLoggedInId);
+                    string roleName = user.Role == 2 ? "Admin" : (user.Role == 1 ? "Staff" : "User");
                     
-                    <td>
-                        @if (user.Role == 2)      { <span class="badge-role role-admin">ADMIN</span> } 
-                        else if (user.Role == 1) { <span class="badge-role role-staff">STAFF</span> } 
-                        else                     { <span class="badge-role role-user">KHÁCH</span> }
-                    </td>
+                    <tr data-role="@roleName" data-status="@user.Status">
+                        <td style="color:#A0AEC0; font-weight:600;">@stt</td>
+                        <td><span class="user-id">@user.UserId</span></td>
+                        <td><img src="@(!string.IsNullOrEmpty(user.Avatar) ? "/Images/" + user.Avatar : "/Images/default.png")" class="avatar-img"></td>
+                        <td class="user-name">@user.FullName</td>
+                        <td style="color:#4A5568;">@(user.Phone ?? "—")</td>
+                        <td class="email-col" title="@user.Email">@user.Email</td>
+                        
+                        <td>
+                            @if (user.Role == 2)      { <span class="badge-role role-admin">ADMIN</span> } 
+                            else if (user.Role == 1) { <span class="badge-role role-staff">STAFF</span> } 
+                            else                     { <span class="badge-role role-user">KHÁCH</span> }
+                        </td>
 
-                    <td>
-                        @if (user.Status == "Locked") { <div class="status st-locked">Bị khoá</div> } 
-                        else                          { <div class="status st-active">Hoạt động</div> }
-                    </td>
+                        <td>
+                            @if (user.Status == "Locked") { <div class="status st-locked">Bị khoá</div> } 
+                            else                          { <div class="status st-active">Hoạt động</div> }
+                        </td>
 
-                    <td>
-                        <div class="actions">
-                            <button type="button" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal_@user.UserId" title="Sửa">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            
-                            @if (!isSelf)
-                            {
-                                <form asp-action="ToggleUserStatus" asp-controller="Admin" method="post" style="margin: 0;">
-                                    <input type="hidden" name="id" value="@user.UserId" />
-                                    @if (user.Status == "Active") { 
-                                        <button type="submit" class="btn-action btn-unlock" title="Khóa tài khoản này"><i class="fa-solid fa-lock-open"></i></button> 
-                                    } else { 
-                                        <button type="submit" class="btn-action btn-lock" title="Mở khóa tài khoản này"><i class="fa-solid fa-lock"></i></button> 
-                                    }
+                        <td>
+                            <div class="actions">
+                                <button type="button" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editUserModal_@user.UserId" title="Sửa">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                
+                                @if (!isSelf)
+                                {
+                                    <form asp-action="ToggleUserStatus" asp-controller="Admin" method="post" style="margin: 0;">
+                                        <input type="hidden" name="id" value="@user.UserId" />
+                                        @if (user.Status == "Active") { 
+                                            <button type="submit" class="btn-action btn-unlock" title="Khóa tài khoản này"><i class="fa-solid fa-lock-open"></i></button> 
+                                        } else { 
+                                            <button type="submit" class="btn-action btn-lock" title="Mở khóa tài khoản này"><i class="fa-solid fa-lock"></i></button> 
+                                        }
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade" id="editUserModal_@user.UserId" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form asp-action="EditUser" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="userId" value="@user.UserId" />
+                                    <div class="modal-header" style="background:#FAF7F4; border-bottom:1px solid #E2E8F0;"><h5 class="modal-title font-weight-bold">Sửa Người Dùng</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label class="form-label">Họ tên *</label>
+                                                <input type="text" class="form-control" name="fullName" value="@user.FullName" required pattern="^[\p{L}\s]+$" title="Chỉ chứa chữ cái và khoảng trắng" @(isSelf ? "" : "readonly")>
+                                            </div>
+                                            <div class="col-md-6 col-12 mb-2"><label class="form-label">Email *</label><input type="email" class="form-control" name="email" value="@user.Email" required></div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 col-12 mb-2"><label class="form-label">Điện thoại</label><input type="text" class="form-control" name="phone" value="@user.Phone" pattern="^[0-9]{8,11}$" title="8-11 số"></div>
+                                            <div class="col-md-6 col-12 mb-2"><label class="form-label">Vai trò</label>
+                                                <select class="form-select" name="role">
+                                                    <option value="0" selected="@(user.Role == 0)">Khách hàng</option>
+                                                    <option value="1" selected="@(user.Role == 1)">Staff</option>
+                                                    <option value="2" selected="@(user.Role == 2)">Admin</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3"><label class="form-label">Địa chỉ</label><input type="text" class="form-control" name="address" value="@user.Address"></div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Đổi Mật khẩu (để trống nếu giữ nguyên)</label>
+                                            <input type="password" class="form-control" name="password" pattern="(?=.*[A-Za-z])(?=.*\d).{8,}" title="Ít nhất 8 ký tự, gồm chữ và số" @(isSelf ? "" : "readonly placeholder=''")>
+                                        </div>
+                                        <div class="mb-2"><label class="form-label">Ảnh đại diện mới</label><input type="file" class="form-control" name="newAvatar" accept="image/*"></div>
+                                    </div>
+                                    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Lưu</button></div>
                                 </form>
-                            }
-                        </div>
-                    </td>
-                </tr>
-
-                <div class="modal fade" id="editUserModal_@user.UserId" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <form asp-action="EditUser" asp-controller="Admin" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="userId" value="@user.UserId" />
-                                <div class="modal-header" style="background:#FAF7F4; border-bottom:1px solid #E2E8F0;"><h5 class="modal-title font-weight-bold">Sửa Người Dùng</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                                <div class="modal-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 col-12 mb-2">
-                                            <label class="form-label">Họ tên *</label>
-                                            <input type="text" class="form-control" name="fullName" value="@user.FullName" required pattern="^[\p{L}\s]+$" title="Chỉ chứa chữ cái và khoảng trắng" @(isSelf ? "" : "readonly")>
-                                        </div>
-                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Email *</label><input type="email" class="form-control" name="email" value="@user.Email" required></div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Điện thoại</label><input type="text" class="form-control" name="phone" value="@user.Phone" pattern="^[0-9]{8,11}$" title="8-11 số"></div>
-                                        <div class="col-md-6 col-12 mb-2"><label class="form-label">Vai trò</label>
-                                            <select class="form-select" name="role">
-                                                <option value="0" selected="@(user.Role == 0)">Khách hàng</option>
-                                                <option value="1" selected="@(user.Role == 1)">Staff</option>
-                                                <option value="2" selected="@(user.Role == 2)">Admin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3"><label class="form-label">Địa chỉ</label><input type="text" class="form-control" name="address" value="@user.Address"></div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Đổi Mật khẩu (để trống nếu giữ nguyên)</label>
-                                        <input type="password" class="form-control" name="password" pattern="(?=.*[A-Za-z])(?=.*\d).{8,}" title="Ít nhất 8 ký tự, gồm chữ và số" @(isSelf ? "" : "readonly placeholder=''")>
-                                    </div>
-                                    <div class="mb-2"><label class="form-label">Ảnh đại diện mới</label><input type="file" class="form-control" name="newAvatar" accept="image/*"></div>
-                                </div>
-                                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-add">Lưu</button></div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                stt++;
-            }
-        </tbody>
-    </table>
+                    stt++;
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="modal fade" id="addUserModal" tabindex="-1">
@@ -220,16 +222,4 @@
             });
         }
     </script>
-
-    @if (TempData["ScrollDown"] != null && (bool)TempData["ScrollDown"] == true)
-    {
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var contentBody = document.querySelector('.content-body');
-                if (contentBody) {
-                    contentBody.scrollTo({ top: contentBody.scrollHeight, behavior: 'smooth' });
-                }
-            });
-        </script>
-    }
 }
